@@ -23,7 +23,6 @@ import net.iharder.Base64;
 public class WebSocketTest extends WebSocketClient
     {
         private BasicBSONDecoder decoder = new BasicBSONDecoder();
-        private int count;
 
         public static void main(String[] args) throws Exception
             {
@@ -44,7 +43,7 @@ public class WebSocketTest extends WebSocketClient
                 RSAPublicKey publicRsaKey = (RSAPublicKey) keyFactory.generatePublic(publicKeySpec);
 
                 JWTClaimsSet claimSet = new JWTClaimsSet.Builder()
-                        .issuer("TestAPI (" + System.getProperty("os.name") + " " + System.getProperty("os.arch") + " " + System.getProperty("os.version") + " " + System.getProperty("java.version") + ")")
+                        .issuer("jAPI (" + System.getProperty("os.name") + " " + System.getProperty("os.arch") + " " + System.getProperty("os.version") + " " + System.getProperty("java.version") + ")")
                         .expirationTime(new Date(System.currentTimeMillis() + 10 * 1000))
                         .notBeforeTime(new Date())
                         .issueTime(new Date())
@@ -103,7 +102,7 @@ public class WebSocketTest extends WebSocketClient
                     }
             }
 
-        public WebSocketTest(URI serverUri)
+        private WebSocketTest(URI serverUri)
             {
                 super(serverUri);
             }
