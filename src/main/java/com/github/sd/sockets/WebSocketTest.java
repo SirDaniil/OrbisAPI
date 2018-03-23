@@ -26,8 +26,9 @@ public class WebSocketTest extends WebSocketClient
 
         public static void main(String[] args) throws Exception
             {
+                String settings = args.length > 0 ? args[0] : "settings.conf";
                 Properties props = new Properties();
-                try (InputStream in = new FileInputStream("settings.conf"))
+                try (InputStream in = new FileInputStream(settings))
                     {
                         props.load(in);
                     }
