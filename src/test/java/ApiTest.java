@@ -1,3 +1,5 @@
+import java.io.*;
+import java.util.*;
 import com.github.sd.*;
 
 /**
@@ -6,8 +8,15 @@ import com.github.sd.*;
  */
 public class ApiTest
     {
-        public static void main(String[] args)
+        public static void main(String[] args) throws IOException
             {
+                String settings = args.length > 0 ? args[0] : "settings.conf";
+                Properties props = new Properties();
+                try (InputStream in = new FileInputStream(settings))
+                    {
+                        props.load(in);
+                    }
+
                 OrbisAPI api = new OrbisAPI();
             }
     }
