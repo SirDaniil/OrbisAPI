@@ -21,6 +21,6 @@ public class ApiTest
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
-                System.out.println(api.quoteSearch("Google"));
+                System.out.println(api.getQuotes("MSFT", "GOOG"));
             }
     }
