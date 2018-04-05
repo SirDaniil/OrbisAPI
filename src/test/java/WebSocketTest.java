@@ -1,24 +1,21 @@
-package com.github.sd.sockets;
-
 import java.io.*;
-import java.net.*;
 import java.nio.*;
 import java.util.*;
 import com.github.sd.*;
-import net.iharder.Base64;
 import org.bson.*;
 import org.java_websocket.client.*;
 import org.java_websocket.handshake.*;
 import org.json.*;
 
 /**
- * User: Daniil Sosonkin
- * Date: 3/20/2018 1:37 PM
+ * Created by Daniil Sosonkin
+ * 4/4/2018 9:43 PM
  */
-public class WebSocketTest extends WebSocketClient
+public class WebSocketTest implements OrbisApiClient
     {
         private BasicBSONDecoder decoder = new BasicBSONDecoder();
         private String[] symbols;
+        private WebSocketClient ws;
 
         public static void main(String[] args) throws Exception
             {
@@ -29,17 +26,13 @@ public class WebSocketTest extends WebSocketClient
                         props.load(in);
                     }
 
-                String filename = props.getProperty("key.file");
-                Credentials credentials = new PublicKeyCredentials(filename);
+                OrbisAPI api = new OrbisAPI();
+                api.setHostname(props.getProperty("hostname"));
+                api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
-                WebSocketTest ws = new WebSocketTest(new URI(props.getProperty("hostname") + "/stream?auth=" + URLEncoder.encode(credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()), "ISO-8859-1")));
-                ws.symbols = props.getProperty("symbols").split(",");
-                ws.connect();
-            }
-
-        private WebSocketTest(URI serverUri)
-            {
-                super(serverUri);
+                WebSocketTest test = new WebSocketTest();
+                test.symbols = props.getProperty("symbols").split(",");
+                test.ws = api.openWebSocket(test);
             }
 
         @Override
@@ -51,14 +44,12 @@ public class WebSocketTest extends WebSocketClient
                 sub.put("action", "sub");
                 sub.put("symbols", new JSONArray(Arrays.asList(symbols)));
 
-                send(sub.toString());
+                ws.send(sub.toString());
             }
 
         @Override
         public void onMessage(String message)
-            {
-                System.out.println("(*) " + message);
-            }
+            { }
 
         @Override
         public void onClose(int code, String reason, boolean remote)

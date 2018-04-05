@@ -2,8 +2,11 @@ package com.github.sd;
 
 import java.io.*;
 import java.net.*;
+import java.nio.*;
 import java.util.*;
 import net.iharder.Base64;
+import org.java_websocket.client.*;
+import org.java_websocket.handshake.*;
 import org.json.*;
 
 /**
@@ -29,6 +32,16 @@ public class OrbisAPI
 
         public OrbisAPI setHostname(String hostname)
             {
+                if (hostname.startsWith("http://")) {
+                    hostname = hostname.substring("http://".length());
+                    scheme = "http";
+                }
+
+                if (hostname.startsWith("https://")) {
+                    hostname = hostname.substring("https://".length());
+                    scheme = "https";
+                }
+
                 this.hostname = hostname;
                 return this;
             }
@@ -37,6 +50,45 @@ public class OrbisAPI
             {
                 this.api = api;
                 return this;
+            }
+
+        public WebSocketClient openWebSocket(OrbisApiClient client) throws Exception
+            {
+                WebSocketClient ws = new WebSocketClient(new URI((scheme.equals("http") ? "ws" : "wss") + "://" + hostname + "/stream?auth=" + URLEncoder.encode(credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()), "ISO-8859-1")))
+                    {
+                        @Override
+                        public void onOpen(ServerHandshake handshakedata)
+                            {
+                                client.onOpen(handshakedata);
+                            }
+
+                        @Override
+                        public void onMessage(String message)
+                            {
+                                client.onMessage(message);
+                            }
+
+                        @Override
+                        public void onClose(int code, String reason, boolean remote)
+                            {
+                                client.onClose(code, reason, remote);
+                            }
+
+                        @Override
+                        public void onError(Exception ex)
+                            {
+                                client.onError(ex);
+                            }
+
+                        @Override
+                        public void onMessage(ByteBuffer bytes)
+                            {
+                                client.onMessage(bytes);
+                            }
+                    };
+                ws.connect();
+
+                return ws;
             }
 
         public JSONArray getQuotes(String... symbols) throws IOException
@@ -72,7 +124,7 @@ public class OrbisAPI
                     args.append(encode(v));
                     args.append('&');
                 });
-                URL url = new URL(hostname + api + path + (args.length() > 0 ? "?" + args : ""));
+                URL url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setConnectTimeout(1000 * 30);
@@ -88,6 +140,9 @@ public class OrbisAPI
                         while ((size = in.read(buf)) > 0)
                             response.append(new String(buf, 0, size));
                     }
+
+                if (!oks.contains(code))
+                    throw new IOException(response.toString());
 
                 return response.toString();
             }

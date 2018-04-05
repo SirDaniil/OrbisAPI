@@ -18,5 +18,9 @@ public class ApiTest
                     }
 
                 OrbisAPI api = new OrbisAPI();
+                api.setHostname(props.getProperty("hostname"));
+                api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
+
+                System.out.println(api.quoteSearch("Google"));
             }
     }
