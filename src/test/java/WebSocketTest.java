@@ -43,6 +43,7 @@ public class WebSocketTest implements OrbisApiClient
                 JSONObject sub = new JSONObject();
                 sub.put("action", "sub");
                 sub.put("symbols", new JSONArray(Arrays.asList(symbols)));
+                System.out.println("(+) Subscribing: " + sub);
 
                 ws.send(sub.toString());
             }

@@ -86,6 +86,7 @@ public class OrbisAPI
                                 client.onMessage(bytes);
                             }
                     };
+                ws.setTcpNoDelay(true);
                 ws.connect();
 
                 return ws;
