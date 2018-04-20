@@ -67,7 +67,9 @@ public class WebSocketTest implements OrbisApiClient
         @Override
         public void onMessage(ByteBuffer bytes)
             {
-                BSONObject array = decoder.readObject(bytes.array());
-                System.out.println(array);
+                BSONObject object = decoder.readObject(bytes.array());
+                Date timestamp = (Date) object.get("ts");
+                long lag = (System.currentTimeMillis() - timestamp.getTime());
+                System.out.println("(" + lag + ") " + object);
             }
     }

@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = 'com.github.sd.sockets.WebSocketTest'
+mainClassName = 'WebSocketTest'
 version '1.0.0'
 
 repositories {
