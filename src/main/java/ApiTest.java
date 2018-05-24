@@ -21,6 +21,6 @@ public class ApiTest
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
-                System.out.println(api.news(NewsFilter.Builder().filter(FilterKey.Provider.add(FilterValue.Providers.Sec).exclude())));
+                System.out.println(api.news(NewsFilter.Builder().filter(FilterKey.Provider.add(FilterValue.Providers.Sec).exclude()), 50));
             }
     }

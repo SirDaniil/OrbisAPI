@@ -104,7 +104,16 @@ public class OrbisAPI
 
         public String news(NewsFilter filter) throws IOException
             {
-                return get("/research/news", "filter", filter);
+                return news(filter, 0);
+            }
+
+        public String news(NewsFilter filter, int start) throws IOException
+            {
+                Map<String, Object> params = new HashMap<>();
+                params.put("filter", filter);
+                params.put("start", start);
+
+                return get("/research/news", params);
             }
 
         private String get(String path, String name, Object value) throws IOException
