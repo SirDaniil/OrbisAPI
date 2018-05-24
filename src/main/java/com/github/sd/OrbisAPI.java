@@ -102,12 +102,22 @@ public class OrbisAPI
                 return new JSONArray(get("/quotes/search", "criteria", criteria));
             }
 
+        public String news(NewsFilter filter) throws IOException
+            {
+                return get("/research/news", "filter", filter);
+            }
+
         private String get(String path, String name, Object value) throws IOException
             {
                 Map<String, Object> params = new HashMap<>();
                 params.put(name, value);
 
                 return get(path, params);
+            }
+
+        private String get(String path) throws IOException
+            {
+                return get(path, new HashMap<>());
             }
 
         private String get(String path, Map<String, Object> params) throws IOException
