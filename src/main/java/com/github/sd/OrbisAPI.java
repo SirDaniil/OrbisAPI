@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.nio.*;
 import java.util.*;
+import java.util.zip.*;
 import net.iharder.Base64;
 import org.java_websocket.client.*;
 import org.java_websocket.handshake.*;
@@ -147,6 +148,7 @@ public class OrbisAPI
                 URL url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
+                con.setRequestProperty("Accept-Encoding", "gzip");
                 con.setConnectTimeout(1000 * 30);
                 con.setReadTimeout(1000 * 30);
 
@@ -154,9 +156,11 @@ public class OrbisAPI
                 byte[] buf = new byte[1024 * 1024];
                 int size;
                 int code = con.getResponseCode();
+                String content = con.getContentEncoding();
 
-                try (InputStream in = (oks.contains(code) ? con.getInputStream() : con.getErrorStream()))
+                try (InputStream stream = (oks.contains(code) ? con.getInputStream() : con.getErrorStream()))
                     {
+                        InputStream in = "gzip".equals(content) ? new GZIPInputStream(stream) : stream;
                         while ((size = in.read(buf)) > 0)
                             response.append(new String(buf, 0, size));
                     }
