@@ -1,6 +1,7 @@
 package com.github.sd;
 
 import java.io.*;
+import java.lang.reflect.*;
 import java.net.*;
 import java.nio.*;
 import java.util.*;
@@ -17,15 +18,19 @@ import org.json.*;
 public class OrbisAPI
     {
         enum Endpoint {
-            QuotesEquity("/quotes/equity"),
-            QuotesSearch("/quotes/search"),
-            ResearchNews("/research/news"),
+            QuotesEquity("/quotes/equity", JSONArray.class),
+            QuotesSearch("/quotes/search", JSONArray.class),
+            ResearchNews("/research/news", JSONArray.class),
+            ResearchFundamentalTypes("/research/fundamentals/types", JSONArray.class),
+            ResearchFundamentals("/research/fundamentals/{type}/{symbol}", JSONObject.class),
             ;
             private String path;
+            private Class clazz;
 
-            Endpoint(String path)
+            Endpoint(String path, Class clazz)
                 {
                     this.path = path;
+                    this.clazz = clazz;
                 }
         }
         private static final Set<Integer> oks = new HashSet<Integer>() {{
@@ -105,22 +110,36 @@ public class OrbisAPI
                 return ws;
             }
 
+        public JSONArray getFundamentalTypes() throws IOException
+            {
+                return get(Endpoint.ResearchFundamentalTypes);
+            }
+
+        public JSONObject getFundamentals(String type, String symbol) throws IOException
+            {
+                Map<String, Object> args = new HashMap<>();
+                args.put("{type}", type);
+                args.put("{symbol}", symbol);
+
+                return get(Endpoint.ResearchFundamentals, args);
+            }
+
         public JSONArray getQuotes(String... symbols) throws IOException
             {
-                return new JSONArray(get(Endpoint.QuotesEquity, "symbols", String.join(",", symbols)));
+                return get(Endpoint.QuotesEquity, "symbols", String.join(",", symbols));
             }
 
         public JSONArray quoteSearch(String criteria) throws IOException
             {
-                return new JSONArray(get(Endpoint.QuotesSearch, "criteria", criteria));
+                return get(Endpoint.QuotesSearch, "criteria", criteria);
             }
 
-        public String news(NewsFilter filter) throws IOException
+        public JSONArray news(NewsFilter filter) throws IOException
             {
                 return news(filter, 0);
             }
 
-        public String news(NewsFilter filter, int start) throws IOException
+        public JSONArray news(NewsFilter filter, int start) throws IOException
             {
                 Map<String, Object> params = new HashMap<>();
                 params.put("filter", filter);
@@ -129,7 +148,7 @@ public class OrbisAPI
                 return get(Endpoint.ResearchNews, params);
             }
 
-        private String get(Endpoint endpoint, String name, Object value) throws IOException
+        private <T> T get(Endpoint endpoint, String name, Object value) throws IOException
             {
                 Map<String, Object> params = new HashMap<>();
                 params.put(name, value);
@@ -137,36 +156,46 @@ public class OrbisAPI
                 return get(endpoint, params);
             }
 
-        private String get(Endpoint endpoint) throws IOException
+        private <T> T get(Endpoint endpoint) throws IOException
             {
                 return get(endpoint, new HashMap<>());
             }
 
-        private String get(Endpoint endpoint, Map<String, Object> params) throws IOException
+        private <T> T get(Endpoint endpoint, Map<String, Object> params) throws IOException
             {
                 StringBuilder args = new StringBuilder();
-                params.forEach((k, v) -> {
-                    if (k == null)
-                        k = "";
+                String path = endpoint.path;
 
-                    if (v == null)
-                        v = "";
+                for (Map.Entry<String, Object> entry : params.entrySet())
+                    {
+                        String key = entry.getKey();
+                        Object value = entry.getValue();
 
-                    args.append(encode(k));
-                    args.append('=');
-                    args.append(encode(v));
-                    args.append('&');
-                });
-                URL url = new URL(scheme + "://" + hostname + api + endpoint.path + (args.length() > 0 ? "?" + args : ""));
+                        if (key == null)
+                            key = "";
+
+                        if (value == null)
+                            value = "";
+
+                        if (key.startsWith("{") && key.endsWith("}"))
+                            path = path.replace(key, value.toString());
+                        else
+                            {
+                                args.append(encode(key));
+                                args.append('=');
+                                args.append(encode(value));
+                                args.append('&');
+                            }
+                    }
+
+                URL url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setRequestProperty("Accept-Encoding", "gzip");
                 con.setConnectTimeout(1000 * 30);
                 con.setReadTimeout(1000 * 30);
 
-                StringBuilder response = new StringBuilder();
-                byte[] buf = new byte[1024 * 1024];
-                int size;
+                T response;
                 int code = con.getResponseCode();
                 String content = con.getContentEncoding();
 
@@ -175,15 +204,22 @@ public class OrbisAPI
 
                 try (InputStream stream = (oks.contains(code) ? con.getInputStream() : con.getErrorStream()))
                     {
-                        InputStream in = "gzip".equals(content) ? new GZIPInputStream(stream) : stream;
-                        while ((size = in.read(buf)) > 0)
-                            response.append(new String(buf, 0, size));
+                        BufferedReader in = new BufferedReader(new InputStreamReader("gzip".equals(content) ? new GZIPInputStream(stream) : stream));
+                        JSONTokener tokener = new JSONTokener(in);
+                        try
+                            {
+                                response = (T)endpoint.clazz.getConstructor(JSONTokener.class).newInstance(tokener);
+                            }
+                        catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
+                            {
+                                throw new IOException(e);
+                            }
                     }
 
                 if (!oks.contains(code))
                     throw new IOException(response.toString());
 
-                return response.toString();
+                return response;
             }
 
         private String encode(Object o)
