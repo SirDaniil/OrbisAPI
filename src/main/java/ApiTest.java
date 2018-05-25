@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 import com.github.sd.*;
+import com.github.sd.FilterValue.*;
 
 /**
  * User: Daniil Sosonkin
@@ -21,6 +22,6 @@ public class ApiTest
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
-                System.out.println(api.news(NewsFilter.Builder().filter(FilterKey.Provider.add(FilterValue.Providers.Sec).exclude()), 50));
+                System.out.println(api.news(NewsFilter.Builder().filter(FilterKey.Provider.add(FilterValue.Providers.Sec).exclude())));
             }
     }

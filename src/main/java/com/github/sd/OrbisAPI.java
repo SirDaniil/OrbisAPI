@@ -16,6 +16,18 @@ import org.json.*;
  */
 public class OrbisAPI
     {
+        enum Endpoint {
+            QuotesEquity("/quotes/equity"),
+            QuotesSearch("/quotes/search"),
+            ResearchNews("/research/news"),
+            ;
+            private String path;
+
+            Endpoint(String path)
+                {
+                    this.path = path;
+                }
+        }
         private static final Set<Integer> oks = new HashSet<Integer>() {{
             add(200);
             add(201);
@@ -95,12 +107,12 @@ public class OrbisAPI
 
         public JSONArray getQuotes(String... symbols) throws IOException
             {
-                return new JSONArray(get("/quotes/equity", "symbols", String.join(",", symbols)));
+                return new JSONArray(get(Endpoint.QuotesEquity, "symbols", String.join(",", symbols)));
             }
 
         public JSONArray quoteSearch(String criteria) throws IOException
             {
-                return new JSONArray(get("/quotes/search", "criteria", criteria));
+                return new JSONArray(get(Endpoint.QuotesSearch, "criteria", criteria));
             }
 
         public String news(NewsFilter filter) throws IOException
@@ -114,23 +126,23 @@ public class OrbisAPI
                 params.put("filter", filter);
                 params.put("start", start);
 
-                return get("/research/news", params);
+                return get(Endpoint.ResearchNews, params);
             }
 
-        private String get(String path, String name, Object value) throws IOException
+        private String get(Endpoint endpoint, String name, Object value) throws IOException
             {
                 Map<String, Object> params = new HashMap<>();
                 params.put(name, value);
 
-                return get(path, params);
+                return get(endpoint, params);
             }
 
-        private String get(String path) throws IOException
+        private String get(Endpoint endpoint) throws IOException
             {
-                return get(path, new HashMap<>());
+                return get(endpoint, new HashMap<>());
             }
 
-        private String get(String path, Map<String, Object> params) throws IOException
+        private String get(Endpoint endpoint, Map<String, Object> params) throws IOException
             {
                 StringBuilder args = new StringBuilder();
                 params.forEach((k, v) -> {
@@ -145,7 +157,7 @@ public class OrbisAPI
                     args.append(encode(v));
                     args.append('&');
                 });
-                URL url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
+                URL url = new URL(scheme + "://" + hostname + api + endpoint.path + (args.length() > 0 ? "?" + args : ""));
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setRequestProperty("Accept-Encoding", "gzip");
@@ -157,6 +169,9 @@ public class OrbisAPI
                 int size;
                 int code = con.getResponseCode();
                 String content = con.getContentEncoding();
+
+                if (code == 204)
+                    return null;
 
                 try (InputStream stream = (oks.contains(code) ? con.getInputStream() : con.getErrorStream()))
                     {

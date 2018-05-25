@@ -18,15 +18,22 @@ public class FilterValue implements CharSequence
             FilterValue Mainwire = new FilterValue("MAINWIRE");
             FilterValue FullFeed = new FilterValue("FULLFEED");
             FilterValue Edgar = new FilterValue("EDGAR___");
+            FilterValue Events = new FilterValue("EVENTS__");
         }
 
         public interface Providers {
             FilterValue Benzinga = new FilterValue("BENZINGA");
+            FilterValue BenzingaTxt = new FilterValue("BENZINGA_TXT");
             FilterValue Bizwire = new FilterValue("BIZWIRE_");
             FilterValue FlyOnWall = new FilterValue("FLYWALL_");
             FilterValue JagMedia = new FilterValue("JAGMEDIA");
             FilterValue Sec = new FilterValue("SEC_____");
             FilterValue PrNews = new FilterValue("PR_NEWS_");
+            FilterValue Primzone = new FilterValue("PRIMZONE");
+            FilterValue MrktWire = new FilterValue("MRKTWIRE");
+            FilterValue TenkWiz = new FilterValue("TENKWIZ_");
+            FilterValue CnForex = new FilterValue("CNFOREX");
+            FilterValue CnForexSms = new FilterValue("CNFOREX_SMS");
         }
         private String value;
 
