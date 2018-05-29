@@ -20,6 +20,9 @@ public class OrbisAPI
         enum Endpoint {
             QuotesEquity("/quotes/equity", JSONArray.class),
             QuotesSearch("/quotes/search", JSONArray.class),
+            ResearchAdrs("/research/adrs", JSONArray.class),
+            ResearchAdrsTop10("/research/adrs/top10", JSONObject.class),
+            ResearchAdrsTop10Defaults("/research/adrs/top10/defaults", JSONArray.class),
             ResearchNews("/research/news", JSONArray.class),
             ResearchFundamentalTypes("/research/fundamentals/types", JSONArray.class),
             ResearchFundamentals("/research/fundamentals/{type}/{symbol}", JSONObject.class),
@@ -115,6 +118,21 @@ public class OrbisAPI
                 return get(Endpoint.ResearchFundamentalTypes);
             }
 
+        public JSONArray getAdrsTop10Defaults() throws IOException
+            {
+                return get(Endpoint.ResearchAdrsTop10Defaults);
+            }
+
+        public JSONArray getAdrs(AdrRequest request) throws IOException
+            {
+                return get(Endpoint.ResearchAdrs, request);
+            }
+
+        public JSONObject getAdrsTop10(AdrRequest request) throws IOException
+            {
+                return get(Endpoint.ResearchAdrsTop10, request);
+            }
+
         public JSONObject getFundamentals(String type, String symbol) throws IOException
             {
                 Map<String, Object> args = new HashMap<>();
@@ -208,7 +226,7 @@ public class OrbisAPI
                         JSONTokener tokener = new JSONTokener(in);
                         try
                             {
-                                response = (T)endpoint.clazz.getConstructor(JSONTokener.class).newInstance(tokener);
+                                response = (T)(oks.contains(code) ? endpoint.clazz.getConstructor(JSONTokener.class).newInstance(tokener) : new JSONObject(tokener));
                             }
                         catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
                             {
