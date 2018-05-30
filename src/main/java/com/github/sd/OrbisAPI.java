@@ -26,6 +26,7 @@ public class OrbisAPI
             ResearchNews("/research/news", JSONArray.class),
             ResearchFundamentalTypes("/research/fundamentals/types", JSONArray.class),
             ResearchFundamentals("/research/fundamentals/{type}/{symbol}", JSONObject.class),
+            ResearchScreener("/research/screener", JSONObject.class),
             ;
             private String path;
             private Class clazz;
@@ -113,6 +114,11 @@ public class OrbisAPI
                 return ws;
             }
 
+        public JSONObject screener(Screener screener) throws IOException
+            {
+                return post(Endpoint.ResearchScreener, screener);
+            }
+
         public JSONArray getFundamentalTypes() throws IOException
             {
                 return get(Endpoint.ResearchFundamentalTypes);
@@ -197,6 +203,17 @@ public class OrbisAPI
 
                         if (key.startsWith("{") && key.endsWith("}"))
                             path = path.replace(key, value.toString());
+                        else if (value instanceof Collection)
+                            {
+                                Collection col = (Collection) value;
+                                for (Object item : col)
+                                    {
+                                        args.append(encode(key));
+                                        args.append('=');
+                                        args.append(encode(item));
+                                        args.append('&');
+                                    }
+                            }
                         else
                             {
                                 args.append(encode(key));
@@ -210,9 +227,52 @@ public class OrbisAPI
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setRequestProperty("Accept-Encoding", "gzip");
+                con.setUseCaches(false);
                 con.setConnectTimeout(1000 * 30);
                 con.setReadTimeout(1000 * 30);
 
+                return read(endpoint, con);
+            }
+
+        private <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
+            {
+                String data = obj.toJSON();
+                URL url = new URL(scheme + "://" + hostname + api + endpoint.path);
+                HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
+                con.setRequestProperty("Content-Length", String.valueOf(data.length()));
+                con.setRequestProperty("Content-Type", "application/json");
+                con.setRequestProperty("Accept-Encoding", "gzip");
+                con.setRequestMethod("POST");
+                con.setConnectTimeout(1000 * 30);
+                con.setReadTimeout(1000 * 30);
+                con.setUseCaches(false);
+                con.setDoOutput(true);
+                con.setDoInput(true);
+
+                try (Writer out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), "UTF-8")))
+                    {
+                        out.write(data);
+                        out.flush();
+                    }
+
+                return read(endpoint, con);
+            }
+
+        private String encode(Object o)
+            {
+                try
+                    {
+                        return URLEncoder.encode(o.toString(), "ISO-8859-1");
+                    }
+                catch (UnsupportedEncodingException e)
+                    {
+                        return o.toString();
+                    }
+            }
+
+        private <T> T read(Endpoint endpoint, HttpURLConnection con) throws IOException
+            {
                 T response;
                 int code = con.getResponseCode();
                 String content = con.getContentEncoding();
@@ -239,17 +299,4 @@ public class OrbisAPI
 
                 return response;
             }
-
-        private String encode(Object o)
-            {
-                try
-                    {
-                        return URLEncoder.encode(o.toString(), "ISO-8859-1");
-                    }
-                catch (UnsupportedEncodingException e)
-                    {
-                        return o.toString();
-                    }
-            }
-
     }

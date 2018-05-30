@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 import com.github.sd.*;
+import static com.github.sd.Screener.Field.*;
 
 /**
  * User: Daniil Sosonkin
@@ -24,7 +25,7 @@ public class ApiTest
                 //System.out.println(api.news(NewsFilter.Builder().filter(FilterKey.Provider.add(Providers.Sec).exclude())).toString(2));
                 //System.out.println(api.getFundamentals("IncomeStatement", "MSFT").toString(2));
                 //System.out.println(api.getQuotes("msft").toString(2));
-                System.out.println(api.getAdrs(AdrRequest.Builder().loadEarningReleases().loadUpgradesDowngrades().country("CAN")).toString(2));
-                //System.out.println(api.getAdrsTop10Defaults().toString(2));
+                //System.out.println(api.getAdrs(AdrRequest.Builder().loadEarningReleases().loadUpgradesDowngrades().country("CHE")).toString(2));
+                System.out.println(api.screener(Screener.Builder().is(Adr).gte(MarketCap, 10, new DateRange().lowerToday().upperNextMonth())).toString(2));
             }
     }
