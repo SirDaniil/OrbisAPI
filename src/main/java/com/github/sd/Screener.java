@@ -18,34 +18,22 @@ public class Screener extends ArrayList<ScreenerQuery> implements JsonConvertabl
         }
 
         public enum Field {
-            MarketCap("mcap"),
-            LastPrice("price"),
-            Beta("beta"),
-            DividendAmount("dividend.amount"),
-            DividendRate("dividend.rate"),
-            DividendYield("dividend.yield"),
-            DividendPayDate("dividend.paydate"),
-            DividendExDate("dividend.exdate"),
-            Exchange("exchange"),
-            Gap("gap"),
-            Adr("adr"),
-            Etf("etf"),
-            Industry("industry"),
-            Volume("vol"),
-            Volume30D("volAvg30"),
-            PriceEarningRatio("pe_ratio");
-
-            private String fieldName;
-
-            Field(String fieldName)
-                {
-                    this.fieldName = fieldName;
-                }
-
-            public String getFieldName()
-                {
-                    return fieldName;
-                }
+            MarketCap,
+            LastPrice,
+            Beta,
+            DividendAmount,
+            DividendRate,
+            DividendYield,
+            DividendPayDate,
+            DividendExDate,
+            Exchange,
+            Gap,
+            Adr,
+            Etf,
+            Industry,
+            Volume,
+            Volume30D,
+            PriceEarningRatio;
         }
 
         public static Screener Builder()
