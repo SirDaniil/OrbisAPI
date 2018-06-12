@@ -24,6 +24,7 @@ public class OrbisAPI
             ResearchAdrsTop10("/research/adrs/top10", JSONObject.class),
             ResearchAdrsTop10Defaults("/research/adrs/top10/defaults", JSONArray.class),
             ResearchNews("/research/news", JSONArray.class),
+            ResearchNewsBySymbol("/research/news/ticker/{symbol}", JSONArray.class),
             ResearchFundamentalTypes("/research/fundamentals/types", JSONArray.class),
             ResearchFundamentals("/research/fundamentals/{type}/{symbol}", JSONObject.class),
             ResearchScreener("/research/screener", JSONObject.class),
@@ -170,6 +171,11 @@ public class OrbisAPI
                 params.put("start", start);
 
                 return get(Endpoint.ResearchNews, params);
+            }
+
+        public JSONArray news(String symbol) throws IOException
+            {
+                return get(Endpoint.ResearchNewsBySymbol, "{symbol}", symbol);
             }
 
         private <T> T get(Endpoint endpoint, String name, Object value) throws IOException
