@@ -1,1 +1,1 @@
-include ':api', ':examples'
+include ':api', ':examples', ':advisory'

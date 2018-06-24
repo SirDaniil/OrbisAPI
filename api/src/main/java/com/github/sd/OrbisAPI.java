@@ -17,27 +17,6 @@ import org.json.*;
  */
 public class OrbisAPI
     {
-        enum Endpoint {
-            QuotesEquity("/quotes/equity", JSONArray.class),
-            QuotesSearch("/quotes/search", JSONArray.class),
-            ResearchAdrs("/research/adrs", JSONArray.class),
-            ResearchAdrsTop10("/research/adrs/top10", JSONObject.class),
-            ResearchAdrsTop10Defaults("/research/adrs/top10/defaults", JSONArray.class),
-            ResearchNews("/research/news", JSONArray.class),
-            ResearchNewsBySymbol("/research/news/ticker/{symbol}", JSONArray.class),
-            ResearchFundamentalTypes("/research/fundamentals/types", JSONArray.class),
-            ResearchFundamentals("/research/fundamentals/{type}/{symbol}", JSONObject.class),
-            ResearchScreener("/research/screener", JSONObject.class),
-            ;
-            private String path;
-            private Class clazz;
-
-            Endpoint(String path, Class clazz)
-                {
-                    this.path = path;
-                    this.clazz = clazz;
-                }
-        }
         private static final Set<Integer> oks = new HashSet<Integer>() {{
             add(200);
             add(201);
@@ -186,7 +165,7 @@ public class OrbisAPI
                 return get(endpoint, params);
             }
 
-        private <T> T get(Endpoint endpoint) throws IOException
+        public  <T> T get(Endpoint endpoint) throws IOException
             {
                 return get(endpoint, new HashMap<>());
             }
@@ -194,7 +173,7 @@ public class OrbisAPI
         private <T> T get(Endpoint endpoint, Map<String, Object> params) throws IOException
             {
                 StringBuilder args = new StringBuilder();
-                String path = endpoint.path;
+                String path = endpoint.getPath();
 
                 for (Map.Entry<String, Object> entry : params.entrySet())
                     {
@@ -243,7 +222,7 @@ public class OrbisAPI
         private <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
             {
                 String data = obj.toJSON();
-                URL url = new URL(scheme + "://" + hostname + api + endpoint.path);
+                URL url = new URL(scheme + "://" + hostname + api + endpoint.getPath());
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setRequestProperty("Content-Length", String.valueOf(data.length()));
@@ -292,7 +271,7 @@ public class OrbisAPI
                         JSONTokener tokener = new JSONTokener(in);
                         try
                             {
-                                response = (T)(oks.contains(code) ? endpoint.clazz.getConstructor(JSONTokener.class).newInstance(tokener) : new JSONObject(tokener));
+                                response = (T)(oks.contains(code) ? endpoint.getClazz().getConstructor(JSONTokener.class).newInstance(tokener) : new JSONObject(tokener));
                             }
                         catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
                             {
