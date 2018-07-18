@@ -2,6 +2,9 @@ apply plugin: 'java'
 apply plugin: 'application'
 mainClassName = 'WebSocketTest'
 
+sourceCompatibility = 1.10
+targetCompatibility = 1.10
+
 dependencies {
     compile project(':api')
 }

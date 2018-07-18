@@ -20,6 +20,8 @@ public class OrbisAPI
         enum Endpoint {
             QuotesEquity("/quotes/equity", JSONArray.class),
             QuotesSearch("/quotes/search", JSONArray.class),
+            ChartsIntraday("/quotes/equity/intraday", JSONArray.class),
+            ChartsHistorical("/quotes/equity/historical", JSONArray.class),
             ResearchAdrs("/research/adrs", JSONArray.class),
             ResearchAdrsTop10("/research/adrs/top10", JSONObject.class),
             ResearchAdrsTop10Defaults("/research/adrs/top10/defaults", JSONArray.class),
@@ -113,6 +115,20 @@ public class OrbisAPI
                 ws.connect();
 
                 return ws;
+            }
+
+        public JSONArray getChartIntraday(String symbol) throws IOException
+            {
+                return get(Endpoint.ChartsIntraday, "symbol", symbol);
+            }
+
+        public JSONArray getChartHistorical(String symbol, String range) throws IOException
+            {
+                Map<String, Object> params = new HashMap<>();
+                params.put("symbol", symbol);
+                params.put("range", range);
+
+                return get(Endpoint.ChartsHistorical, params);
             }
 
         public JSONObject screener(Screener screener) throws IOException
