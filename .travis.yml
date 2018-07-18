@@ -8,5 +8,6 @@ before_install:
 matrix:
   include:
     - env: JDK='OpenJDK 10'
-
-install: . ./install-jdk.sh -F 10 -L GPL
+      jdk: oraclejdk10
+    - env: JDK='OpenJDK 10'
+      install: . ./install-jdk.sh -F 10 -L GPL
