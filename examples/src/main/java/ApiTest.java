@@ -23,7 +23,9 @@ public class ApiTest
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
-                System.out.println(api.getChartHistorical("AAPL", "1y").toString(2));
+                System.out.println(api.getCorporateActionTypes());
+                System.out.println(api.corporateActionSearch(CorporateActionSearch.Builder().type("Diividend")));
+                //System.out.println(api.getChartHistorical("AAPL", "1y").toString(2));
                 //System.out.println(api.news("AAPL"));
                 /*System.out.println(api.news(NewsFilter.Builder().filter(FilterKey.Provider.add(Providers.Sec).exclude())).toString(2));
                 System.out.println(api.getFundamentals("IncomeStatement", "MSFT").toString(2));

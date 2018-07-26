@@ -30,6 +30,8 @@ public class OrbisAPI
             ResearchFundamentalTypes("/research/fundamentals/types", JSONArray.class),
             ResearchFundamentals("/research/fundamentals/{type}/{symbol}", JSONObject.class),
             ResearchScreener("/research/screener", JSONObject.class),
+            CorporateActionTypes("/research/actions/types", JSONArray.class),
+            CorporateActionSearch("/research/actions/search", JSONArray.class),
             ;
             private String path;
             private Class clazz;
@@ -120,6 +122,16 @@ public class OrbisAPI
         public JSONArray getChartIntraday(String symbol) throws IOException
             {
                 return get(Endpoint.ChartsIntraday, "symbol", symbol);
+            }
+
+        public JSONArray getCorporateActionTypes() throws IOException
+            {
+                return get(Endpoint.CorporateActionTypes);
+            }
+
+        public JSONArray corporateActionSearch(CorporateActionSearch criteria) throws IOException
+            {
+                return get(Endpoint.CorporateActionSearch, criteria);
             }
 
         public JSONArray getChartHistorical(String symbol, String range) throws IOException
