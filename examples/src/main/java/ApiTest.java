@@ -24,12 +24,12 @@ public class ApiTest
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
                 System.out.println(api.getCorporateActionTypes());
-                System.out.println(api.corporateActionSearch(CorporateActionSearch.Builder().type("Diividend")));
+                System.out.println(api.corporateActionSearch(CorporateActionSearch.Builder().type("Dividend")).toString(2));
                 //System.out.println(api.getChartHistorical("AAPL", "1y").toString(2));
                 //System.out.println(api.news("AAPL"));
                 /*System.out.println(api.news(NewsFilter.Builder().filter(FilterKey.Provider.add(Providers.Sec).exclude())).toString(2));
                 System.out.println(api.getFundamentals("IncomeStatement", "MSFT").toString(2));
-                System.out.println(api.getQuotes("msft").toString(2));
+                System.out.println(api.getQuotes("amzn").toString(2));
                 System.out.println(api.getFundamentalTypes().toString(2));
                 System.out.println(api.getAdrsTop10Defaults().toString(2));
                 System.out.println(api.getAdrsTop10(AdrRequest.Builder().country("CAN")).toString(2));
