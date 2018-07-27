@@ -1,19 +1,5 @@
-# This is a Temporary solution until openJDK 10 will be added to travis configuration.
 # Specify language
 language: java
 
-# Disable other otherJDK (or unavailible)
-# jdk:
-#   - oraclejdk8
-
-# Download jdk installer
-before_install:
-- wget https://github.com/sormuras/bach/raw/master/install-jdk.sh
-
-# Temporary solutions to install openJDK 10
-matrix:
-  include:
-  - env: JDK='OpenJDK 10'
-    install: . ./install-jdk.sh -F 10 -L GPL
-
-# Now your builds will use OpenJDK 10
+jdk:
+  - openjdk10
