@@ -8,15 +8,16 @@ import java.util.*;
  */
 public class FilterKey
     {
-        public static final FilterKey Aggregator = new FilterKey("aggregator");
-        public static final FilterKey Provider = new FilterKey("provider");
+        public final static String Aggregator = "aggregator";
+        public final static String Provider = "provider";
         private Set<FilterValue> values = new HashSet<>();
         private boolean exclude;
         private String value;
 
-        private FilterKey(String value)
+        public FilterKey(String value)
             {
                 this.value = value;
+
             }
 
         public FilterKey add(String value)
@@ -73,4 +74,8 @@ public class FilterKey
             {
                 return Objects.hash(value);
             }
+
+        public void clear(){
+            values.clear();
+        }
     }

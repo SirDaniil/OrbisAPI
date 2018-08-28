@@ -34,6 +34,7 @@ public class FilterValue implements CharSequence
             FilterValue TenkWiz = new FilterValue("TENKWIZ_");
             FilterValue CnForex = new FilterValue("CNFOREX");
             FilterValue CnForexSms = new FilterValue("CNFOREX_SMS");
+            FilterValue TipRanks = new FilterValue("TIPRANKS");
         }
         private String value;
 
