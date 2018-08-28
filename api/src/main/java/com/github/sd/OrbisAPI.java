@@ -17,7 +17,7 @@ import org.json.*;
  */
 public class OrbisAPI
     {
-        enum Endpoint {
+        public enum Endpoint {
             QuotesEquity("/quotes/equity", JSONArray.class),
             QuotesSearch("/quotes/search", JSONArray.class),
             ChartsIntraday("/quotes/equity/intraday", JSONArray.class),
@@ -32,6 +32,7 @@ public class OrbisAPI
             ResearchScreener("/research/screener", JSONObject.class),
             CorporateActionTypes("/research/actions/types", JSONArray.class),
             CorporateActionSearch("/research/actions/search", JSONArray.class),
+            TipranksLivefeed("/research/tipranks/livefeed", JSONArray.class),
             ;
             private String path;
             private Class clazz;
@@ -214,12 +215,12 @@ public class OrbisAPI
                 return get(endpoint, params);
             }
 
-        private <T> T get(Endpoint endpoint) throws IOException
+        public <T> T get(Endpoint endpoint) throws IOException
             {
                 return get(endpoint, new HashMap<>());
             }
 
-        private <T> T get(Endpoint endpoint, Map<String, Object> params) throws IOException
+        public <T> T get(Endpoint endpoint, Map<String, Object> params) throws IOException
             {
                 StringBuilder args = new StringBuilder();
                 String path = endpoint.path;
