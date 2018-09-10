@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 import com.github.sd.*;
+import org.json.*;
 import static com.github.sd.Screener.Field.*;
 import static com.github.sd.FilterValue.*;
 
@@ -23,10 +24,15 @@ public class ApiTest
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
-                System.out.println(api.news("AAPL"));
+                System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.Research, "{symbol}", "baba")).toString(2));
+                /*System.out.println(api.getCorporateActionTypes());
+                System.out.println(api.corporateActionSearch(CorporateActionSearch.Builder().type("Dividend")).toString(2));*/
+                //System.out.println(api.news(NewsFilter.Builder().filter( new FilterKey(FilterKey.Provider).add(Providers.Sec).add(Providers.TenkWiz) )).toString(2));
+                //System.out.println(api.getChartHistorical("AAPL", "1y").toString(2));
+                //System.out.println(api.news("AAPL"));
                 /*System.out.println(api.news(NewsFilter.Builder().filter(FilterKey.Provider.add(Providers.Sec).exclude())).toString(2));
                 System.out.println(api.getFundamentals("IncomeStatement", "MSFT").toString(2));
-                System.out.println(api.getQuotes("msft").toString(2));
+                System.out.println(api.getQuotes("amzn").toString(2));
                 System.out.println(api.getFundamentalTypes().toString(2));
                 System.out.println(api.getAdrsTop10Defaults().toString(2));
                 System.out.println(api.getAdrsTop10(AdrRequest.Builder().country("CAN")).toString(2));

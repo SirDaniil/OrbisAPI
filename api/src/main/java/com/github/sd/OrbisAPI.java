@@ -4,6 +4,7 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.net.*;
 import java.nio.*;
+import java.nio.charset.*;
 import java.util.*;
 import java.util.zip.*;
 import net.iharder.Base64;
@@ -17,7 +18,34 @@ import org.json.*;
  */
 public class OrbisAPI
     {
-        private static final Set<Integer> oks = new HashSet<Integer>() {{
+        public enum Endpoint {
+            QuotesEquity("/quotes/equity", JSONArray.class),
+            QuotesSearch("/quotes/search", JSONArray.class),
+            ChartsIntraday("/quotes/equity/intraday", JSONArray.class),
+            ChartsHistorical("/quotes/equity/historical", JSONArray.class),
+            Research("/research/{symbol}", JSONObject.class),
+            ResearchAdrs("/research/adrs", JSONArray.class),
+            ResearchAdrsTop10("/research/adrs/top10", JSONObject.class),
+            ResearchAdrsTop10Defaults("/research/adrs/top10/defaults", JSONArray.class),
+            ResearchNews("/research/news", JSONArray.class),
+            ResearchNewsBySymbol("/research/news/ticker/{symbol}", JSONArray.class),
+            ResearchFundamentalTypes("/research/fundamentals/types", JSONArray.class),
+            ResearchFundamentals("/research/fundamentals/{type}/{symbol}", JSONObject.class),
+            ResearchScreener("/research/screener", JSONObject.class),
+            CorporateActionTypes("/research/actions/types", JSONArray.class),
+            CorporateActionSearch("/research/actions/search", JSONArray.class),
+            TipranksLivefeed("/research/tipranks/livefeed", JSONArray.class),
+            ;
+            private String path;
+            private Class clazz;
+
+            Endpoint(String path, Class clazz)
+                {
+                    this.path = path;
+                    this.clazz = clazz;
+                }
+        }
+        private static final Set<Integer> oks = new HashSet<>() {{
             add(200);
             add(201);
         }};
@@ -56,7 +84,7 @@ public class OrbisAPI
 
         public WebSocketClient openWebSocket(OrbisApiClient client) throws Exception
             {
-                WebSocketClient ws = new WebSocketClient(new URI((scheme.equals("http") ? "ws" : "wss") + "://" + hostname + "/stream?auth=" + URLEncoder.encode(credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()), "ISO-8859-1")))
+                WebSocketClient ws = new WebSocketClient(new URI((scheme.equals("http") ? "ws" : "wss") + "://" + hostname + "/stream?auth=" + URLEncoder.encode(credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()), StandardCharsets.ISO_8859_1)))
                     {
                         @Override
                         public void onOpen(ServerHandshake handshakedata)
@@ -92,6 +120,30 @@ public class OrbisAPI
                 ws.connect();
 
                 return ws;
+            }
+
+        public JSONArray getChartIntraday(String symbol) throws IOException
+            {
+                return get(Endpoint.ChartsIntraday, "symbol", symbol);
+            }
+
+        public JSONArray getCorporateActionTypes() throws IOException
+            {
+                return get(Endpoint.CorporateActionTypes);
+            }
+
+        public JSONArray corporateActionSearch(CorporateActionSearch criteria) throws IOException
+            {
+                return get(Endpoint.CorporateActionSearch, criteria);
+            }
+
+        public JSONArray getChartHistorical(String symbol, String range) throws IOException
+            {
+                Map<String, Object> params = new HashMap<>();
+                params.put("symbol", symbol);
+                params.put("range", range);
+
+                return get(Endpoint.ChartsHistorical, params);
             }
 
         public JSONObject screener(Screener screener) throws IOException
@@ -157,7 +209,7 @@ public class OrbisAPI
                 return get(Endpoint.ResearchNewsBySymbol, "{symbol}", symbol);
             }
 
-        private <T> T get(Endpoint endpoint, String name, Object value) throws IOException
+        public <T> T get(Endpoint endpoint, String name, Object value) throws IOException
             {
                 Map<String, Object> params = new HashMap<>();
                 params.put(name, value);
@@ -165,15 +217,15 @@ public class OrbisAPI
                 return get(endpoint, params);
             }
 
-        public  <T> T get(Endpoint endpoint) throws IOException
+        public <T> T get(Endpoint endpoint) throws IOException
             {
                 return get(endpoint, new HashMap<>());
             }
 
-        private <T> T get(Endpoint endpoint, Map<String, Object> params) throws IOException
+        public <T> T get(Endpoint endpoint, Map<String, Object> params) throws IOException
             {
                 StringBuilder args = new StringBuilder();
-                String path = endpoint.getPath();
+                String path = endpoint.path;
 
                 for (Map.Entry<String, Object> entry : params.entrySet())
                     {
@@ -222,7 +274,7 @@ public class OrbisAPI
         private <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
             {
                 String data = obj.toJSON();
-                URL url = new URL(scheme + "://" + hostname + api + endpoint.getPath());
+                URL url = new URL(scheme + "://" + hostname + api + endpoint.path);
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setRequestProperty("Content-Length", String.valueOf(data.length()));
@@ -235,7 +287,7 @@ public class OrbisAPI
                 con.setDoOutput(true);
                 con.setDoInput(true);
 
-                try (Writer out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), "UTF-8")))
+                try (Writer out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), StandardCharsets.UTF_8)))
                     {
                         out.write(data);
                         out.flush();
@@ -246,14 +298,7 @@ public class OrbisAPI
 
         private String encode(Object o)
             {
-                try
-                    {
-                        return URLEncoder.encode(o.toString(), "ISO-8859-1");
-                    }
-                catch (UnsupportedEncodingException e)
-                    {
-                        return o.toString();
-                    }
+                return URLEncoder.encode(o.toString(), StandardCharsets.ISO_8859_1);
             }
 
         private <T> T read(Endpoint endpoint, HttpURLConnection con) throws IOException
@@ -271,7 +316,7 @@ public class OrbisAPI
                         JSONTokener tokener = new JSONTokener(in);
                         try
                             {
-                                response = (T)(oks.contains(code) ? endpoint.getClazz().getConstructor(JSONTokener.class).newInstance(tokener) : new JSONObject(tokener));
+                                response = (T)(oks.contains(code) ? endpoint.clazz.getConstructor(JSONTokener.class).newInstance(tokener) : new JSONObject(tokener));
                             }
                         catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
                             {
