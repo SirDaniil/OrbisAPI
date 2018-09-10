@@ -3,5 +3,6 @@ apply plugin: 'application'
 mainClassName = 'WebSocketTest'
 
 dependencies {
+    compile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '4.36'
     compile project(':api')
 }

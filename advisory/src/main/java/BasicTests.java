@@ -10,10 +10,11 @@ public class BasicTests implements Credentials
     {
         public static void main(String[] args) throws IOException
             {
+
+
                 OrbisAPI api = new OrbisAPI();
                 api.setHostname("https://wrh.orbisfn.net");
                 api.setCredentials(new BasicTests());
-                System.out.println(((JSONObject)api.get(Endpoint.UserInfo)).toString());
             }
 
         @Override
