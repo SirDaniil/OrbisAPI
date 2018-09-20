@@ -21,10 +21,11 @@ public class ApiTest
                     }
 
                 OrbisAPI api = new OrbisAPI();
+                api.setApi("/rest");
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
-                System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.Research, "{symbol}", "baba")).toString(2));
+                System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.OmsQuotes, "symbol", "baba")).toString(2));
                 /*System.out.println(api.getCorporateActionTypes());
                 System.out.println(api.corporateActionSearch(CorporateActionSearch.Builder().type("Dividend")).toString(2));*/
                 //System.out.println(api.news(NewsFilter.Builder().filter( new FilterKey(FilterKey.Provider).add(Providers.Sec).add(Providers.TenkWiz) )).toString(2));

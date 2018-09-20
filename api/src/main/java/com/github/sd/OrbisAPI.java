@@ -35,6 +35,8 @@ public class OrbisAPI
             CorporateActionTypes("/research/actions/types", JSONArray.class),
             CorporateActionSearch("/research/actions/search", JSONArray.class),
             TipranksLivefeed("/research/tipranks/livefeed", JSONArray.class),
+
+            OmsQuotes("/quotes/equity", JSONObject.class)
             ;
             private String path;
             private Class clazz;
@@ -310,8 +312,14 @@ public class OrbisAPI
                 if (code == 204)
                     return null;
 
+                if (code == 401)
+                    throw new IOException("Access denied");
+
                 try (InputStream stream = (oks.contains(code) ? con.getInputStream() : con.getErrorStream()))
                     {
+                        if (stream == null)
+                            throw new IOException("Return code: " + code);
+
                         BufferedReader in = new BufferedReader(new InputStreamReader("gzip".equals(content) ? new GZIPInputStream(stream) : stream));
                         JSONTokener tokener = new JSONTokener(in);
                         try
