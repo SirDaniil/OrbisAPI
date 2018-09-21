@@ -25,7 +25,9 @@ public class ApiTest
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
-                System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.OmsQuotes, "symbol", "baba")).toString(2));
+                /*System.out.println(((JSONArray)api.get(OrbisAPI.Endpoint.OmsCorporateActions, "{range}", "WEEK")).toString(2));
+                System.out.println(((JSONArray)api.get(OrbisAPI.Endpoint.OmsCorporateActionTypes)).toString(2));*/
+                System.out.println(((JSONArray)api.get(OrbisAPI.Endpoint.OmsCorporateActionSearch, new CorporateActionsSearch().symbol("MSFT").type("Dividend"))).toString(2));
                 /*System.out.println(api.getCorporateActionTypes());
                 System.out.println(api.corporateActionSearch(CorporateActionSearch.Builder().type("Dividend")).toString(2));*/
                 //System.out.println(api.news(NewsFilter.Builder().filter( new FilterKey(FilterKey.Provider).add(Providers.Sec).add(Providers.TenkWiz) )).toString(2));

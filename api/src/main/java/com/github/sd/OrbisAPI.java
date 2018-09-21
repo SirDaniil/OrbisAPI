@@ -36,7 +36,10 @@ public class OrbisAPI
             CorporateActionSearch("/research/actions/search", JSONArray.class),
             TipranksLivefeed("/research/tipranks/livefeed", JSONArray.class),
 
-            OmsQuotes("/quotes/equity", JSONObject.class)
+            OmsQuotes("/quotes/equity", JSONObject.class),
+            OmsCorporateActions("/v1/actions/get/{range}", JSONArray.class),
+            OmsCorporateActionTypes("/v1/actions/types", JSONArray.class),
+            OmsCorporateActionSearch("/v1/actions/search", JSONArray.class),
             ;
             private String path;
             private Class clazz;
