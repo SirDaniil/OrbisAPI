@@ -3,6 +3,7 @@ apply plugin: 'application'
 mainClassName = 'WebSocketTest'
 
 dependencies {
+    compile group: 'net.iharder', name: 'base64', version: '2.3.9'
     compile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '4.36'
     compile project(':api')
 }
