@@ -84,6 +84,12 @@ public class AvisoryCredentials implements Credentials
                 return "Session";
             }
 
+        @Override
+        public String getReferer()
+            {
+                return domain;
+            }
+
         private String jwt(String sessionId)
             {
                 JWTClaimsSet claimSet = new JWTClaimsSet.Builder()

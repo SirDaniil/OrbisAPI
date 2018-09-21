@@ -268,6 +268,9 @@ public class OrbisAPI
                 con.setConnectTimeout(1000 * 30);
                 con.setReadTimeout(1000 * 30);
 
+                if (credentials.getReferer() != null)
+                    con.setRequestProperty("Referer", credentials.getReferer());
+
                 return read(endpoint, con);
             }
 
@@ -286,6 +289,9 @@ public class OrbisAPI
                 con.setUseCaches(false);
                 con.setDoOutput(true);
                 con.setDoInput(true);
+
+                if (credentials.getReferer() != null)
+                    con.setRequestProperty("Referer", credentials.getReferer());
 
                 try (Writer out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), StandardCharsets.UTF_8)))
                     {

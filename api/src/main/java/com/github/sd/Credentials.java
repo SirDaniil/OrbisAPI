@@ -8,4 +8,8 @@ public interface Credentials
     {
         String getToken();
         String getScheme();
+
+        default String getReferer() {
+            return null;
+        }
     }
