@@ -127,6 +127,7 @@ public class AvisoryCredentials implements Credentials
 
         private JSONObject post(JSONObject obj) throws IOException
             {
+                long start = System.currentTimeMillis();
                 String data = obj.toString();
                 URL url = new URL("http://" + domain + "/api/auth/v1/login");
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
@@ -154,6 +155,10 @@ public class AvisoryCredentials implements Credentials
                         JSONTokener tokener = new JSONTokener(in);
 
                         return new JSONObject(tokener);
+                    }
+                finally
+                    {
+                        System.out.println("Got session in " + (System.currentTimeMillis() - start) / 1000.0 + "s.");
                     }
             }
     }
