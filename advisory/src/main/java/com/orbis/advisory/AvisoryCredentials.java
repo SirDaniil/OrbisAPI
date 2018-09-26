@@ -24,11 +24,13 @@ public class AvisoryCredentials implements Credentials
         private String domain;
         private String token;
         private String username;
+        private String password;
         private String sessionId;
 
-        AvisoryCredentials(String domain, String token, String username)
+        AvisoryCredentials(String domain, String token, String username, String password)
             {
                 this.username = username;
+                this.password = password;
                 this.domain = domain;
                 this.token = token;
             }
@@ -38,9 +40,12 @@ public class AvisoryCredentials implements Credentials
             {
                 if (sessionId == null)
                     {
-                        Scanner in = new Scanner(System.in);
-                        System.out.print("Password: ");
-                        String password = in.nextLine();
+                        if (password == null || password.length() == 0)
+                            {
+                                Scanner in = new Scanner(System.in);
+                                System.out.print("Password: ");
+                                password = in.nextLine();
+                            }
 
                         try
                             {
@@ -62,6 +67,9 @@ public class AvisoryCredentials implements Credentials
                                 login.put("signature", signature);
 
                                 JSONObject resp = post(login);
+                                if (resp == null)
+                                    throw new IllegalArgumentException("No content");
+
                                 String stage = resp.optString("stage");
 
                                 if (!"ESTABLISHED".equals(stage))
@@ -125,10 +133,9 @@ public class AvisoryCredentials implements Credentials
                     }
             }
 
-        private JSONObject post(JSONObject obj) throws IOException
+        private JSONObject post(JSONObject request) throws IOException
             {
-                long start = System.currentTimeMillis();
-                String data = obj.toString();
+                String data = request.toString();
                 URL url = new URL("http://" + domain + "/api/auth/v1/login");
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Content-Length", String.valueOf(data.length()));
@@ -148,17 +155,39 @@ public class AvisoryCredentials implements Credentials
                         out.flush();
                     }
 
+                int code = con.getResponseCode();
                 String content = con.getContentEncoding();
-                try (InputStream stream = con.getInputStream())
-                    {
-                        BufferedReader in = new BufferedReader(new InputStreamReader("gzip".equals(content) ? new GZIPInputStream(stream) : stream));
-                        JSONTokener tokener = new JSONTokener(in);
 
-                        return new JSONObject(tokener);
-                    }
-                finally
+                try (InputStream stream = OrbisAPI.oks.contains(code) ? con.getInputStream() : con.getErrorStream())
                     {
-                        System.out.println("Got session in " + (System.currentTimeMillis() - start) / 1000.0 + "s.");
+                        if (stream == null)
+                            {
+                                if (code == 201)
+                                    return null;
+
+                                if (code == 401)
+                                    throw new IOException("Not authorized");
+
+                                throw new IOException("No content available");
+                            }
+
+                        BufferedReader in = new BufferedReader(new InputStreamReader("gzip".equals(content) ? new GZIPInputStream(stream) : stream));
+                        StringBuilder buf = new StringBuilder();
+                        String line;
+
+                        while ((line = in.readLine()) != null)
+                            buf.append(line);
+
+                        if (code == 401)
+                            {
+                                JSONObject obj = new JSONObject(buf.toString());
+                                String error = obj.getString("error");
+                                String id = obj.optString("id");
+
+                                throw new IOException(error + " (ErrorID: " + id + ")");
+                            }
+
+                        return new JSONObject(buf.toString());
                     }
             }
     }

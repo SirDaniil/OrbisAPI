@@ -45,7 +45,7 @@ public class OrbisAPI
                     this.clazz = clazz;
                 }
         }
-        private static final Set<Integer> oks = new HashSet<>() {{
+        public static final Set<Integer> oks = new HashSet<>() {{
             add(200);
             add(201);
         }};
