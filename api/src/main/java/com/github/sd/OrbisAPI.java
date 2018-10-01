@@ -35,6 +35,11 @@ public class OrbisAPI
             CorporateActionTypes("/research/actions/types", JSONArray.class),
             CorporateActionSearch("/research/actions/search", JSONArray.class),
             TipranksLivefeed("/research/tipranks/livefeed", JSONArray.class),
+            PasswordChange("/auth/v1/password/change", JSONObject.class),
+            DeviceRegistration("/user/device/register", JSONObject.class),
+            UserInfo("/user/info", JSONObject.class),
+            AdvisoryUsers("/v2/advisory/clients/list", JSONArray.class),
+            AdvisoryUserAccounts("/v2/advisory/clients/accounts", JSONArray.class),
             ;
             private String path;
             private Class clazz;
@@ -274,7 +279,7 @@ public class OrbisAPI
                 return read(endpoint, con);
             }
 
-        private <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
+        public <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
             {
                 String data = obj.toJSON();
                 URL url = new URL(scheme + "://" + hostname + api + endpoint.path);
