@@ -29,6 +29,10 @@ public class AvisoryCredentials implements Credentials
 
         AvisoryCredentials(String domain, String token, String username, String password)
             {
+                int pos = domain.indexOf("//");
+                if (pos != -1)
+                    domain = domain.substring(pos + 2);
+
                 this.username = username;
                 this.password = password;
                 this.domain = domain;
@@ -49,6 +53,7 @@ public class AvisoryCredentials implements Credentials
 
                         try
                             {
+                                System.out.println("Logging in...");
                                 JWTClaimsSet claimSet = new JWTClaimsSet.Builder()
                                         .issuer(token)
                                         .expirationTime(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
@@ -76,6 +81,7 @@ public class AvisoryCredentials implements Credentials
                                     throw new IllegalArgumentException("Session couldn't be established: " + stage);
 
                                 sessionId = resp.optString("sessionId");
+                                System.out.println("Logged in as " + username);
                             }
                         catch (Exception e)
                             {

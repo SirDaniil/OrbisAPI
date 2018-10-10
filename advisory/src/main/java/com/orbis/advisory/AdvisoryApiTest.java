@@ -26,10 +26,15 @@ public class AdvisoryApiTest
 
                 OrbisAPI api = new OrbisAPI();
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
-                api.setHostname("http://" + domain);
+                api.setHostname(domain);
 
+                //print(api.get(OrbisAPI.Endpoint.AdvisoryModelAdjustments, "{modelId}", 1));
+                print(api.get(OrbisAPI.Endpoint.AdvisoryModels));
+                //componentUpdate(api);
+                //accountNotes(api);
+                //rtbHistory(api);
+                //print(api.post(OrbisAPI.Endpoint.AdvisoryUserNotesAdd, new JSONObject().put("content", "Important notes aren't !important").put("userId", 59329)));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryUsers));
-                print(api.get(OrbisAPI.Endpoint.AdvisoryUserAccounts, "uid", 59329));
                 //System.out.println(api.getQuotes("goog,googl").toString(2));
                 /*System.out.println(api.post(OrbisAPI.Endpoint.PasswordChange, () -> {
 
@@ -42,6 +47,33 @@ public class AdvisoryApiTest
 
                     return object.toString();
                 }).toString());*/
+            }
+
+        private static void componentUpdate(OrbisAPI api) throws IOException
+            {
+                JSONObject obj = new JSONObject();
+                obj.put("model", new JSONObject().put("id", 1));
+                obj.put("symbol", "MSFT");
+                obj.put("percentage", .2);
+
+                print(api.post(OrbisAPI.Endpoint.AdvisoryModelUpdateComponent, obj));
+            }
+
+        static void rtbHistory(OrbisAPI api) throws IOException
+            {
+                Map<String, Object> args = new HashMap<>();
+                args.put("account", "TRCLIENT3");
+                args.put("page", 0);
+                args.put("count", 500);
+                args.put("dateTo", "10/01/2018");
+                print(api.get(OrbisAPI.Endpoint.UserBalancesHistory, args));
+            }
+
+        static void accountNotes(OrbisAPI api) throws IOException
+            {
+                //print(api.get(OrbisAPI.Endpoint.AdvisoryAccountNotes, "aid", 92644));
+
+                print(api.post(OrbisAPI.Endpoint.AdvisoryAccountNotesAdd, new JSONObject().put("content", "Another note: " + new Date()).put("accountId", 92644) ));
             }
 
         static void print(Object o)

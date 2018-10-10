@@ -40,6 +40,14 @@ public class OrbisAPI
             UserInfo("/user/info", JSONObject.class),
             AdvisoryUsers("/v2/advisory/clients/list", JSONArray.class),
             AdvisoryUserAccounts("/v2/advisory/clients/accounts", JSONArray.class),
+            AdvisoryUserNotes("/v2/advisory/clients/user/notes", JSONArray.class),
+            AdvisoryUserNotesAdd("/v2/advisory/clients/user/notes/add", JSONObject.class),
+            AdvisoryAccountNotes("/v2/advisory/clients/account/notes", JSONArray.class),
+            AdvisoryAccountNotesAdd("/v2/advisory/clients/account/notes/add", JSONObject.class),
+            AdvisoryModelUpdateComponent("/v2/advisory/model/component/update", JSONObject.class),
+            AdvisoryModelAdjustments("/v2/advisory/model/adjustments/{modelId}", JSONArray.class),
+            AdvisoryModels("/v2/advisory/models", JSONArray.class),
+            UserBalancesHistory("/user/rtb/history", JSONArray.class),
             ;
             private String path;
             private Class clazz;
@@ -277,6 +285,11 @@ public class OrbisAPI
                     con.setRequestProperty("Referer", credentials.getReferer());
 
                 return read(endpoint, con);
+            }
+
+        public <T> T post(Endpoint endpoint, JSONObject obj) throws IOException
+            {
+                return post(endpoint, obj::toString);
             }
 
         public <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
