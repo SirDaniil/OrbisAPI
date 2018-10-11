@@ -42,11 +42,15 @@ public class OrbisAPI
             AdvisoryUserAccounts("/v2/advisory/clients/accounts", JSONArray.class),
             AdvisoryUserNotes("/v2/advisory/clients/user/notes", JSONArray.class),
             AdvisoryUserNotesAdd("/v2/advisory/clients/user/notes/add", JSONObject.class),
+            AdvisoryAccountStats("/v2/advisory/clients/accounts/stats", JSONObject.class),
             AdvisoryAccountNotes("/v2/advisory/clients/account/notes", JSONArray.class),
             AdvisoryAccountNotesAdd("/v2/advisory/clients/account/notes/add", JSONObject.class),
             AdvisoryModelUpdateComponent("/v2/advisory/model/component/update", JSONObject.class),
             AdvisoryModelAdjustments("/v2/advisory/model/adjustments/{modelId}", JSONArray.class),
+            AdvisoryModelPerformance("/v2/advisory/analytics/model/performance/{modelId}/{range}", JSONArray.class),
+            AdvisoryModelBalance("/v2/advisory/model/rtb/{modelId}", JSONObject.class),
             AdvisoryModels("/v2/advisory/models", JSONArray.class),
+            AdvisoryModelAccountStats("/v2/advisory/model/accounts/stats/{modelId}", JSONObject.class),
             UserBalancesHistory("/user/rtb/history", JSONArray.class),
             ;
             private String path;
@@ -222,10 +226,19 @@ public class OrbisAPI
                 return get(Endpoint.ResearchNewsBySymbol, "{symbol}", symbol);
             }
 
-        public <T> T get(Endpoint endpoint, String name, Object value) throws IOException
+        public <T> T get(Endpoint endpoint, String name, Object value, Object... others) throws IOException
             {
                 Map<String, Object> params = new HashMap<>();
                 params.put(name, value);
+
+                if (others != null)
+                    {
+                        if (others.length % 2 != 0)
+                            throw new IllegalArgumentException("nnnnnope!");
+
+                        for (int i = 0; i < others.length; i += 2)
+                            params.put(others[i].toString(), others[i + 1]);
+                    }
 
                 return get(endpoint, params);
             }
