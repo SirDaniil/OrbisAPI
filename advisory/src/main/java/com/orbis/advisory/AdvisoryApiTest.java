@@ -28,7 +28,7 @@ public class AdvisoryApiTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
-                print(api.get(OrbisAPI.Endpoint.AdvisoryAccountStats));
+                //print(api.get(OrbisAPI.Endpoint.AdvisoryAccountStats));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModelAdjustments, "{modelId}", 1));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModels));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModelPerformance, "{modelId}", 1, "{range}", "1y"));
@@ -36,6 +36,7 @@ public class AdvisoryApiTest
                 //componentUpdate(api);
                 //accountNotes(api);
                 //rtbHistory(api);
+                rtbModelHistory(api);
                 //print(api.post(OrbisAPI.Endpoint.AdvisoryUserNotesAdd, new JSONObject().put("content", "Important notes aren't !important").put("userId", 59329)));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryUsers));
                 //System.out.println(api.getQuotes("goog,googl").toString(2));
@@ -60,6 +61,15 @@ public class AdvisoryApiTest
                 obj.put("percentage", .2);
 
                 print(api.post(OrbisAPI.Endpoint.AdvisoryModelUpdateComponent, obj));
+            }
+
+        static void rtbModelHistory(OrbisAPI api) throws IOException
+            {
+                Map<String, Object> args = new HashMap<>();
+                args.put("{modelId}", "all");
+                args.put("page", 0);
+                args.put("count", 500);
+                print(api.get(OrbisAPI.Endpoint.AdvisoryModelBalanceHistory, args));
             }
 
         static void rtbHistory(OrbisAPI api) throws IOException

@@ -18,6 +18,7 @@ import org.json.*;
  */
 public class OrbisAPI
     {
+        @SuppressWarnings("unused")
         public enum Endpoint {
             QuotesEquity("/quotes/equity", JSONArray.class),
             QuotesSearch("/quotes/search", JSONArray.class),
@@ -49,6 +50,7 @@ public class OrbisAPI
             AdvisoryModelAdjustments("/v2/advisory/model/adjustments/{modelId}", JSONArray.class),
             AdvisoryModelPerformance("/v2/advisory/analytics/model/performance/{modelId}/{range}", JSONArray.class),
             AdvisoryModelBalance("/v2/advisory/model/rtb/{modelId}", JSONObject.class),
+            AdvisoryModelBalanceHistory("/v2/advisory/model/rtb/history/{modelId}", JSONArray.class),
             AdvisoryModels("/v2/advisory/models", JSONArray.class),
             AdvisoryModelAccountStats("/v2/advisory/model/accounts/stats/{modelId}", JSONObject.class),
             UserBalancesHistory("/user/rtb/history", JSONArray.class),
