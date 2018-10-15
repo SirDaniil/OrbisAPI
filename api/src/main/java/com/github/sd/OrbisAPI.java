@@ -48,6 +48,7 @@ public class OrbisAPI
             AdvisoryAccountNotesAdd("/v2/advisory/clients/account/notes/add", JSONObject.class),
             AdvisoryModelUpdateComponent("/v2/advisory/model/component/update", JSONObject.class),
             AdvisoryModelAdjustments("/v2/advisory/model/adjustments/{modelId}", JSONArray.class),
+            AdvisoryModelAdjustmentPreview("/v2/advisory/model/adjustment/preview/{adjustmentId}", JSONArray.class),
             AdvisoryModelPerformance("/v2/advisory/analytics/model/performance/{modelId}/{range}", JSONArray.class),
             AdvisoryModelBalance("/v2/advisory/model/rtb/{modelId}", JSONObject.class),
             AdvisoryModelBalanceHistory("/v2/advisory/model/rtb/history/{modelId}", JSONArray.class),

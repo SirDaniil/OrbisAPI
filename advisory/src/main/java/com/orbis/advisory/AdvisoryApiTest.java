@@ -28,6 +28,7 @@ public class AdvisoryApiTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
+                previewAdjustments(api);
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryAccountStats));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModelAdjustments, "{modelId}", 1));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModels));
@@ -36,7 +37,7 @@ public class AdvisoryApiTest
                 //componentUpdate(api);
                 //accountNotes(api);
                 //rtbHistory(api);
-                rtbModelHistory(api);
+                //rtbModelHistory(api);
                 //print(api.post(OrbisAPI.Endpoint.AdvisoryUserNotesAdd, new JSONObject().put("content", "Important notes aren't !important").put("userId", 59329)));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryUsers));
                 //System.out.println(api.getQuotes("goog,googl").toString(2));
@@ -51,6 +52,28 @@ public class AdvisoryApiTest
 
                     return object.toString();
                 }).toString());*/
+            }
+
+        private static void previewAdjustments(OrbisAPI api) throws IOException
+            {
+                JSONArray list = api.get(OrbisAPI.Endpoint.AdvisoryModelAdjustments, "{modelId}", 1);
+                for (int i = 0; i < list.length(); i++)
+                    {
+                        JSONObject adj = list.getJSONObject(i);
+                        print("-----------------------------");
+                        print(adj);
+
+                        long adjustmentId = adj.getLong("id");
+                        JSONArray orders = api.get(OrbisAPI.Endpoint.AdvisoryModelAdjustmentPreview, "{adjustmentId}", adjustmentId);
+                        for (int j = 0; j < orders.length(); j++)
+                            {
+                                JSONObject order = orders.getJSONObject(j);
+                                JSONObject acct = order.getJSONObject("account");
+                                JSONObject position = order.getJSONObject("position");
+                                System.out.print(acct.getString("accountNumber") + " >> " + order.optString("transType") + " " + order.optDouble("quantity") + " shares of " + order.optString("symbol") + " @ " + order.optDouble("expectedPx") + " (error: " + order.optString("error") + ")");
+                                System.out.println(" [" + position.optDouble("value") + " = " + position.optDouble("quantity") + " (" + order.optDouble("currentAllocationPct") + "%) ==> " + order.optDouble("targetAllocationValue") + "]");
+                            }
+                    }
             }
 
         private static void componentUpdate(OrbisAPI api) throws IOException
