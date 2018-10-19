@@ -28,11 +28,13 @@ public class AdvisoryApiTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
-                adjustmentsModify(api);
+                //adjustmentsModify(api);
                 //previewAdjustments(api);
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryAccountStats));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModelAdjustments, "{modelId}", 1));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModels));
+                //print(api.get(OrbisAPI.Endpoint.UserBalance, "account", "TR001001"));
+                print(api.get(OrbisAPI.Endpoint.UserBuyingPower, "account", "TR001001"));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModelPerformance, "{modelId}", 1, "{range}", "1y"));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModelBalance, "{modelId}", 1));
                 //componentUpdate(api);
