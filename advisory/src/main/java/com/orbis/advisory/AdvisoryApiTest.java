@@ -28,7 +28,8 @@ public class AdvisoryApiTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
-                previewAdjustments(api);
+                adjustmentsModify(api);
+                //previewAdjustments(api);
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryAccountStats));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModelAdjustments, "{modelId}", 1));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModels));
@@ -52,6 +53,15 @@ public class AdvisoryApiTest
 
                     return object.toString();
                 }).toString());*/
+            }
+
+        private static void adjustmentsModify(OrbisAPI api) throws IOException
+            {
+                JSONObject adj = api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, new JSONObject().put("modelId", 1).put("targetPct", .1).put("symbol", "adbe"), "{action}", "Create");
+                System.out.println("AdjustmentID: " + adj.getLong("id") + " (" + adj + ")");
+                api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, adj.put("targetPct", .9), "{action}", "Update");
+                print(api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, adj, "{action}", "Fetch"));
+                api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, adj, "{action}", "Cancel");
             }
 
         private static void previewAdjustments(OrbisAPI api) throws IOException

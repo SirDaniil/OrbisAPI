@@ -47,8 +47,11 @@ public class OrbisAPI
             AdvisoryAccountNotes("/v2/advisory/clients/account/notes", JSONArray.class),
             AdvisoryAccountNotesAdd("/v2/advisory/clients/account/notes/add", JSONObject.class),
             AdvisoryModelUpdateComponent("/v2/advisory/model/component/update", JSONObject.class),
+
             AdvisoryModelAdjustments("/v2/advisory/model/adjustments/{modelId}", JSONArray.class),
-            AdvisoryModelAdjustmentPreview("/v2/advisory/model/adjustment/preview/{adjustmentId}", JSONArray.class),
+            AdvisoryModelAdjustmentsModify("/v2/advisory/model/adjustments/modify/{action}", JSONObject.class),
+            AdvisoryModelAdjustmentPreview("/v2/advisory/model/adjustments/preview/{adjustmentId}", JSONArray.class),
+
             AdvisoryModelPerformance("/v2/advisory/analytics/model/performance/{modelId}/{range}", JSONArray.class),
             AdvisoryModelBalance("/v2/advisory/model/rtb/{modelId}", JSONObject.class),
             AdvisoryModelBalanceHistory("/v2/advisory/model/rtb/history/{modelId}", JSONArray.class),
@@ -310,8 +313,49 @@ public class OrbisAPI
 
         public <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
             {
+                return post(endpoint, null, obj);
+            }
+
+        public <T> T post(Endpoint endpoint, JSONObject obj, String name, Object value, Object... others) throws IOException
+            {
+                Map<String, Object> params = new HashMap<>();
+                params.put(name, value);
+
+                if (others != null)
+                    {
+                        if (others.length % 2 != 0)
+                            throw new IllegalArgumentException("?!");
+
+                        for (int i = 0; i < others.length; i += 2)
+                            params.put(others[i].toString(), others[i + 1]);
+                    }
+
+                return post(endpoint, params, obj::toString);
+            }
+
+        public <T> T post(Endpoint endpoint, Map<String, Object> pathParams, JsonConvertable obj) throws IOException
+            {
+                StringBuilder args = new StringBuilder();
+                String path = endpoint.path;
+
+                if (pathParams != null)
+                    for (Map.Entry<String, Object> entry : pathParams.entrySet())
+                        {
+                            String key = entry.getKey();
+                            Object value = entry.getValue();
+
+                            if (key == null)
+                                key = "";
+
+                            if (value == null)
+                                value = "";
+
+                            if (key.startsWith("{") && key.endsWith("}"))
+                                path = path.replace(key, value.toString());
+                        }
+
                 String data = obj.toJSON();
-                URL url = new URL(scheme + "://" + hostname + api + endpoint.path);
+                URL url = new URL(scheme + "://" + hostname + api + path);
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setRequestProperty("Content-Length", String.valueOf(data.length()));
