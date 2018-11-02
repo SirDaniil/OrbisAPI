@@ -33,8 +33,9 @@ public class AdvisoryApiTest
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryAccountStats));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModelAdjustments, "{modelId}", 1));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModels));
+                //print(api.get(OrbisAPI.Endpoint.AdvisoryModelAccounts, "{modelId}", 1, "loadRtb", true, "loadRtbHistory", true));
                 //print(api.get(OrbisAPI.Endpoint.UserBalance, "account", "TR001001"));
-                print(api.get(OrbisAPI.Endpoint.UserBuyingPower, "account", "TR001001"));
+                //print(api.get(OrbisAPI.Endpoint.UserBuyingPower, "account", "TR001001"));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModelPerformance, "{modelId}", 1, "{range}", "1y"));
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryModelBalance, "{modelId}", 1));
                 //componentUpdate(api);
@@ -42,7 +43,7 @@ public class AdvisoryApiTest
                 //rtbHistory(api);
                 //rtbModelHistory(api);
                 //print(api.post(OrbisAPI.Endpoint.AdvisoryUserNotesAdd, new JSONObject().put("content", "Important notes aren't !important").put("userId", 59329)));
-                //print(api.get(OrbisAPI.Endpoint.AdvisoryUsers));
+                checkAllBalances(api);
                 //System.out.println(api.getQuotes("goog,googl").toString(2));
                 /*System.out.println(api.post(OrbisAPI.Endpoint.PasswordChange, () -> {
 
@@ -55,6 +56,16 @@ public class AdvisoryApiTest
 
                     return object.toString();
                 }).toString());*/
+            }
+
+        private static void checkAllBalances(OrbisAPI api) throws IOException
+            {
+                JSONArray users = api.get(OrbisAPI.Endpoint.AdvisoryUsers);
+                for (int i = 0; i < users.length(); i++)
+                    {
+                        JSONObject user = users.getJSONObject(i);
+                        print(api.get(OrbisAPI.Endpoint.AdvisoryUserAccounts, "uid", user.getLong("userId"), "loadRtb", true, "loadRtbHistory", true));
+                    }
             }
 
         private static void adjustmentsModify(OrbisAPI api) throws IOException

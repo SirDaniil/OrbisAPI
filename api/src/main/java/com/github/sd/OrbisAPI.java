@@ -57,6 +57,7 @@ public class OrbisAPI
             AdvisoryModelBalanceHistory("/v2/advisory/model/rtb/history/{modelId}", JSONArray.class),
             AdvisoryModels("/v2/advisory/models", JSONArray.class),
             AdvisoryModelAccountStats("/v2/advisory/model/accounts/stats/{modelId}", JSONObject.class),
+            AdvisoryModelAccounts("/v2/advisory/model/accounts/{modelId}", JSONArray.class),
             UserBalancesHistory("/user/rtb/history", JSONArray.class),
             UserBuyingPower("/user/balance", JSONObject.class),
             UserBalance("/user/rtb", JSONObject.class),
