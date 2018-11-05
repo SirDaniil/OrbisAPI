@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.*;
 import com.github.sd.*;
 import org.json.*;
+import static com.github.sd.OrbisAPI.Endpoint.AdvisoryAllocation;
+import static com.github.sd.OrbisAPI.Endpoint.AdvisoryModelArphans;
 
 /**
  * User: Daniil Sosonkin
@@ -28,6 +30,9 @@ public class AdvisoryApiTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
+                //print(api.get(AdvisoryModelArphans));
+                print(api.get(AdvisoryAllocation, "{allocationRef}", "CC19996899"));
+
                 //adjustmentsModify(api);
                 //previewAdjustments(api);
                 //print(api.get(OrbisAPI.Endpoint.AdvisoryAccountStats));
@@ -43,7 +48,7 @@ public class AdvisoryApiTest
                 //rtbHistory(api);
                 //rtbModelHistory(api);
                 //print(api.post(OrbisAPI.Endpoint.AdvisoryUserNotesAdd, new JSONObject().put("content", "Important notes aren't !important").put("userId", 59329)));
-                checkAllBalances(api);
+                //checkAllBalances(api);
                 //System.out.println(api.getQuotes("goog,googl").toString(2));
                 /*System.out.println(api.post(OrbisAPI.Endpoint.PasswordChange, () -> {
 

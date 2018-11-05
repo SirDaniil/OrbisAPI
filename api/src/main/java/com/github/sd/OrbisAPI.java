@@ -58,6 +58,8 @@ public class OrbisAPI
             AdvisoryModels("/v2/advisory/models", JSONArray.class),
             AdvisoryModelAccountStats("/v2/advisory/model/accounts/stats/{modelId}", JSONObject.class),
             AdvisoryModelAccounts("/v2/advisory/model/accounts/{modelId}", JSONArray.class),
+            AdvisoryModelArphans("/v2/advisory/model/accounts/orphaned", JSONArray.class),
+            AdvisoryAllocation("/v2/advisory/allocations/{allocationRef}", JSONObject.class),
             UserBalancesHistory("/user/rtb/history", JSONArray.class),
             UserBuyingPower("/user/balance", JSONObject.class),
             UserBalance("/user/rtb", JSONObject.class),
