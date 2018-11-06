@@ -4,8 +4,7 @@ import java.io.*;
 import java.util.*;
 import com.github.sd.*;
 import org.json.*;
-import static com.github.sd.OrbisAPI.Endpoint.AdvisoryAllocation;
-import static com.github.sd.OrbisAPI.Endpoint.AdvisoryModelArphans;
+import static com.github.sd.OrbisAPI.Endpoint.*;
 
 /**
  * User: Daniil Sosonkin
@@ -30,8 +29,10 @@ public class AdvisoryApiTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
+                allocationTest(api);
+
                 //print(api.get(AdvisoryModelArphans));
-                print(api.get(AdvisoryAllocation, "{allocationRef}", "CC19996899"));
+                //print(api.get(AdvisoryAllocation, "{allocationRef}", "CC19996899"));
 
                 //adjustmentsModify(api);
                 //previewAdjustments(api);
@@ -61,6 +62,26 @@ public class AdvisoryApiTest
 
                     return object.toString();
                 }).toString());*/
+            }
+
+        private static void allocationTest(OrbisAPI api) throws IOException
+            {
+                long modelId = 1;
+
+                JSONArray adjustments = api.get(OrbisAPI.Endpoint.AdvisoryModelAdjustments, "{modelId}", modelId, "status", "Pending");
+                for (int i = 0; i < adjustments.length(); i++)
+                    {
+                        JSONObject adj = adjustments.getJSONObject(i);
+                        System.out.println("Cancelling: " + adj);
+
+                        api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, new JSONObject().put("id", adj.get("id")), "{action}", "Cancel");
+                    }
+
+                JSONArray accounts = api.get(AdvisoryModelAccounts, "{modelId}", modelId);
+                JSONObject adj = api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, new JSONObject().put("modelId", modelId).put("targetPct", .1).put("symbol", "adbe"), "{action}", "Create");
+                System.out.println("Created an adjustment: " + adj);
+
+                //print( api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, new JSONObject().put("id", adj.get("id")), "{action}", "Cancel") );
             }
 
         private static void checkAllBalances(OrbisAPI api) throws IOException
