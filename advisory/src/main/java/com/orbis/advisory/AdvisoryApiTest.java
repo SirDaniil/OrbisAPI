@@ -2,6 +2,7 @@ package com.orbis.advisory;
 
 import java.io.*;
 import java.util.*;
+import com.github.*;
 import com.github.sd.*;
 import org.json.*;
 import static com.github.sd.OrbisAPI.Endpoint.*;
@@ -78,10 +79,35 @@ public class AdvisoryApiTest
                     }
 
                 JSONArray accounts = api.get(AdvisoryModelAccounts, "{modelId}", modelId);
-                JSONObject adj = api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, new JSONObject().put("modelId", modelId).put("targetPct", .1).put("symbol", "adbe"), "{action}", "Create");
+                JSONObject adj = api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, createAdjustment(modelId), "{action}", "Create");
                 System.out.println("Created an adjustment: " + adj);
 
-                //print( api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, new JSONObject().put("id", adj.get("id")), "{action}", "Cancel") );
+                List<Order> targets = new ArrayList<>();
+                for (int i = 0; i < accounts.length(); i++)
+                    {
+                        JSONObject account = accounts.getJSONObject(i).getJSONObject("account");
+                        targets.add(new Order().setQuantity(100).setAccount(new UserAccount().setAccountNumber(account.getString("accountNumber"))));
+                    }
+
+                AllocationRequest request = new AllocationRequest();
+                request.setAdjustment(new ModelAdjustment().setId(120));
+                request.setAllocation(new Allocation().setTargets(targets).setTransaction(Transaction.BUY));
+
+                JSONObject rsp = api.post(AdvisoryModelAdjustmentSchedule, new JSONObject(request));
+                print(rsp);
+            }
+
+        private static JSONObject createAdjustment(long modelId)
+            {
+                JSONObject quote = new JSONObject();
+                quote.put("symbol", "adbe");
+
+                JSONObject obj = new JSONObject();
+                obj.put("modelId", modelId);
+                obj.put("targetPct", .1);
+                obj.put("quote", quote);
+
+                return obj;
             }
 
         private static void checkAllBalances(OrbisAPI api) throws IOException
