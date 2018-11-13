@@ -52,6 +52,8 @@ public class OrbisAPI
             AdvisoryModelAdjustmentsModify ("/v2/advisory/model/adjustments/modify/{action}", JSONObject.class),
             AdvisoryModelAdjustmentPreview ("/v2/advisory/model/adjustments/preview/{adjustmentId}", JSONArray.class),
             AdvisoryModelAdjustmentSchedule("/v2/advisory/model/adjustments/preallocate", JSONObject.class),
+            AdvisoryModelAdjustmentTrigger ("/v2/advisory/model/adjustments/allocation/trigger", JSONObject.class),
+            AdvisoryModelAllocationCancel  ("/v2/advisory/model/adjustments/allocation/cancel", JSONObject.class),
 
             AdvisoryModelPerformance("/v2/advisory/analytics/model/performance/{modelId}/{range}", JSONArray.class),
             AdvisoryModelBalance("/v2/advisory/model/rtb/{modelId}", JSONObject.class),
@@ -361,6 +363,7 @@ public class OrbisAPI
                         }
 
                 String data = obj.toJSON();
+                System.out.println("posting: " + data);
                 URL url = new URL(scheme + "://" + hostname + api + path);
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));

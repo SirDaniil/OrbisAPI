@@ -75,7 +75,7 @@ public class AdvisoryApiTest
                         JSONObject adj = adjustments.getJSONObject(i);
                         System.out.println("Cancelling: " + adj);
 
-                        api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, new JSONObject().put("id", adj.get("id")), "{action}", "Cancel");
+                        api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, new JSONObject(new ModelAdjustment().setId(adj.getLong("id"))), "{action}", "Cancel");
                     }
 
                 JSONArray accounts = api.get(AdvisoryModelAccounts, "{modelId}", modelId);
@@ -90,11 +90,22 @@ public class AdvisoryApiTest
                     }
 
                 AllocationRequest request = new AllocationRequest();
-                request.setAdjustment(new ModelAdjustment().setId(120));
+                request.setAdjustment(new ModelAdjustment().setId(adj.getLong("id")));
                 request.setAllocation(new Allocation().setTargets(targets).setTransaction(Transaction.BUY));
 
                 JSONObject rsp = api.post(AdvisoryModelAdjustmentSchedule, new JSONObject(request));
-                print(rsp);
+                System.out.println("Allocation scheduled: " + rsp.getString("allocationRef"));
+
+                System.out.println("Cancelling...");
+                rsp = api.post(AdvisoryModelAllocationCancel, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));
+
+
+
+                /*System.out.println("Triggering...");
+
+                rsp = api.post(AdvisoryModelAdjustmentTrigger, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));
+                System.out.println("Triggered: " + rsp.getString("allocationRef"));
+                print(rsp);*/
             }
 
         private static JSONObject createAdjustment(long modelId)
