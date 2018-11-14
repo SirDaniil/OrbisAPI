@@ -30,8 +30,9 @@ public class AdvisoryApiTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
-                allocationTest(api);
+                //allocationTest(api);
 
+                costOrdersTest(api);
                 //print(api.get(AdvisoryModelArphans));
                 //print(api.get(AdvisoryAllocation, "{allocationRef}", "CC19996899"));
 
@@ -63,6 +64,32 @@ public class AdvisoryApiTest
 
                     return object.toString();
                 }).toString());*/
+            }
+
+        private static void costOrdersTest(OrbisAPI api) throws IOException
+            {
+                String account = "TRCLIENT1";
+                JSONArray portfolio = api.get(UserPortfolio, "account", account);
+                for (int i = 0; i < portfolio.length(); i++)
+                    {
+                        JSONObject entry = portfolio.getJSONObject(i);
+                        String symbol = entry.getString("symbol");
+
+                        JSONArray orders = api.get(OrdersCost, "symbol", symbol, "account", account, "loadQuotes", true);
+                        System.out.println("=== " + symbol + " ===");
+                        for (int j = 0; j < orders.length(); j++)
+                            {
+                                JSONObject obj = orders.getJSONObject(j);
+
+                                if (j == 0)
+                                    {
+                                        JSONObject quote = obj.getJSONObject("quote");
+                                        System.out.println("\tLastPx: " + quote.getDouble("lastPrice"));
+                                    }
+
+                                System.out.println("\t" + obj.getString("ourRef") + " - " + obj.getDouble("execPx") + " (" + obj.get("execTime") + ")");
+                            }
+                    }
             }
 
         private static void allocationTest(OrbisAPI api) throws IOException

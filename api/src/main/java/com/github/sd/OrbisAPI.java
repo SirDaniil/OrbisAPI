@@ -66,6 +66,8 @@ public class OrbisAPI
             UserBalancesHistory("/user/rtb/history", JSONArray.class),
             UserBuyingPower("/user/balance", JSONObject.class),
             UserBalance("/user/rtb", JSONObject.class),
+            UserPortfolio("/user/portfolio", JSONArray.class),
+            OrdersCost("/orders/cost", JSONArray.class)
             ;
             private String path;
             private Class clazz;
