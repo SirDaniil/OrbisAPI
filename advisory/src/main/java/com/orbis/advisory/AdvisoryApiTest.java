@@ -31,8 +31,9 @@ public class AdvisoryApiTest
                 api.setHostname(domain);
 
                 //allocationTest(api);
+                directAllocationTest(api);
 
-                costOrdersTest(api);
+                //costOrdersTest(api);
                 //print(api.get(AdvisoryModelArphans));
                 //print(api.get(AdvisoryAllocation, "{allocationRef}", "CC19996899"));
 
@@ -64,6 +65,22 @@ public class AdvisoryApiTest
 
                     return object.toString();
                 }).toString());*/
+            }
+
+        private static void directAllocationTest(OrbisAPI api) throws IOException
+            {
+                EquityOrder order = new EquityOrder();
+                order.setQuote(new Quote("ADBE"));
+                order.setOrderType(OrderType.MARKET);
+                order.setQuantity(2000);
+                order.setTransaction(Transaction.SELL);
+
+                ModelEquityOrder request = new ModelEquityOrder();
+                request.setModel(new PortfolioModel().setId(1));
+                request.setOrder(order);
+
+                JSONObject resp = api.post(AdvisoryModelPlaceEquity, new JSONObject(request));
+                System.out.println(resp);
             }
 
         private static void costOrdersTest(OrbisAPI api) throws IOException
@@ -123,16 +140,16 @@ public class AdvisoryApiTest
                 JSONObject rsp = api.post(AdvisoryModelAdjustmentSchedule, new JSONObject(request));
                 System.out.println("Allocation scheduled: " + rsp.getString("allocationRef"));
 
-                System.out.println("Cancelling...");
-                rsp = api.post(AdvisoryModelAllocationCancel, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));
+                /*System.out.println("Cancelling...");
+                rsp = api.post(AdvisoryModelAllocationCancel, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));*/
 
 
 
-                /*System.out.println("Triggering...");
+                System.out.println("Triggering...");
 
                 rsp = api.post(AdvisoryModelAdjustmentTrigger, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));
                 System.out.println("Triggered: " + rsp.getString("allocationRef"));
-                print(rsp);*/
+                print(rsp);
             }
 
         private static JSONObject createAdjustment(long modelId)

@@ -117,60 +117,9 @@ public class Quote implements Serializable
         public Quote()
             { }
 
-        public boolean isSymbolChange()
-            {
-                return (newSymbol != null && symbolChangeDate != null);
-            }
-
         public boolean isMutualFund()
             {
                 return mutualFund;
-            }
-
-        /**
-         * Returns true when we're at the money.
-         *
-         * @return
-         */
-        public boolean isAtTheMoney()
-            {
-                return (underlying != null && underlying.getLastPrice() == lastPrice);
-            }
-
-        /**
-         * Returns true when in the money.
-         * 
-         * @return
-         */
-        public boolean isInTheMoney()
-            {
-                if (underlying == null)
-                    return false;
-
-                if (isPut())
-                    return (strikePrice > underlying.lastPrice);
-                else
-                    return (strikePrice < underlying.lastPrice);
-            }
-
-        /**
-         * Returns true if this is Call symbol.
-         *
-         * @return
-         */
-        public boolean isCall()
-            {
-                return (putOrCall == CALL);
-            }
-
-        /**
-         * Returns true of this is a Put symbol.
-         *
-         * @return
-         */
-        public boolean isPut()
-            {
-                return (putOrCall == PUT);
             }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -811,11 +760,6 @@ public class Quote implements Serializable
         public void setBeta(double beta)
             {
                 this.beta = beta;
-            }
-
-        public double getTrailing12MonthsEps()
-            {
-                return (priceEarningRatio == 0 ? 0 : lastPrice / priceEarningRatio);
             }
 
         public String getStandardAndPoorsRating()

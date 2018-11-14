@@ -55,6 +55,8 @@ public class OrbisAPI
             AdvisoryModelAdjustmentTrigger ("/v2/advisory/model/adjustments/allocation/trigger", JSONObject.class),
             AdvisoryModelAllocationCancel  ("/v2/advisory/model/adjustments/allocation/cancel", JSONObject.class),
 
+            AdvisoryModelPlaceEquity("/orders/v2/advisory/equity/place", JSONObject.class),
+
             AdvisoryModelPerformance("/v2/advisory/analytics/model/performance/{modelId}/{range}", JSONArray.class),
             AdvisoryModelBalance("/v2/advisory/model/rtb/{modelId}", JSONObject.class),
             AdvisoryModelBalanceHistory("/v2/advisory/model/rtb/history/{modelId}", JSONArray.class),
