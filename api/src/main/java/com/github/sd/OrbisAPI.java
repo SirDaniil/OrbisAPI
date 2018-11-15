@@ -54,6 +54,7 @@ public class OrbisAPI
             AdvisoryModelAdjustmentSchedule("/v2/advisory/model/adjustments/preallocate", JSONObject.class),
             AdvisoryModelAdjustmentTrigger ("/v2/advisory/model/adjustments/allocation/trigger", JSONObject.class),
             AdvisoryModelAllocationCancel  ("/v2/advisory/model/adjustments/allocation/cancel", JSONObject.class),
+            AdvisoryModelAllocate          ("/v2/advisory/model/orders/allocate", JSONObject.class),
 
             AdvisoryModelPlaceEquity("/orders/v2/advisory/equity/place", JSONObject.class),
 
@@ -61,15 +62,18 @@ public class OrbisAPI
             AdvisoryModelBalance("/v2/advisory/model/rtb/{modelId}", JSONObject.class),
             AdvisoryModelBalanceHistory("/v2/advisory/model/rtb/history/{modelId}", JSONArray.class),
             AdvisoryModels("/v2/advisory/models", JSONArray.class),
+            AdvisoryModelOrders("/orders/model/{modelId}/{type}", JSONArray.class),
             AdvisoryModelAccountStats("/v2/advisory/model/accounts/stats/{modelId}", JSONObject.class),
             AdvisoryModelAccounts("/v2/advisory/model/accounts/{modelId}", JSONArray.class),
             AdvisoryModelArphans("/v2/advisory/model/accounts/orphaned", JSONArray.class),
-            AdvisoryAllocation("/v2/advisory/allocations/{allocationRef}", JSONObject.class),
+            AdvisoryAllocation("/v2/advisory/allocations/{allocationRef}", JSONArray.class),
             UserBalancesHistory("/user/rtb/history", JSONArray.class),
             UserBuyingPower("/user/balance", JSONObject.class),
             UserBalance("/user/rtb", JSONObject.class),
             UserPortfolio("/user/portfolio", JSONArray.class),
-            OrdersCost("/orders/cost", JSONArray.class)
+
+            OrdersCost("/orders/cost", JSONArray.class),
+            OrdersStatus("/orders/status/{orderRef}", JSONObject.class),
             ;
             private String path;
             private Class clazz;

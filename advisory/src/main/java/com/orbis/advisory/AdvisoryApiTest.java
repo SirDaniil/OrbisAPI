@@ -69,18 +69,71 @@ public class AdvisoryApiTest
 
         private static void directAllocationTest(OrbisAPI api) throws IOException
             {
+                long modelId = 1;
+                long ordeQty = 10000;
+
                 EquityOrder order = new EquityOrder();
                 order.setQuote(new Quote("ADBE"));
                 order.setOrderType(OrderType.MARKET);
-                order.setQuantity(2000);
+                order.setQuantity(ordeQty);
                 order.setTransaction(Transaction.SELL);
 
                 ModelEquityOrder request = new ModelEquityOrder();
-                request.setModel(new PortfolioModel().setId(1));
+                request.setModel(new PortfolioModel().setId(modelId));
                 request.setOrder(order);
 
                 JSONObject resp = api.post(AdvisoryModelPlaceEquity, new JSONObject(request));
-                System.out.println(resp);
+                String orderRef = resp.getString("OrderRef");
+                System.out.println("Order placed as: " + orderRef);
+
+                boolean filled = false;
+                while (!filled)
+                    {
+                        JSONArray list = api.get(AdvisoryModelOrders, "{modelId}", modelId, "{type}", "single", "orderRef", orderRef);
+                        if (list.length() == 0)
+                            throw new IllegalArgumentException("Order " + orderRef + " wasn't found");
+
+                        JSONObject obj = list.getJSONObject(0);
+                        String status = obj.getString("translatedStatus");
+                        if (status == null)
+                            throw new IllegalArgumentException("Missing status: " + obj);
+
+                        switch (status)
+                            {
+                                case "R":
+                                    throw new IOException("Order rejected");
+
+                                case "E":
+                                    System.out.println("Filled!");
+                                    filled = true;
+                                    break;
+                            }
+                    }
+
+                JSONArray accounts = api.get(AdvisoryModelAccounts, "{modelId}", modelId);
+                List<Order> targets = new ArrayList<>();
+                List<Order> sources = new ArrayList<>();
+                Order source = new Order();
+                source.setOurRef(orderRef);
+                source.setQuantity(ordeQty);
+                sources.add(source);
+
+                for (int i = 0; i < accounts.length(); i++)
+                    {
+                        JSONObject account = accounts.getJSONObject(i).getJSONObject("account");
+                        targets.add(
+                                new Order()
+                                        .setQuantity(ordeQty / account.length())
+                                        .setAccount(new UserAccount().setAccountNumber(account.getString("accountNumber")))
+                        );
+                    }
+
+                Allocation allocation = new Allocation();
+                allocation.setTargets(targets);
+                allocation.setOrders(sources);
+
+                resp = api.post(AdvisoryModelAllocate, new JSONObject(allocation));
+                System.out.println("Allocated: " + resp);
             }
 
         private static void costOrdersTest(OrbisAPI api) throws IOException
