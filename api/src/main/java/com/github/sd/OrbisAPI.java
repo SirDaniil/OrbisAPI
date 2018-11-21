@@ -71,6 +71,9 @@ public class OrbisAPI
             UserBuyingPower("/user/balance", JSONObject.class),
             UserBalance("/user/rtb", JSONObject.class),
             UserPortfolio("/user/portfolio", JSONArray.class),
+            UserPreferences("/user/preferences", JSONObject.class),
+            UserPreferencesSet("/user/preferences/set", JSONObject.class),
+            UserPreferencesDelete("/user/preferences/delete", JSONObject.class),
 
             OrdersCost("/orders/cost", JSONArray.class),
             OrdersStatus("/orders/status/{orderRef}", JSONObject.class),
