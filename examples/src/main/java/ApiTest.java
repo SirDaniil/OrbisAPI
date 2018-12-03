@@ -24,9 +24,9 @@ public class ApiTest
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
-                System.out.println(((JSONArray)api.get(OrbisAPI.Endpoint.ResearchMarketDates)).toString(2));
+                /*System.out.println(((JSONArray)api.get(OrbisAPI.Endpoint.ResearchMarketDates)).toString(2));
                 System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.ResearchMarketDateLastOpen)).toString(2));
-                System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.ResearchMarketDateCheck, "date", "9/25/2018")).toString(2));
+                System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.ResearchMarketDateCheck, "date", "9/25/2018")).toString(2));*/
                 //System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.Research, "{symbol}", "baba")).toString(2));
                 /*System.out.println(api.getCorporateActionTypes());
                 System.out.println(api.corporateActionSearch(CorporateActionSearch.Builder().type("Dividend")).toString(2));*/
@@ -41,5 +41,6 @@ public class ApiTest
                 System.out.println(api.getAdrsTop10(AdrRequest.Builder().country("CAN")).toString(2));
                 System.out.println(api.getAdrs(AdrRequest.Builder().loadEarningReleases().loadUpgradesDowngrades().country("CHE")).toString(2));
                 System.out.println(api.screener(Screener.Builder().is(Adr).gte(MarketCap, 10, new DateRange().lowerToday().upperNextMonth())).toString(2));*/
+                System.out.println(api.getQuotes("c+a").toString(2));
             }
     }
