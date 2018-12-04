@@ -30,6 +30,8 @@ public class AdvisoryApiTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
+                print(api.get(UserInfo));
+
                 /*print(api.get(UserPreferences));
                 print(api.post(UserPreferencesSet, new JSONObject().put("MY_TEST_KEY", new Date())));
                 print(api.get(UserPreferences));
@@ -58,7 +60,7 @@ public class AdvisoryApiTest
                 //rtbModelHistory(api);
                 //print(api.post(OrbisAPI.Endpoint.AdvisoryUserNotesAdd, new JSONObject().put("content", "Important notes aren't !important").put("userId", 59329)));
                 //checkAllBalances(api);
-                System.out.println(api.getQuotes("c+a").toString(2));
+                //System.out.println(api.getQuotes("c+a").toString(2));
                 /*System.out.println(api.post(OrbisAPI.Endpoint.PasswordChange, () -> {
 
                     Scanner in = new Scanner(System.in);
