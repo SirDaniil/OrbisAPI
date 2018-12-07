@@ -18,36 +18,6 @@ import org.json.*;
  */
 public class OrbisAPI
     {
-        public enum Endpoint {
-            QuotesEquity("/quotes/equity", JSONArray.class),
-            QuotesSearch("/quotes/search", JSONArray.class),
-            ChartsIntraday("/quotes/equity/intraday", JSONArray.class),
-            ChartsHistorical("/quotes/equity/historical", JSONArray.class),
-            Research("/research/{symbol}", JSONObject.class),
-            ResearchAdrs("/research/adrs", JSONArray.class),
-            ResearchAdrsTop10("/research/adrs/top10", JSONObject.class),
-            ResearchAdrsTop10Defaults("/research/adrs/top10/defaults", JSONArray.class),
-            ResearchNews("/research/news", JSONArray.class),
-            ResearchNewsBySymbol("/research/news/ticker/{symbol}", JSONArray.class),
-            ResearchFundamentalTypes("/research/fundamentals/types", JSONArray.class),
-            ResearchFundamentals("/research/fundamentals/{type}/{symbol}", JSONObject.class),
-            ResearchScreener("/research/screener", JSONObject.class),
-            ResearchMarketDateLastOpen("/research/dates/lastOpen", JSONObject.class),
-            ResearchMarketDateCheck("/research/dates/check", JSONObject.class),
-            ResearchMarketDates("/research/dates/markets", JSONArray.class),
-            CorporateActionTypes("/research/actions/types", JSONArray.class),
-            CorporateActionSearch("/research/actions/search", JSONArray.class),
-            TipranksLivefeed("/research/tipranks/livefeed", JSONArray.class),
-            ;
-            private String path;
-            private Class clazz;
-
-            Endpoint(String path, Class clazz)
-                {
-                    this.path = path;
-                    this.clazz = clazz;
-                }
-        }
         private static final Set<Integer> oks = new HashSet<>() {{
             add(200);
             add(201);
@@ -127,17 +97,17 @@ public class OrbisAPI
 
         public JSONArray getChartIntraday(String symbol) throws IOException
             {
-                return get(Endpoint.ChartsIntraday, "symbol", symbol);
+                return get(Endpoints.ChartsIntraday, "symbol", symbol);
             }
 
         public JSONArray getCorporateActionTypes() throws IOException
             {
-                return get(Endpoint.CorporateActionTypes);
+                return get(Endpoints.CorporateActionTypes);
             }
 
         public JSONArray corporateActionSearch(CorporateActionSearch criteria) throws IOException
             {
-                return get(Endpoint.CorporateActionSearch, criteria);
+                return get(Endpoints.CorporateActionSearch, criteria);
             }
 
         public JSONArray getChartHistorical(String symbol, String range) throws IOException
@@ -146,32 +116,32 @@ public class OrbisAPI
                 params.put("symbol", symbol);
                 params.put("range", range);
 
-                return get(Endpoint.ChartsHistorical, params);
+                return get(Endpoints.ChartsHistorical, params);
             }
 
         public JSONObject screener(Screener screener) throws IOException
             {
-                return post(Endpoint.ResearchScreener, screener);
+                return post(Endpoints.ResearchScreener, screener);
             }
 
         public JSONArray getFundamentalTypes() throws IOException
             {
-                return get(Endpoint.ResearchFundamentalTypes);
+                return get(Endpoints.ResearchFundamentalTypes);
             }
 
         public JSONArray getAdrsTop10Defaults() throws IOException
             {
-                return get(Endpoint.ResearchAdrsTop10Defaults);
+                return get(Endpoints.ResearchAdrsTop10Defaults);
             }
 
         public JSONArray getAdrs(AdrRequest request) throws IOException
             {
-                return get(Endpoint.ResearchAdrs, request);
+                return get(Endpoints.ResearchAdrs, request);
             }
 
         public JSONObject getAdrsTop10(AdrRequest request) throws IOException
             {
-                return get(Endpoint.ResearchAdrsTop10, request);
+                return get(Endpoints.ResearchAdrsTop10, request);
             }
 
         public JSONObject getFundamentals(String type, String symbol) throws IOException
@@ -180,17 +150,17 @@ public class OrbisAPI
                 args.put("{type}", type);
                 args.put("{symbol}", symbol);
 
-                return get(Endpoint.ResearchFundamentals, args);
+                return get(Endpoints.ResearchFundamentals, args);
             }
 
         public JSONArray getQuotes(String... symbols) throws IOException
             {
-                return get(Endpoint.QuotesEquity, "symbols", String.join(",", symbols));
+                return get(Endpoints.QuotesEquity, "symbols", String.join(",", symbols));
             }
 
         public JSONArray quoteSearch(String criteria) throws IOException
             {
-                return get(Endpoint.QuotesSearch, "criteria", criteria);
+                return get(Endpoints.QuotesSearch, "criteria", criteria);
             }
 
         public JSONArray news(NewsFilter filter) throws IOException
@@ -204,12 +174,12 @@ public class OrbisAPI
                 params.put("filter", filter);
                 params.put("start", start);
 
-                return get(Endpoint.ResearchNews, params);
+                return get(Endpoints.ResearchNews, params);
             }
 
         public JSONArray news(String symbol) throws IOException
             {
-                return get(Endpoint.ResearchNewsBySymbol, "{symbol}", symbol);
+                return get(Endpoints.ResearchNewsBySymbol, "{symbol}", symbol);
             }
 
         public <T> T get(Endpoint endpoint, String name, Object value) throws IOException
@@ -228,7 +198,7 @@ public class OrbisAPI
         public <T> T get(Endpoint endpoint, Map<String, Object> params) throws IOException
             {
                 StringBuilder args = new StringBuilder();
-                String path = endpoint.path;
+                String path = endpoint.getPath();
 
                 for (Map.Entry<String, Object> entry : params.entrySet())
                     {
@@ -277,7 +247,7 @@ public class OrbisAPI
         private <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
             {
                 String data = obj.toJSON();
-                URL url = new URL(scheme + "://" + hostname + api + endpoint.path);
+                URL url = new URL(scheme + "://" + hostname + api + endpoint.getPath());
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setRequestProperty("Content-Length", String.valueOf(data.length()));
@@ -319,7 +289,7 @@ public class OrbisAPI
                         JSONTokener tokener = new JSONTokener(in);
                         try
                             {
-                                response = (T)(oks.contains(code) ? endpoint.clazz.getConstructor(JSONTokener.class).newInstance(tokener) : new JSONObject(tokener));
+                                response = (T)(oks.contains(code) ? endpoint.getDatatype().getConstructor(JSONTokener.class).newInstance(tokener) : new JSONObject(tokener));
                             }
                         catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
                             {
