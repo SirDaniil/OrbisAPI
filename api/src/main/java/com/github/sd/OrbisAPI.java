@@ -244,7 +244,7 @@ public class OrbisAPI
                 return read(endpoint, con);
             }
 
-        private <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
+        public <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
             {
                 String data = obj.toJSON();
                 URL url = new URL(scheme + "://" + hostname + api + endpoint.getPath());
