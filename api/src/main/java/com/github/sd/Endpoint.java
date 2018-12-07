@@ -3,38 +3,14 @@ package com.github.sd;
 import org.json.*;
 
 /**
- * Created by Daniil Sosonkin
- * 6/15/2018 3:33 PM
+ * User: Daniil Sosonkin
+ * Date: 12/7/2018 3:45 PM
  */
-public enum Endpoint
+public interface Endpoint
     {
-        QuotesEquity("/quotes/equity", JSONArray.class),
-        QuotesSearch("/quotes/search", JSONArray.class),
-        ResearchAdrs("/research/adrs", JSONArray.class),
-        ResearchAdrsTop10("/research/adrs/top10", JSONObject.class),
-        ResearchAdrsTop10Defaults("/research/adrs/top10/defaults", JSONArray.class),
-        ResearchNews("/research/news", JSONArray.class),
-        ResearchNewsBySymbol("/research/news/ticker/{symbol}", JSONArray.class),
-        ResearchFundamentalTypes("/research/fundamentals/types", JSONArray.class),
-        ResearchFundamentals("/research/fundamentals/{type}/{symbol}", JSONObject.class),
-        ResearchScreener("/research/screener", JSONObject.class),
-        UserInfo("/user/info", JSONObject.class),;
-        private String path;
-        private Class clazz;
+        String getPath();
 
-        Endpoint(String path, Class clazz)
-            {
-                this.path = path;
-                this.clazz = clazz;
-            }
-
-        public String getPath()
-            {
-                return path;
-            }
-
-        public Class getClazz()
-            {
-                return clazz;
-            }
+        default Class getDatatype() {
+            return JSONObject.class;
+        }
     }

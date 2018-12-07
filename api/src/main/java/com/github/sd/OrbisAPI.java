@@ -18,76 +18,7 @@ import org.json.*;
  */
 public class OrbisAPI
     {
-        @SuppressWarnings("unused")
-        public enum Endpoint {
-            QuotesEquity("/quotes/equity", JSONArray.class),
-            QuotesSearch("/quotes/search", JSONArray.class),
-            ChartsIntraday("/quotes/equity/intraday", JSONArray.class),
-            ChartsHistorical("/quotes/equity/historical", JSONArray.class),
-            Research("/research/{symbol}", JSONObject.class),
-            ResearchAdrs("/research/adrs", JSONArray.class),
-            ResearchAdrsTop10("/research/adrs/top10", JSONObject.class),
-            ResearchAdrsTop10Defaults("/research/adrs/top10/defaults", JSONArray.class),
-            ResearchNews("/research/news", JSONArray.class),
-            ResearchNewsBySymbol("/research/news/ticker/{symbol}", JSONArray.class),
-            ResearchFundamentalTypes("/research/fundamentals/types", JSONArray.class),
-            ResearchFundamentals("/research/fundamentals/{type}/{symbol}", JSONObject.class),
-            ResearchScreener("/research/screener", JSONObject.class),
-            CorporateActionTypes("/research/actions/types", JSONArray.class),
-            CorporateActionSearch("/research/actions/search", JSONArray.class),
-            TipranksLivefeed("/research/tipranks/livefeed", JSONArray.class),
-            PasswordChange("/auth/v1/password/change", JSONObject.class),
-            DeviceRegistration("/user/device/register", JSONObject.class),
-            UserInfo("/user/info", JSONObject.class),
-            AdvisoryUsers("/v2/advisory/clients/list", JSONArray.class),
-            AdvisoryUserAccounts("/v2/advisory/clients/accounts", JSONArray.class),
-            AdvisoryUserNotes("/v2/advisory/clients/user/notes", JSONArray.class),
-            AdvisoryUserNotesAdd("/v2/advisory/clients/user/notes/add", JSONObject.class),
-            AdvisoryAccountStats("/v2/advisory/clients/accounts/stats", JSONObject.class),
-            AdvisoryAccountNotes("/v2/advisory/clients/account/notes", JSONArray.class),
-            AdvisoryAccountNotesAdd("/v2/advisory/clients/account/notes/add", JSONObject.class),
-            AdvisoryModelUpdateComponent("/v2/advisory/model/component/update", JSONObject.class),
-
-            AdvisoryModelAdjustments       ("/v2/advisory/model/adjustments/{modelId}", JSONArray.class),
-            AdvisoryModelAdjustmentsModify ("/v2/advisory/model/adjustments/modify/{action}", JSONObject.class),
-            AdvisoryModelAdjustmentPreview ("/v2/advisory/model/adjustments/preview/{adjustmentId}", JSONArray.class),
-            AdvisoryModelAdjustmentSchedule("/v2/advisory/model/adjustments/preallocate", JSONObject.class),
-            AdvisoryModelAdjustmentTrigger ("/v2/advisory/model/adjustments/allocation/trigger", JSONObject.class),
-            AdvisoryModelAllocationCancel  ("/v2/advisory/model/adjustments/allocation/cancel", JSONObject.class),
-            AdvisoryModelAllocate          ("/v2/advisory/model/orders/allocate", JSONObject.class),
-
-            AdvisoryModelPlaceEquity("/orders/v2/advisory/equity/place", JSONObject.class),
-
-            AdvisoryModelPerformance("/v2/advisory/analytics/model/performance/{modelId}/{range}", JSONArray.class),
-            AdvisoryModelBalance("/v2/advisory/model/rtb/{modelId}", JSONObject.class),
-            AdvisoryModelBalanceHistory("/v2/advisory/model/rtb/history/{modelId}", JSONArray.class),
-            AdvisoryModels("/v2/advisory/models", JSONArray.class),
-            AdvisoryModelOrders("/orders/model/{modelId}/{type}", JSONArray.class),
-            AdvisoryModelAccountStats("/v2/advisory/model/accounts/stats/{modelId}", JSONObject.class),
-            AdvisoryModelAccounts("/v2/advisory/model/accounts/{modelId}", JSONArray.class),
-            AdvisoryModelArphans("/v2/advisory/model/accounts/orphaned", JSONArray.class),
-            AdvisoryAllocation("/v2/advisory/allocations/{allocationRef}", JSONArray.class),
-            UserBalancesHistory("/user/rtb/history", JSONArray.class),
-            UserBuyingPower("/user/balance", JSONObject.class),
-            UserBalance("/user/rtb", JSONObject.class),
-            UserPortfolio("/user/portfolio", JSONArray.class),
-            UserPreferences("/user/preferences", JSONObject.class),
-            UserPreferencesSet("/user/preferences/set", JSONObject.class),
-            UserPreferencesDelete("/user/preferences/delete", JSONObject.class),
-
-            OrdersCost("/orders/cost", JSONArray.class),
-            OrdersStatus("/orders/status/{orderRef}", JSONObject.class),
-            ;
-            private String path;
-            private Class clazz;
-
-            Endpoint(String path, Class clazz)
-                {
-                    this.path = path;
-                    this.clazz = clazz;
-                }
-        }
-        public static final Set<Integer> oks = new HashSet<>() {{
+        private static final Set<Integer> oks = new HashSet<>() {{
             add(200);
             add(201);
         }};
@@ -166,17 +97,17 @@ public class OrbisAPI
 
         public JSONArray getChartIntraday(String symbol) throws IOException
             {
-                return get(Endpoint.ChartsIntraday, "symbol", symbol);
+                return get(Endpoints.ChartsIntraday, "symbol", symbol);
             }
 
         public JSONArray getCorporateActionTypes() throws IOException
             {
-                return get(Endpoint.CorporateActionTypes);
+                return get(Endpoints.CorporateActionTypes);
             }
 
         public JSONArray corporateActionSearch(CorporateActionSearch criteria) throws IOException
             {
-                return get(Endpoint.CorporateActionSearch, criteria);
+                return get(Endpoints.CorporateActionSearch, criteria);
             }
 
         public JSONArray getChartHistorical(String symbol, String range) throws IOException
@@ -185,32 +116,32 @@ public class OrbisAPI
                 params.put("symbol", symbol);
                 params.put("range", range);
 
-                return get(Endpoint.ChartsHistorical, params);
+                return get(Endpoints.ChartsHistorical, params);
             }
 
         public JSONObject screener(Screener screener) throws IOException
             {
-                return post(Endpoint.ResearchScreener, screener);
+                return post(Endpoints.ResearchScreener, screener);
             }
 
         public JSONArray getFundamentalTypes() throws IOException
             {
-                return get(Endpoint.ResearchFundamentalTypes);
+                return get(Endpoints.ResearchFundamentalTypes);
             }
 
         public JSONArray getAdrsTop10Defaults() throws IOException
             {
-                return get(Endpoint.ResearchAdrsTop10Defaults);
+                return get(Endpoints.ResearchAdrsTop10Defaults);
             }
 
         public JSONArray getAdrs(AdrRequest request) throws IOException
             {
-                return get(Endpoint.ResearchAdrs, request);
+                return get(Endpoints.ResearchAdrs, request);
             }
 
         public JSONObject getAdrsTop10(AdrRequest request) throws IOException
             {
-                return get(Endpoint.ResearchAdrsTop10, request);
+                return get(Endpoints.ResearchAdrsTop10, request);
             }
 
         public JSONObject getFundamentals(String type, String symbol) throws IOException
@@ -219,17 +150,17 @@ public class OrbisAPI
                 args.put("{type}", type);
                 args.put("{symbol}", symbol);
 
-                return get(Endpoint.ResearchFundamentals, args);
+                return get(Endpoints.ResearchFundamentals, args);
             }
 
         public JSONArray getQuotes(String... symbols) throws IOException
             {
-                return get(Endpoint.QuotesEquity, "symbols", String.join(",", symbols));
+                return get(Endpoints.QuotesEquity, "symbols", String.join(",", symbols));
             }
 
         public JSONArray quoteSearch(String criteria) throws IOException
             {
-                return get(Endpoint.QuotesSearch, "criteria", criteria);
+                return get(Endpoints.QuotesSearch, "criteria", criteria);
             }
 
         public JSONArray news(NewsFilter filter) throws IOException
@@ -243,27 +174,18 @@ public class OrbisAPI
                 params.put("filter", filter);
                 params.put("start", start);
 
-                return get(Endpoint.ResearchNews, params);
+                return get(Endpoints.ResearchNews, params);
             }
 
         public JSONArray news(String symbol) throws IOException
             {
-                return get(Endpoint.ResearchNewsBySymbol, "{symbol}", symbol);
+                return get(Endpoints.ResearchNewsBySymbol, "{symbol}", symbol);
             }
 
-        public <T> T get(Endpoint endpoint, String name, Object value, Object... others) throws IOException
+        public <T> T get(Endpoint endpoint, String name, Object value) throws IOException
             {
                 Map<String, Object> params = new HashMap<>();
                 params.put(name, value);
-
-                if (others != null)
-                    {
-                        if (others.length % 2 != 0)
-                            throw new IllegalArgumentException("nnnnnope!");
-
-                        for (int i = 0; i < others.length; i += 2)
-                            params.put(others[i].toString(), others[i + 1]);
-                    }
 
                 return get(endpoint, params);
             }
@@ -276,7 +198,7 @@ public class OrbisAPI
         public <T> T get(Endpoint endpoint, Map<String, Object> params) throws IOException
             {
                 StringBuilder args = new StringBuilder();
-                String path = endpoint.path;
+                String path = endpoint.getPath();
 
                 for (Map.Entry<String, Object> entry : params.entrySet())
                     {
@@ -319,63 +241,13 @@ public class OrbisAPI
                 con.setConnectTimeout(1000 * 30);
                 con.setReadTimeout(1000 * 30);
 
-                if (credentials.getReferer() != null)
-                    con.setRequestProperty("Referer", credentials.getReferer());
-
                 return read(endpoint, con);
             }
 
-        public <T> T post(Endpoint endpoint, JSONObject obj) throws IOException
+        private <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
             {
-                return post(endpoint, obj::toString);
-            }
-
-        public <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
-            {
-                return post(endpoint, null, obj);
-            }
-
-        public <T> T post(Endpoint endpoint, JSONObject obj, String name, Object value, Object... others) throws IOException
-            {
-                Map<String, Object> params = new HashMap<>();
-                params.put(name, value);
-
-                if (others != null)
-                    {
-                        if (others.length % 2 != 0)
-                            throw new IllegalArgumentException("?!");
-
-                        for (int i = 0; i < others.length; i += 2)
-                            params.put(others[i].toString(), others[i + 1]);
-                    }
-
-                return post(endpoint, params, obj::toString);
-            }
-
-        public <T> T post(Endpoint endpoint, Map<String, Object> pathParams, JsonConvertable obj) throws IOException
-            {
-                StringBuilder args = new StringBuilder();
-                String path = endpoint.path;
-
-                if (pathParams != null)
-                    for (Map.Entry<String, Object> entry : pathParams.entrySet())
-                        {
-                            String key = entry.getKey();
-                            Object value = entry.getValue();
-
-                            if (key == null)
-                                key = "";
-
-                            if (value == null)
-                                value = "";
-
-                            if (key.startsWith("{") && key.endsWith("}"))
-                                path = path.replace(key, value.toString());
-                        }
-
                 String data = obj.toJSON();
-                System.out.println("posting: " + data);
-                URL url = new URL(scheme + "://" + hostname + api + path);
+                URL url = new URL(scheme + "://" + hostname + api + endpoint.getPath());
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setRequestProperty("Content-Length", String.valueOf(data.length()));
@@ -387,9 +259,6 @@ public class OrbisAPI
                 con.setUseCaches(false);
                 con.setDoOutput(true);
                 con.setDoInput(true);
-
-                if (credentials.getReferer() != null)
-                    con.setRequestProperty("Referer", credentials.getReferer());
 
                 try (Writer out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), StandardCharsets.UTF_8)))
                     {
@@ -420,7 +289,7 @@ public class OrbisAPI
                         JSONTokener tokener = new JSONTokener(in);
                         try
                             {
-                                response = (T)(oks.contains(code) ? endpoint.clazz.getConstructor(JSONTokener.class).newInstance(tokener) : new JSONObject(tokener));
+                                response = (T)(oks.contains(code) ? endpoint.getDatatype().getConstructor(JSONTokener.class).newInstance(tokener) : new JSONObject(tokener));
                             }
                         catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
                             {
