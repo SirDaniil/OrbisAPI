@@ -5,6 +5,7 @@ import java.util.*;
 import com.github.*;
 import com.github.sd.*;
 import org.json.*;
+import static com.orbis.advisory.AdvisoryEndpoints.*;
 
 /**
  * User: Daniil Sosonkin
@@ -45,22 +46,22 @@ public class AdvisoryApiTest
 
                 //adjustmentsModify(api);
                 //previewAdjustments(api);
-                //print(api.get(OrbisAPI.Endpoint.AdvisoryAccountStats));
-                //print(api.get(OrbisAPI.Endpoint.AdvisoryModelAdjustments, "{modelId}", 1));
-                //print(api.get(OrbisAPI.Endpoint.AdvisoryModels));
-                //print(api.get(OrbisAPI.Endpoint.AdvisoryModelAccounts, "{modelId}", 1, "loadRtb", true, "loadRtbHistory", true));
-                //print(api.get(OrbisAPI.Endpoint.UserBalance, "account", "TR001001"));
-                //print(api.get(OrbisAPI.Endpoint.UserBuyingPower, "account", "TR001001"));
-                //print(api.get(OrbisAPI.Endpoint.AdvisoryModelPerformance, "{modelId}", 1, "{range}", "1y"));
-                //print(api.get(OrbisAPI.Endpoint.AdvisoryModelBalance, "{modelId}", 1));
+                //print(api.get(AdvisoryAccountStats));
+                //print(api.get(AdvisoryModelAdjustments, "{modelId}", 1));
+                //print(api.get(AdvisoryModels));
+                //print(api.get(AdvisoryModelAccounts, "{modelId}", 1, "loadRtb", true, "loadRtbHistory", true));
+                //print(api.get(UserBalance, "account", "TR001001"));
+                //print(api.get(UserBuyingPower, "account", "TR001001"));
+                //print(api.get(AdvisoryModelPerformance, "{modelId}", 1, "{range}", "1y"));
+                //print(api.get(AdvisoryModelBalance, "{modelId}", 1));
                 //componentUpdate(api);
                 //accountNotes(api);
                 //rtbHistory(api);
                 //rtbModelHistory(api);
-                //print(api.post(OrbisAPI.Endpoint.AdvisoryUserNotesAdd, new JSONObject().put("content", "Important notes aren't !important").put("userId", 59329)));
+                //print(api.post(AdvisoryUserNotesAdd, new JSONObject().put("content", "Important notes aren't !important").put("userId", 59329)));
                 //checkAllBalances(api);
                 //System.out.println(api.getQuotes("c+a").toString(2));
-                /*System.out.println(api.post(OrbisAPI.Endpoint.PasswordChange, () -> {
+                /*System.out.println(api.post(PasswordChange, () -> {
 
                     Scanner in = new Scanner(System.in);
                     System.out.print("Password: ");
@@ -172,17 +173,17 @@ public class AdvisoryApiTest
             {
                 long modelId = 1;
 
-                JSONArray adjustments = api.get(OrbisAPI.Endpoint.AdvisoryModelAdjustments, "{modelId}", modelId, "status", "Pending");
+                JSONArray adjustments = api.get(AdvisoryModelAdjustments, "{modelId}", modelId, "status", "Pending");
                 for (int i = 0; i < adjustments.length(); i++)
                     {
                         JSONObject adj = adjustments.getJSONObject(i);
                         System.out.println("Cancelling: " + adj);
 
-                        api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, new JSONObject(new ModelAdjustment().setId(adj.getLong("id"))), "{action}", "Cancel");
+                        api.post(AdvisoryModelAdjustmentsModify, new JSONObject(new ModelAdjustment().setId(adj.getLong("id"))), "{action}", "Cancel");
                     }
 
                 JSONArray accounts = api.get(AdvisoryModelAccounts, "{modelId}", modelId);
-                JSONObject adj = api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, createAdjustment(modelId), "{action}", "Create");
+                JSONObject adj = api.post(AdvisoryModelAdjustmentsModify, createAdjustment(modelId), "{action}", "Create");
                 System.out.println("Created an adjustment: " + adj);
 
                 List<Order> targets = new ArrayList<>();
@@ -226,26 +227,26 @@ public class AdvisoryApiTest
 
         private static void checkAllBalances(OrbisAPI api) throws IOException
             {
-                JSONArray users = api.get(OrbisAPI.Endpoint.AdvisoryUsers);
+                JSONArray users = api.get(AdvisoryUsers);
                 for (int i = 0; i < users.length(); i++)
                     {
                         JSONObject user = users.getJSONObject(i);
-                        print(api.get(OrbisAPI.Endpoint.AdvisoryUserAccounts, "uid", user.getLong("userId"), "loadRtb", true, "loadRtbHistory", true));
+                        print(api.get(AdvisoryUserAccounts, "uid", user.getLong("userId"), "loadRtb", true, "loadRtbHistory", true));
                     }
             }
 
         private static void adjustmentsModify(OrbisAPI api) throws IOException
             {
-                JSONObject adj = api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, new JSONObject().put("modelId", 1).put("targetPct", .1).put("symbol", "adbe"), "{action}", "Create");
+                JSONObject adj = api.post(AdvisoryModelAdjustmentsModify, new JSONObject().put("modelId", 1).put("targetPct", .1).put("symbol", "adbe"), "{action}", "Create");
                 System.out.println("AdjustmentID: " + adj.getLong("id") + " (" + adj + ")");
-                api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, adj.put("targetPct", .9), "{action}", "Update");
-                print(api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, adj, "{action}", "Fetch"));
-                api.post(OrbisAPI.Endpoint.AdvisoryModelAdjustmentsModify, adj, "{action}", "Cancel");
+                api.post(AdvisoryModelAdjustmentsModify, adj.put("targetPct", .9), "{action}", "Update");
+                print(api.post(AdvisoryModelAdjustmentsModify, adj, "{action}", "Fetch"));
+                api.post(AdvisoryModelAdjustmentsModify, adj, "{action}", "Cancel");
             }
 
         private static void previewAdjustments(OrbisAPI api) throws IOException
             {
-                JSONArray list = api.get(OrbisAPI.Endpoint.AdvisoryModelAdjustments, "{modelId}", 1);
+                JSONArray list = api.get(AdvisoryModelAdjustments, "{modelId}", 1);
                 for (int i = 0; i < list.length(); i++)
                     {
                         JSONObject adj = list.getJSONObject(i);
@@ -253,7 +254,7 @@ public class AdvisoryApiTest
                         print(adj);
 
                         long adjustmentId = adj.getLong("id");
-                        JSONArray orders = api.get(OrbisAPI.Endpoint.AdvisoryModelAdjustmentPreview, "{adjustmentId}", adjustmentId);
+                        JSONArray orders = api.get(AdvisoryModelAdjustmentPreview, "{adjustmentId}", adjustmentId);
                         for (int j = 0; j < orders.length(); j++)
                             {
                                 JSONObject order = orders.getJSONObject(j);
@@ -272,7 +273,7 @@ public class AdvisoryApiTest
                 obj.put("symbol", "MSFT");
                 obj.put("percentage", .2);
 
-                print(api.post(OrbisAPI.Endpoint.AdvisoryModelUpdateComponent, obj));
+                print(api.post(AdvisoryModelUpdateComponent, obj));
             }
 
         static void rtbModelHistory(OrbisAPI api) throws IOException
@@ -281,7 +282,7 @@ public class AdvisoryApiTest
                 args.put("{modelId}", "all");
                 args.put("page", 0);
                 args.put("count", 500);
-                print(api.get(OrbisAPI.Endpoint.AdvisoryModelBalanceHistory, args));
+                print(api.get(AdvisoryModelBalanceHistory, args));
             }
 
         static void rtbHistory(OrbisAPI api) throws IOException
@@ -291,14 +292,14 @@ public class AdvisoryApiTest
                 args.put("page", 0);
                 args.put("count", 500);
                 args.put("dateTo", "10/01/2018");
-                print(api.get(OrbisAPI.Endpoint.UserBalancesHistory, args));
+                print(api.get(UserBalancesHistory, args));
             }
 
         static void accountNotes(OrbisAPI api) throws IOException
             {
-                //print(api.get(OrbisAPI.Endpoint.AdvisoryAccountNotes, "aid", 92644));
+                //print(api.get(AdvisoryAccountNotes, "aid", 92644));
 
-                print(api.post(OrbisAPI.Endpoint.AdvisoryAccountNotesAdd, new JSONObject().put("content", "Another note: " + new Date()).put("accountId", 92644) ));
+                print(api.post(AdvisoryAccountNotesAdd, new JSONObject().put("content", "Another note: " + new Date()).put("accountId", 92644) ));
             }
 
         static void print(Object o)
