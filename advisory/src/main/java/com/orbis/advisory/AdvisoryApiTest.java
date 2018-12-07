@@ -5,7 +5,6 @@ import java.util.*;
 import com.github.*;
 import com.github.sd.*;
 import org.json.*;
-import static com.github.sd.OrbisAPI.Endpoint.*;
 
 /**
  * User: Daniil Sosonkin
