@@ -18,7 +18,7 @@ import org.json.*;
  */
 public class OrbisAPI
     {
-        private static final Set<Integer> oks = new HashSet<>() {{
+        public static final Set<Integer> oks = new HashSet<>() {{
             add(200);
             add(201);
         }};
@@ -182,6 +182,23 @@ public class OrbisAPI
                 return get(Endpoints.ResearchNewsBySymbol, "{symbol}", symbol);
             }
 
+        public <T> T get(Endpoint endpoint, String name, Object value, Object... others) throws IOException
+            {
+                Map<String, Object> params = new HashMap<>();
+                params.put(name, value);
+
+                if (others != null)
+                    {
+                        if (others.length % 2 != 0)
+                            throw new IllegalArgumentException("nnnnnope!");
+
+                        for (int i = 0; i < others.length; i += 2)
+                            params.put(others[i].toString(), others[i + 1]);
+                    }
+
+                return get(endpoint, params);
+            }
+
         public <T> T get(Endpoint endpoint, String name, Object value) throws IOException
             {
                 Map<String, Object> params = new HashMap<>();
@@ -241,11 +258,60 @@ public class OrbisAPI
                 con.setConnectTimeout(1000 * 30);
                 con.setReadTimeout(1000 * 30);
 
+                if (credentials.getReferer() != null)
+                    con.setRequestProperty("Referer", credentials.getReferer());
+
                 return read(endpoint, con);
+            }
+
+        public <T> T post(Endpoint endpoint, JSONObject obj) throws IOException
+            {
+                return post(endpoint, obj::toString);
             }
 
         public <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
             {
+                return post(endpoint, null, obj);
+            }
+
+        public <T> T post(Endpoint endpoint, JSONObject obj, String name, Object value, Object... others) throws IOException
+            {
+                Map<String, Object> params = new HashMap<>();
+                params.put(name, value);
+
+                if (others != null)
+                    {
+                        if (others.length % 2 != 0)
+                            throw new IllegalArgumentException("?!");
+
+                        for (int i = 0; i < others.length; i += 2)
+                            params.put(others[i].toString(), others[i + 1]);
+                    }
+
+                return post(endpoint, params, obj::toString);
+            }
+
+        public <T> T post(Endpoint endpoint, Map<String, Object> pathParams, JsonConvertable obj) throws IOException
+            {
+                StringBuilder args = new StringBuilder();
+                String path = endpoint.getPath();
+
+                if (pathParams != null)
+                    for (Map.Entry<String, Object> entry : pathParams.entrySet())
+                        {
+                            String key = entry.getKey();
+                            Object value = entry.getValue();
+
+                            if (key == null)
+                                key = "";
+
+                            if (value == null)
+                                value = "";
+
+                            if (key.startsWith("{") && key.endsWith("}"))
+                                path = path.replace(key, value.toString());
+                        }
+
                 String data = obj.toJSON();
                 URL url = new URL(scheme + "://" + hostname + api + endpoint.getPath());
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
@@ -259,6 +325,9 @@ public class OrbisAPI
                 con.setUseCaches(false);
                 con.setDoOutput(true);
                 con.setDoInput(true);
+
+                if (credentials.getReferer() != null)
+                    con.setRequestProperty("Referer", credentials.getReferer());
 
                 try (Writer out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), StandardCharsets.UTF_8)))
                     {
