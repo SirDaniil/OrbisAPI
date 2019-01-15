@@ -30,7 +30,10 @@ public class AdvisoryApiTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
-                print(api.get(UserInfo));
+                print(api.get(UserPortfolio, "account", "TRCLIENT1", "loadCost", true));
+                //print(api.get(UserInfo));
+                //print(api.get(() -> "/user/agreements/all/active"));
+                //print(api.get(AdvisoryModelPortfolios, "{modelId}", "all", "loadCost", true));
 
                 /*print(api.get(UserPreferences));
                 print(api.post(UserPreferencesSet, new JSONObject().put("MY_TEST_KEY", new Date())));

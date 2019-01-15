@@ -12,6 +12,21 @@ public class AdvisoryEndpoints
         private AdvisoryEndpoints()
             { }
 
+        public static final Endpoint AgreementsUnisigned = new Endpoint()
+            {
+                @Override
+                public String getPath()
+                    {
+                        return "/user/agreements/unsigned";
+                    }
+
+                @Override
+                public Class getDatatype()
+                    {
+                        return JSONArray.class;
+                    }
+            };
+
         public static final Endpoint PasswordChange = () -> "/auth/v1/password/change";
 
         public static final Endpoint DeviceRegistration = () -> "/user/device/register";
@@ -109,6 +124,8 @@ public class AdvisoryEndpoints
         public static final Endpoint AdvisoryModelAllocate = () -> "/v2/advisory/model/orders/allocate";
 
         public static final Endpoint AdvisoryModelPlaceEquity = () -> "/orders/v2/advisory/equity/place";
+
+        public static final Endpoint AdvisoryModelPortfolios = () -> "/v2/advisory/model/portfolios/{modelId}";
 
         public static final Endpoint AdvisoryModelPerformance = new Endpoint() {
             @Override
@@ -243,6 +260,8 @@ public class AdvisoryEndpoints
                     return JSONArray.class;
                 }
         };
+
+        public static final Endpoint UserPortfolioFull = () -> "/user/portfolio/full";
 
         public static final Endpoint UserPreferences = () -> "/user/preferences";
 
