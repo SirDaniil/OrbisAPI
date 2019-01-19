@@ -12,7 +12,7 @@ namespace ApiTest
         static void Main(string[] args)
         {
             API api = new API();
-            api.Credentials = new PublicKey("1c71d432-06c6-4940-9a50-5d617a0c259b.pem");
+            api.Credentials = new PublicKey(System.Configuration.ConfigurationManager.AppSettings["AccessKey"] + ".pem");
             api.Hostname = "https://portal.orbisfn.com";
 
             Console.WriteLine(api.Get("/quotes/equity", "symbols", "msft"));
