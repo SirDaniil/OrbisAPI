@@ -313,7 +313,9 @@ public class OrbisAPI
                         }
 
                 String data = obj.toJSON();
-                URL url = new URL(scheme + "://" + hostname + api + endpoint.getPath());
+                URL url = new URL(scheme + "://" + hostname + api + path);
+                System.out.println(url);
+                System.out.println(pathParams);
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setRequestProperty("Content-Length", String.valueOf(data.length()));
