@@ -34,14 +34,14 @@ public class AdvisoryApiTest
                 //print(api.get(UserPortfolio, "account", "TRCLIENT1", "loadCost", true));
                 //print(api.get(UserInfo));
                 //print(api.get(() -> "/user/agreements/all/active"));
-                //print(api.get(AdvisoryModelPortfolios, "{modelId}", "all", "loadCost", true));
+                print(api.get(AdvisoryModelPortfolios, "{modelId}", "all", "loadCost", true, "marketCapBreakdown", true, "loadQuotes", true));
 
                 /*print(api.get(UserPreferences));
                 print(api.post(UserPreferencesSet, new JSONObject().put("MY_TEST_KEY", new Date())));
                 print(api.get(UserPreferences));
                 print(api.post(UserPreferencesDelete, new JSONObject().put("MY_TEST_KEY", "").put("API_KEY", "")));
                 print(api.get(UserPreferences));*/
-                allocationTest(api);
+                //allocationTest(api);
                 //directAllocationTest(api);
 
                 //costOrdersTest(api);

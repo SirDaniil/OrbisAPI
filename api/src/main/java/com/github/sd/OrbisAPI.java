@@ -250,7 +250,9 @@ public class OrbisAPI
                             }
                     }
 
-                URL url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
+                String targetUrl = scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : "");
+                System.out.println(targetUrl);
+                URL url = new URL(targetUrl);
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setRequestProperty("Accept-Encoding", "gzip");
