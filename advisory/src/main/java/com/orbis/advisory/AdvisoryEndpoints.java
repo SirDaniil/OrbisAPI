@@ -12,6 +12,23 @@ public class AdvisoryEndpoints
         private AdvisoryEndpoints()
             { }
 
+        public static final Endpoint BranchRtb = () -> "/v1/branch/rtb";
+        public static final Endpoint BranchRtbsTotal = () -> "/v1/branch/rtbs/total";
+        public static final Endpoint BranchRtbs = new Endpoint()
+            {
+                @Override
+                public String getPath()
+                    {
+                        return "/v1/branch/rtbs";
+                    }
+
+                @Override
+                public Class getDatatype()
+                    {
+                        return JSONArray.class;
+                    }
+            };
+
         public static final Endpoint AgreementsUnisigned = new Endpoint()
             {
                 @Override
@@ -102,6 +119,20 @@ public class AdvisoryEndpoints
             public String getPath()
                 {
                     return "/v2/advisory/model/adjustments/{modelId}";
+                }
+
+            @Override
+            public Class getDatatype()
+                {
+                    return JSONArray.class;
+                }
+        };
+
+        public static final Endpoint AdvisoryModelRtbs = new Endpoint() {
+            @Override
+            public String getPath()
+                {
+                    return "/v2/advisory/model/rtbs/{modelId}";
                 }
 
             @Override
