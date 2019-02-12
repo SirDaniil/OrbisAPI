@@ -24,7 +24,7 @@ public class ApiTest
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
-                //System.out.println(api.getQuotes("amzn").toString(2));
+                System.out.println(api.getQuotes("amzn").toString(2));
                 /*System.out.println(((JSONArray)api.get(OrbisAPI.Endpoint.ResearchMarketDates)).toString(2));
                 System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.ResearchMarketDateLastOpen)).toString(2));
                 System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.ResearchMarketDateCheck, "date", "9/25/2018")).toString(2));*/
@@ -42,7 +42,7 @@ public class ApiTest
                 System.out.println(api.getAdrs(AdrRequest.Builder().loadEarningReleases().loadUpgradesDowngrades().country("CHE")).toString(2));
                 System.out.println(api.screener(Screener.Builder().is(Adr).gte(MarketCap, 10, new DateRange().lowerToday().upperNextMonth())).toString(2));*/
 
-                final var count = new AtomicLong();
+                /*final var count = new AtomicLong();
                 for (int i = 0; i < 3; i++)
                     new Thread(() -> {
                         System.out.println("Starting...");
@@ -71,6 +71,6 @@ public class ApiTest
                     double rps = num / (delta / 1000.0);
                     System.out.println(num + " requests in " + delta + " = " + fmt.format(rps) + "/s");
                     start = now;
-                }
+                }*/
             }
     }
