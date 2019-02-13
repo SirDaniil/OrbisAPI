@@ -29,6 +29,21 @@ public class AdvisoryEndpoints
                     }
             };
 
+        public static final Endpoint PositionSearch = new Endpoint()
+            {
+                @Override
+                public String getPath()
+                    {
+                        return "/user/position/search";
+                    }
+
+                @Override
+                public Class getDatatype()
+                    {
+                        return JSONArray.class;
+                    }
+            };
+
         public static final Endpoint AgreementsUnisigned = new Endpoint()
             {
                 @Override

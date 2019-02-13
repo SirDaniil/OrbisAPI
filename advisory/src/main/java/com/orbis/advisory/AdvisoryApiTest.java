@@ -30,10 +30,11 @@ public class AdvisoryApiTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
+                print(api.get(PositionSearch, "symbols", "adbe", "loadQuotes", true));
                 //print(api.get(AdvisoryModelRtbs, "{modelId}", "all"));
                 //print(api.get(BranchRtbsTotal));
                 //print(api.get(BranchRtbs));
-                print(api.get(UserPortfolioFull, "account", "TRCLIENT1", "loadIndustries", true));
+                //print(api.get(UserPortfolioFull, "account", "TRCLIENT1", "loadIndustries", true));
                 //print(api.get(UserInfo));
                 //print(api.get(() -> "/user/agreements/all/active"));
                 //print(api.get(AdvisoryModelPortfolios, "{modelId}", "1", "loadCost", true, "marketCapBreakdown", true, "loadQuotes", true));
