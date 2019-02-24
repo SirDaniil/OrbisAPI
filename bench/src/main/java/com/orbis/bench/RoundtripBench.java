@@ -10,6 +10,7 @@ import org.java_websocket.client.*;
 import org.java_websocket.handshake.*;
 import org.json.*;
 import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Updates.set;
 
 /**
  * Created by Daniil Sosonkin
@@ -127,8 +128,7 @@ public class RoundtripBench implements OrbisApiClient
                 while (true)
                     try
                         {
-                            msft.put("QuoteTime", new Date());
-                            col.updateOne(eq("_id", markId), msft);
+                            col.updateOne(eq("_id", markId), set("QuoteTime", new Date()));
                             System.out.println("(*) Mark set");
                             Thread.sleep(1000);
                         }
