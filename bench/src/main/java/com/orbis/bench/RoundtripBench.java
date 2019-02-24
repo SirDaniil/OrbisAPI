@@ -5,12 +5,11 @@ import java.nio.*;
 import java.util.*;
 import com.github.sd.*;
 import com.mongodb.*;
-import com.mongodb.client.model.*;
 import org.bson.*;
 import org.java_websocket.client.*;
 import org.java_websocket.handshake.*;
 import org.json.*;
-import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.*;
 
 /**
  * Created by Daniil Sosonkin
@@ -35,6 +34,11 @@ public class RoundtripBench implements OrbisApiClient
                 try (InputStream in = new FileInputStream(settings))
                     {
                         props.load(in);
+                    }
+                catch (IOException e)
+                    {
+                        System.out.println(new File(settings).getAbsolutePath());
+                        throw e;
                     }
 
                 OrbisAPI api = new OrbisAPI();
