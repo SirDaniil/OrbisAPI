@@ -123,7 +123,7 @@ public class RoundtripBench implements OrbisApiClient
                 System.out.println("(*) Got the mark");
                 msft.put("_id", markId);
                 col.deleteOne(eq("_id", markId));
-                col.insertOne(msft);
+                //col.insertOne(new Document(msft));
                 System.out.println("(*) Mark added");
 
                 while (true)
