@@ -61,7 +61,8 @@ public class RoundtripBench implements OrbisApiClient
                 System.out.println("(+) Subscribing: " + sub);
 
                 ws.send(sub.toString());
-                beginBench();
+
+                new Thread(this::beginBench).start();
             }
 
         @Override
@@ -123,8 +124,18 @@ public class RoundtripBench implements OrbisApiClient
                 col.insertOne(msft);
                 System.out.println("(*) Mark added");
 
-                msft.put("QuoteTime", new Date());
-                col.updateOne(eq("_id", markId), msft);
-                System.out.println("(*) Mark set");
+                while (true)
+                    try
+                        {
+                            msft.put("QuoteTime", new Date());
+                            col.updateOne(eq("_id", markId), msft);
+                            System.out.println("(*) Mark set");
+                            Thread.sleep(1000);
+                        }
+                    catch (Exception e)
+                        {
+                            e.printStackTrace();
+                            System.exit(1);
+                        }
             }
     }
