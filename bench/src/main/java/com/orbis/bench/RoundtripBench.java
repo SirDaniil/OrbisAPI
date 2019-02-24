@@ -22,7 +22,7 @@ public class RoundtripBench implements OrbisApiClient
     {
         private BasicBSONDecoder decoder = new BasicBSONDecoder();
         private WebSocketClient ws;
-        private String markId = getClass().getName();
+        private String markId = "MSFT";
         private Properties props;
 
         public static void main(String[] args) throws Exception
@@ -123,7 +123,8 @@ public class RoundtripBench implements OrbisApiClient
                 while (true)
                     try
                         {
-                            col.updateOne(eq("_id", markId), combine(set("QuoteTime", new Date()), set("LastPx", Math.random())), new UpdateOptions().upsert(true));
+                            //col.updateOne(eq("_id", markId), combine(set("QuoteTime", new Date()), set("LastPx", Math.random())), new UpdateOptions().upsert(true));
+                            col.updateOne(eq("_id", markId), set("QuoteTime", new Date()), new UpdateOptions().upsert(true));
                             System.out.println("(*) Mark set on [" + new Date() + "]");
                             Thread.sleep(1000);
                         }
