@@ -11,8 +11,7 @@ import org.java_websocket.client.*;
 import org.java_websocket.handshake.*;
 import org.json.*;
 import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.set;
+import static com.mongodb.client.model.Updates.*;
 
 /**
  * Created by Daniil Sosonkin
@@ -22,7 +21,7 @@ public class RoundtripBench implements OrbisApiClient
     {
         private BasicBSONDecoder decoder = new BasicBSONDecoder();
         private WebSocketClient ws;
-        private String markId = "MSFT";
+        private String markId = "ATEST";
         private Properties props;
 
         public static void main(String[] args) throws Exception
