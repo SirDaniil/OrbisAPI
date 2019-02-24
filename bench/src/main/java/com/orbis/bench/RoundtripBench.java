@@ -117,8 +117,11 @@ public class RoundtripBench implements OrbisApiClient
                 if (msft == null)
                     throw new IllegalArgumentException("Mark not found");
 
+                System.out.println("(*) Got the mark");
                 msft.put("_id", markId);
+                col.deleteOne(eq("_id", markId));
                 col.insertOne(msft);
+                System.out.println("(*) Mark added");
 
                 msft.put("QuoteTime", new Date());
                 col.updateOne(eq("_id", markId), msft);
