@@ -5,6 +5,7 @@ import java.nio.*;
 import java.util.*;
 import com.github.sd.*;
 import com.mongodb.*;
+import com.mongodb.client.model.*;
 import org.bson.*;
 import org.java_websocket.client.*;
 import org.java_websocket.handshake.*;
@@ -128,7 +129,7 @@ public class RoundtripBench implements OrbisApiClient
                 while (true)
                     try
                         {
-                            col.updateOne(eq("_id", markId), set("QuoteTime", new Date()));
+                            col.updateOne(eq("_id", markId), set("QuoteTime", new Date()), new UpdateOptions().upsert(true));
                             System.out.println("(*) Mark set");
                             Thread.sleep(1000);
                         }
