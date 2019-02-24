@@ -11,6 +11,7 @@ import org.java_websocket.client.*;
 import org.java_websocket.handshake.*;
 import org.json.*;
 import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 
 /**
@@ -116,21 +117,14 @@ public class RoundtripBench implements OrbisApiClient
                 System.out.println("(+) Connected");
 
                 var col = db.getCollection("QuoteL1");
-                var msft = col.find(eq("_id", "MSFT")).first();
-                if (msft == null)
-                    throw new IllegalArgumentException("Mark not found");
-
-                System.out.println("(*) Got the mark");
-                msft.put("_id", markId);
                 col.deleteOne(eq("_id", markId));
-                //col.insertOne(new Document(msft));
-                System.out.println("(*) Mark added");
+                System.out.println("(*) Mark cleared");
 
                 while (true)
                     try
                         {
-                            col.updateOne(eq("_id", markId), set("QuoteTime", new Date()), new UpdateOptions().upsert(true));
-                            System.out.println("(*) Mark set");
+                            col.updateOne(eq("_id", markId), combine(set("QuoteTime", new Date()), set("LastPx", Math.random())), new UpdateOptions().upsert(true));
+                            System.out.println("(*) Mark set on [" + new Date() + "]");
                             Thread.sleep(1000);
                         }
                     catch (Exception e)
