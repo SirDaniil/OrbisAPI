@@ -2,7 +2,9 @@ package com.orbis.bench;
 
 import java.io.*;
 import java.nio.*;
+import java.text.*;
 import java.util.*;
+import java.util.concurrent.atomic.*;
 import com.github.sd.*;
 import com.mongodb.*;
 import com.mongodb.client.model.*;
@@ -24,6 +26,8 @@ public class RoundtripBench implements OrbisApiClient
         private WebSocketClient ws;
         private String markId = "ATEST";
         private Properties props;
+        private AtomicLong lastMarkDelta = new AtomicLong();
+        private NumberFormat df3 = DecimalFormat.getInstance();
 
         public static void main(String[] args) throws Exception
             {
@@ -53,6 +57,12 @@ public class RoundtripBench implements OrbisApiClient
                 bench.ws = api.openWebSocket(bench);
 
                 new Thread(bench::beginBench).start();
+            }
+
+        public RoundtripBench()
+            {
+                df3.setMinimumFractionDigits(3);
+                df3.setMaximumFractionDigits(3);
             }
 
         @Override
@@ -107,11 +117,10 @@ public class RoundtripBench implements OrbisApiClient
 
                 Date date = (Date) fields.get("ts");
                 String price = ((Number)fields.get("px")).longValue() + "";
-                System.out.println("Checking " + price);
                 if (!Verhoeff.validateVerhoeff(price))
                     return;
 
-                System.out.println("Roundtrip time: " + (now - date.getTime()) / 1000.0);
+                System.out.println("Roundtrip time: " + df3.format((now - date.getTime()) / 1000.0) + "; Mark set time: " + df3.format(lastMarkDelta.get() / 1000.0));
             }
 
         private void beginBench()
@@ -132,6 +141,7 @@ public class RoundtripBench implements OrbisApiClient
                     try
                         {
                             index++;
+                            long start = System.currentTimeMillis();
                             col.updateOne(
                                     eq("_id", markId),
                                     combine(
@@ -140,7 +150,7 @@ public class RoundtripBench implements OrbisApiClient
                                     ),
                                     new UpdateOptions().upsert(true)
                             );
-                            System.out.println("(*) Mark set on [" + new Date() + "]");
+                            lastMarkDelta.set(System.currentTimeMillis() - start);
                             Thread.sleep(1000);
                         }
                     catch (Exception e)
