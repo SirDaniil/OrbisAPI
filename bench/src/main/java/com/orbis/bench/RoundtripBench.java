@@ -131,11 +131,12 @@ public class RoundtripBench implements OrbisApiClient
                 while (true)
                     try
                         {
+                            index++;
                             col.updateOne(
                                     eq("_id", markId),
                                     combine(
                                             set("QuoteTime", new Date()),
-                                            set("LastPx", Long.parseLong(index++ + Verhoeff.generateVerhoeff(index)))
+                                            set("LastPx", Long.parseLong(index + Verhoeff.generateVerhoeff(index)))
                                     ),
                                     new UpdateOptions().upsert(true)
                             );
