@@ -107,6 +107,7 @@ public class RoundtripBench implements OrbisApiClient
 
                 Date date = (Date) fields.get("ts");
                 String price = ((Number)fields.get("px")).longValue() + "";
+                System.out.println("Checking " + price);
                 if (!Verhoeff.validateVerhoeff(price))
                     return;
 
