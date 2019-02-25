@@ -89,6 +89,7 @@ public class RoundtripBench implements OrbisApiClient
             {
                 var now = System.currentTimeMillis();
                 var object = decoder.readObject(bytes.array());
+                System.out.println(object);
 
                 if (!object.containsField("u"))
                     return;
