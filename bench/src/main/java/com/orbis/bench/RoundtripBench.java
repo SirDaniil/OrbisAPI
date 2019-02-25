@@ -119,7 +119,7 @@ public class RoundtripBench implements OrbisApiClient
                 if (!Verhoeff.validateVerhoeff(price))
                     return;
 
-                System.out.println("Roundtrip time: " + df3.format((now - date.getTime()) / 1000.0) + "; Mark set time: " + df3.format(lastMarkDelta.get() / 1000.0));
+                System.out.println("(@) Roundtrip time: " + df3.format((now - date.getTime()) / 1000.0) + "; Mark set time: " + df3.format(lastMarkDelta.get() / 1000.0));
             }
 
         private void beginBench()
