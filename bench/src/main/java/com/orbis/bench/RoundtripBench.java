@@ -99,7 +99,6 @@ public class RoundtripBench implements OrbisApiClient
             {
                 var now = System.currentTimeMillis();
                 var object = decoder.readObject(bytes.array());
-                System.out.println(object);
 
                 if (!object.containsField("u"))
                     return;
@@ -132,7 +131,7 @@ public class RoundtripBench implements OrbisApiClient
                 var db = client.getDatabase(uri.getDatabase());
                 System.out.println("(+) Connected");
 
-                var col = db.getCollection("QuoteL1");
+                var col = db.getCollection("QuoteL1").withWriteConcern(WriteConcern.UNACKNOWLEDGED);
                 col.deleteOne(eq("_id", markId));
                 System.out.println("(*) Mark cleared");
 
