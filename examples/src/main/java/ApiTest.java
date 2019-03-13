@@ -3,7 +3,8 @@ import java.text.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 import com.github.sd.*;
-import static com.github.sd.Endpoints.ResearchMarketDateLastOpen;
+import org.json.*;
+import static com.github.sd.Endpoints.*;
 
 /**
  * User: Daniil Sosonkin
@@ -24,10 +25,10 @@ public class ApiTest
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
-                System.out.println(api.getQuotes("amzn").toString(2));
-                /*System.out.println(((JSONArray)api.get(OrbisAPI.Endpoint.ResearchMarketDates)).toString(2));
-                System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.ResearchMarketDateLastOpen)).toString(2));
-                System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.ResearchMarketDateCheck, "date", "9/25/2018")).toString(2));*/
+                //System.out.println(api.getQuotes("amzn").toString(2));
+                //System.out.println(((JSONArray)api.get(ResearchMarketDates)).toString(2));
+                System.out.println(((JSONObject)api.get(ResearchMarketDateLastOpen)).toString(2));
+                System.out.println(((JSONObject)api.get(ResearchMarketDateCheck)).toString(2));
                 //System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.Research, "{symbol}", "baba")).toString(2));
                 /*System.out.println(api.getCorporateActionTypes());
                 System.out.println(api.corporateActionSearch(CorporateActionSearch.Builder().type("Dividend")).toString(2));*/
