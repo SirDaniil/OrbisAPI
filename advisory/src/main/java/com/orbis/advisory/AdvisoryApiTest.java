@@ -30,7 +30,8 @@ public class AdvisoryApiTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
-                print(api.get(PositionSearch, "symbols", "adbe", "loadQuotes", true));
+                print(api.get(BranchPortfolio, "loadQuotes", true, "loadRtb", true));
+                //print(api.get(PositionSearch, "symbols", "adbe", "loadQuotes", true));
                 //print(api.get(AdvisoryModelRtbs, "{modelId}", "all"));
                 //print(api.get(BranchRtbsTotal));
                 //print(api.get(BranchRtbs));

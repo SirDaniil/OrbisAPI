@@ -12,6 +12,7 @@ public class AdvisoryEndpoints
         private AdvisoryEndpoints()
             { }
 
+        public static final Endpoint BranchPortfolio = () -> "/v1/branch/portfolio";
         public static final Endpoint BranchRtb = () -> "/v1/branch/rtb";
         public static final Endpoint BranchRtbsTotal = () -> "/v1/branch/rtbs/total";
         public static final Endpoint BranchRtbs = new Endpoint()
