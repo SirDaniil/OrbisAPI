@@ -25,10 +25,11 @@ public class ApiTest
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
-                //System.out.println(api.getQuotes("amzn").toString(2));
+                //System.out.println((Object)api.get(() -> "/quotes/equity/shortability/{symbol}", "{symbol}", "MSFT"));
+                System.out.println(api.getQuotes("amzn").toString(2));
                 //System.out.println(((JSONArray)api.get(ResearchMarketDates)).toString(2));
-                System.out.println(((JSONObject)api.get(ResearchMarketDateLastOpen)).toString(2));
-                System.out.println(((JSONObject)api.get(ResearchMarketDateCheck)).toString(2));
+                //System.out.println(((JSONObject)api.get(ResearchMarketDateLastOpen)).toString(2));
+                //System.out.println(((JSONObject)api.get(ResearchMarketDateCheck)).toString(2));
                 //System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.Research, "{symbol}", "baba")).toString(2));
                 /*System.out.println(api.getCorporateActionTypes());
                 System.out.println(api.corporateActionSearch(CorporateActionSearch.Builder().type("Dividend")).toString(2));*/

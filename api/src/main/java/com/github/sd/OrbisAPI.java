@@ -197,51 +197,65 @@ public class OrbisAPI
 
         public <T> T get(Endpoint endpoint, Map<String, Object> params) throws IOException
             {
-                StringBuilder args = new StringBuilder();
-                String path = endpoint.getPath();
-
-                for (Map.Entry<String, Object> entry : params.entrySet())
+                long start = System.currentTimeMillis();
+                try
                     {
-                        String key = entry.getKey();
-                        Object value = entry.getValue();
+                        StringBuilder args = new StringBuilder();
+                        String path = endpoint.getPath();
 
-                        if (key == null)
-                            key = "";
-
-                        if (value == null)
-                            value = "";
-
-                        if (key.startsWith("{") && key.endsWith("}"))
-                            path = path.replace(key, value.toString());
-                        else if (value instanceof Collection)
+                        for (Map.Entry<String, Object> entry : params.entrySet())
                             {
-                                Collection col = (Collection) value;
-                                for (Object item : col)
+                                String key = entry.getKey();
+                                Object value = entry.getValue();
+
+                                if (key == null)
+                                    key = "";
+
+                                if (value == null)
+                                    value = "";
+
+                                if (key.startsWith("{") && key.endsWith("}"))
+                                    path = path.replace(key, value.toString());
+                                else if (value instanceof Collection)
+                                    {
+                                        Collection col = (Collection) value;
+                                        for (Object item : col)
+                                            {
+                                                args.append(encode(key));
+                                                args.append('=');
+                                                args.append(encode(item));
+                                                args.append('&');
+                                            }
+                                    }
+                                else
                                     {
                                         args.append(encode(key));
                                         args.append('=');
-                                        args.append(encode(item));
+                                        args.append(encode(value));
                                         args.append('&');
                                     }
                             }
-                        else
-                            {
-                                args.append(encode(key));
-                                args.append('=');
-                                args.append(encode(value));
-                                args.append('&');
-                            }
+
+                        long begin = System.currentTimeMillis();
+                        String auth_scheme = credentials.getScheme();
+                        String auth_token = credentials.getToken();
+                        System.out.println("(#) " + (System.currentTimeMillis() - begin) / 1000.0 + "s.");
+
+                        URL url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
+                        HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                        con.setRequestProperty("Authorization", auth_scheme + " " + Base64.encodeBytes(auth_token.getBytes()));
+                        con.setRequestProperty("Accept-Encoding", "gzip");
+                        con.setUseCaches(false);
+                        con.setConnectTimeout(1000 * 30);
+                        con.setReadTimeout(1000 * 30);
+                        System.out.println("(s) " + endpoint.getPath() + ": [" + (System.currentTimeMillis() - start) / 1000.0 + "]");
+
+                        return read(endpoint, con);
                     }
-
-                URL url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
-                HttpURLConnection con = (HttpURLConnection)url.openConnection();
-                con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
-                con.setRequestProperty("Accept-Encoding", "gzip");
-                con.setUseCaches(false);
-                con.setConnectTimeout(1000 * 30);
-                con.setReadTimeout(1000 * 30);
-
-                return read(endpoint, con);
+                finally
+                    {
+                        System.out.println("(t) " + endpoint.getPath() + ": [" + (System.currentTimeMillis() - start) / 1000.0 + "]");
+                    }
             }
 
         public <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
