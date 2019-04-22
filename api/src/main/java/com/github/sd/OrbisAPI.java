@@ -263,7 +263,15 @@ public class OrbisAPI
                 if (credentials.getReferer() != null)
                     con.setRequestProperty("Referer", credentials.getReferer());
 
-                return read(endpoint, con);
+                long start = System.currentTimeMillis();
+                try
+                    {
+                        return read(endpoint, con);
+                    }
+                finally
+                    {
+                        System.out.println("Complete in " + (System.currentTimeMillis() - start) / 1000.0);
+                    }
             }
 
         public <T> T post(Endpoint endpoint, JSONObject obj) throws IOException
