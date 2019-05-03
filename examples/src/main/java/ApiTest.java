@@ -23,10 +23,17 @@ public class ApiTest
 
                 OrbisAPI api = new OrbisAPI();
                 api.setHostname(props.getProperty("hostname"));
-                api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
+                api.setCredentials(new PublicKeyTokenCredentials(props));
 
+                api.getQuotes("amzn");
+                api.getQuotes("amzn");
+                api.getQuotes("amzn");
+                api.getQuotes("amzn");
+                api.getQuotes("amzn");
+                api.getQuotes("amzn");
+                api.getQuotes("amzn");
                 //System.out.println((Object)api.get(() -> "/quotes/equity/shortability/{symbol}", "{symbol}", "MSFT"));
-                System.out.println(api.getQuotes("amzn").toString(2));
+                //System.out.println(api.getQuotes("amzn").toString(2));
                 //System.out.println(((JSONArray)api.get(ResearchMarketDates)).toString(2));
                 //System.out.println(((JSONObject)api.get(ResearchMarketDateLastOpen)).toString(2));
                 //System.out.println(((JSONObject)api.get(ResearchMarketDateCheck)).toString(2));
