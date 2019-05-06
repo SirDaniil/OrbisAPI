@@ -69,6 +69,16 @@ public class AdvisoryApiTest
                 //print(api.get(AdvisoryModelArphans));
                 //print(api.get(AdvisoryAllocation, "{allocationRef}", "CC19996899"));
 
+                JSONArray orders = api.get(AdvisoryModelAdjustmentPreview, "{adjustmentId}", 286);
+                for (int j = 0; j < orders.length(); j++)
+                    {
+                        JSONObject order = orders.getJSONObject(j);
+                        JSONObject acct = order.getJSONObject("account");
+                        JSONObject position = order.getJSONObject("position");
+                        System.out.print(acct.getString("accountNumber") + " >> " + order.optString("transType") + " " + order.optDouble("quantity") + " shares of " + order.optString("symbol") + " @ " + order.optDouble("expectedPx") + " (error: " + order.optString("error") + ")");
+                        System.out.println(" [" + position.optDouble("value") + " = " + position.optDouble("quantity") + " (" + order.optDouble("currentAllocationPct") + "%) ==> " + order.optDouble("targetAllocationValue") + "]");
+                    }
+
                 //adjustmentsModify(api);
                 //previewAdjustments(api);
                 //print(api.get(AdvisoryAccountStats));
@@ -271,7 +281,7 @@ public class AdvisoryApiTest
 
         private static void previewAdjustments(OrbisAPI api) throws IOException
             {
-                JSONArray list = api.get(AdvisoryModelAdjustments, "{modelId}", 1);
+                JSONArray list = api.get(AdvisoryModelAdjustments, "{modelId}", 56);
                 for (int i = 0; i < list.length(); i++)
                     {
                         JSONObject adj = list.getJSONObject(i);

@@ -160,7 +160,20 @@ public class AdvisoryEndpoints
 
         public static final Endpoint AdvisoryModelAdjustmentsModify = () -> "/v2/advisory/model/adjustments/modify/{action}";
 
-        public static final Endpoint AdvisoryModelAdjustmentPreview = () -> "/v2/advisory/model/adjustments/preview/{adjustmentId}";
+        public static final Endpoint AdvisoryModelAdjustmentPreview = new Endpoint()
+            {
+                @Override
+                public String getPath()
+                    {
+                        return "/v2/advisory/model/adjustments/preview/{adjustmentId}";
+                    }
+
+                @Override
+                public Class getDatatype()
+                    {
+                        return JSONArray.class;
+                    }
+            };
 
         public static final Endpoint AdvisoryModelAdjustmentSchedule = () -> "/v2/advisory/model/adjustments/preallocate";
 
