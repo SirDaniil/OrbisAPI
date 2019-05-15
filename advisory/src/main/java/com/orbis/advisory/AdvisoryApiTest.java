@@ -30,6 +30,16 @@ public class AdvisoryApiTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
+                /*try (InputStream in = api.getBinary(() -> "/v1/files/user/avatar", new HashMap<>()))
+                    {
+                        int size;
+                        int total = 0;
+                        byte[] buf = new byte[1024 * 1024];
+                        while ((size = in.read(buf)) > 0)
+                            total += size;
+
+                        System.out.println("Read " + total + " bytes");
+                    }*/
                 /*print(api.getQuotes("msft"));
                 print(api.getQuotes("msft"));
                 print(api.getQuotes("msft"));
@@ -62,14 +72,14 @@ public class AdvisoryApiTest
                 print(api.get(UserPreferences));
                 print(api.post(UserPreferencesDelete, new JSONObject().put("MY_TEST_KEY", "").put("API_KEY", "")));
                 print(api.get(UserPreferences));*/
-                //allocationTest(api);
+                allocationTest(api);
                 //directAllocationTest(api);
 
                 //costOrdersTest(api);
                 //print(api.get(AdvisoryModelArphans));
                 //print(api.get(AdvisoryAllocation, "{allocationRef}", "CC19996899"));
 
-                JSONArray orders = api.get(AdvisoryModelAdjustmentPreview, "{adjustmentId}", 286);
+                /*JSONArray orders = api.get(AdvisoryModelAdjustmentPreview, "{adjustmentId}", 301);
                 for (int j = 0; j < orders.length(); j++)
                     {
                         JSONObject order = orders.getJSONObject(j);
@@ -77,7 +87,7 @@ public class AdvisoryApiTest
                         JSONObject position = order.getJSONObject("position");
                         System.out.print(acct.getString("accountNumber") + " >> " + order.optString("transType") + " " + order.optDouble("quantity") + " shares of " + order.optString("symbol") + " @ " + order.optDouble("expectedPx") + " (error: " + order.optString("error") + ")");
                         System.out.println(" [" + position.optDouble("value") + " = " + position.optDouble("quantity") + " (" + order.optDouble("currentAllocationPct") + "%) ==> " + order.optDouble("targetAllocationValue") + "]");
-                    }
+                    }*/
 
                 //adjustmentsModify(api);
                 //previewAdjustments(api);
@@ -217,11 +227,45 @@ public class AdvisoryApiTest
                         api.post(AdvisoryModelAdjustmentsModify, new JSONObject(new ModelAdjustment().setId(adj.getLong("id"))), "{action}", "Cancel");
                     }
 
-                JSONArray accounts = api.get(AdvisoryModelAccounts, "{modelId}", modelId);
+                //JSONArray accounts = api.get(AdvisoryModelAccounts, "{modelId}", modelId);
                 JSONObject adj = api.post(AdvisoryModelAdjustmentsModify, createAdjustment(modelId), "{action}", "Create");
                 System.out.println("Created an adjustment: " + adj);
 
+                System.out.println("Suggested allocations:");
+                JSONArray orders = api.get(AdvisoryModelAdjustmentPreview, "{adjustmentId}", adj.get("id"));
                 List<Order> targets = new ArrayList<>();
+
+                for (int j = 0; j < orders.length(); j++)
+                    {
+                        JSONObject order = orders.getJSONObject(j);
+                        JSONObject acct = order.getJSONObject("account");
+                        JSONObject position = order.getJSONObject("position");
+                        System.out.print(acct.getString("accountNumber") + " >> " + order.optString("transType") + " " + order.optDouble("quantity") + " shares of " + order.optString("symbol") + " @ " + order.optDouble("expectedPx") + " (error: " + order.optString("error") + ")");
+                        System.out.println(" [" + position.optDouble("value") + " = " + position.optDouble("quantity") + " (" + order.optDouble("currentAllocationPct") + "%) ==> " + order.optDouble("targetAllocationValue") + "]");
+
+                        if (order.optString("error").length() > 0)
+                            continue;
+
+                        Order o = new Order();
+                        o.setQuantity(order.getDouble("quantity"));
+                        o.setAccount(new UserAccount().setAccountNumber(acct.getString("accountNumber")));
+                        o.setTransType(order.getString("transType"));
+                        targets.add(o);
+                    }
+
+                System.out.println("Preallocating");
+
+                AllocationRequest request = new AllocationRequest();
+                request.setAdjustment(new ModelAdjustment().setId(adj.getLong("id")));
+                request.setAllocation(new Allocation().setTargets(targets).setTransaction(Transaction.fromCode(targets.get(0).getTransType())));
+
+                JSONObject rsp = api.post(AdvisoryModelAdjustmentSchedule, new JSONObject(request));
+                System.out.println("Allocation scheduled: " + rsp);
+
+                rsp = api.post(AdvisoryModelAdjustmentTrigger, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));
+                System.out.println("Triggered: " + rsp);
+
+                /*List<Order> targets = new ArrayList<>();
                 for (int i = 0; i < accounts.length(); i++)
                     {
                         JSONObject account = accounts.getJSONObject(i).getJSONObject("account");
@@ -235,8 +279,8 @@ public class AdvisoryApiTest
                 JSONObject rsp = api.post(AdvisoryModelAdjustmentSchedule, new JSONObject(request));
                 System.out.println("Allocation scheduled: " + rsp.getString("allocationRef"));
 
-                /*System.out.println("Cancelling...");
-                rsp = api.post(AdvisoryModelAllocationCancel, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));*/
+                *//*System.out.println("Cancelling...");
+                rsp = api.post(AdvisoryModelAllocationCancel, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));*//*
 
 
 
@@ -244,7 +288,7 @@ public class AdvisoryApiTest
 
                 rsp = api.post(AdvisoryModelAdjustmentTrigger, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));
                 System.out.println("Triggered: " + rsp.getString("allocationRef"));
-                print(rsp);
+                print(rsp);*/
             }
 
         private static JSONObject createAdjustment(long modelId)

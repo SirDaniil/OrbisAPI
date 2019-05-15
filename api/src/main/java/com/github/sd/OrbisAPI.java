@@ -212,6 +212,68 @@ public class OrbisAPI
                 return get(endpoint, new HashMap<>());
             }
 
+        public InputStream getBinary(Endpoint endpoint, Map<String, Object> params) throws IOException
+            {
+                StringBuilder args = new StringBuilder();
+                String path = endpoint.getPath();
+
+                for (Map.Entry<String, Object> entry : params.entrySet())
+                    {
+                        String key = entry.getKey();
+                        Object value = entry.getValue();
+
+                        if (key == null)
+                            key = "";
+
+                        if (value == null)
+                            value = "";
+
+                        if (key.startsWith("{") && key.endsWith("}"))
+                            path = path.replace(key, value.toString());
+                        else if (value instanceof Collection)
+                            {
+                                Collection col = (Collection) value;
+                                for (Object item : col)
+                                    {
+                                        args.append(encode(key));
+                                        args.append('=');
+                                        args.append(encode(item));
+                                        args.append('&');
+                                    }
+                            }
+                        else
+                            {
+                                args.append(encode(key));
+                                args.append('=');
+                                args.append(encode(value));
+                                args.append('&');
+                            }
+                    }
+
+                String targetUrl = scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : "");
+                System.out.println(targetUrl);
+                URL url = new URL(targetUrl);
+                HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
+                con.setRequestProperty("Accept-Encoding", "gzip");
+                con.setUseCaches(false);
+                con.setConnectTimeout(1000 * 30);
+                con.setReadTimeout(1000 * 30);
+
+                if (credentials.getReferer() != null)
+                    con.setRequestProperty("Referer", credentials.getReferer());
+
+                int code = con.getResponseCode();
+                String content = con.getContentEncoding();
+
+                if (code == 204)
+                    return null;
+
+                InputStream stream = (oks.contains(code) ? con.getInputStream() : con.getErrorStream());
+
+                return "gzip".equals(content) ? new GZIPInputStream(stream) : stream;
+            }
+
         public <T> T get(Endpoint endpoint, Map<String, Object> params) throws IOException
             {
                 StringBuilder args = new StringBuilder();
@@ -340,6 +402,10 @@ public class OrbisAPI
 
                 if (credentials.getReferer() != null)
                     con.setRequestProperty("Referer", credentials.getReferer());
+
+                System.out.println("------------- POST ---------------");
+                System.out.println(data);
+                System.out.println("//----------- POST ---------------");
 
                 try (Writer out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), StandardCharsets.UTF_8)))
                     {
