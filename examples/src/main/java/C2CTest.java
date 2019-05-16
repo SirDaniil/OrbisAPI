@@ -26,7 +26,6 @@ public class C2CTest
                 OrbisAPI api = new OrbisAPI();
                 api.setCredentials(c2c);
                 api.setHostname(hostname);
-                System.out.println(api.getQuotes("msft,goog").toString(2));
-                System.out.println(api.getChartHistorical("googl", "1y").toString(2));
+                System.out.println(api.getUserInfo().toString(2));
             }
     }
