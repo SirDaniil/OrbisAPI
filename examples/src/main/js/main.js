@@ -13,7 +13,7 @@ const key = jws.sign({
         jti: uuidv4(),
         iss: 'Sample API v1.0',
         iat: Math.floor(Date.now() / 1000),
-        eat: Math.floor(Date.now() / 1000) + 60 * 1000,
+        exp: Math.floor((Date.now() + 60 * 1000) / 1000),
         entity: config['c2c.entity'],
         group: config['c2c.group']
     },
