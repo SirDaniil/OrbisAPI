@@ -29,6 +29,7 @@ public class AdvisoryApiTest
                 OrbisAPI api = new OrbisAPI();
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
+                print(api.get(UserInfo));
 
                 /*try (InputStream in = api.getBinary(() -> "/v1/files/user/avatar", new HashMap<>()))
                     {
@@ -72,7 +73,7 @@ public class AdvisoryApiTest
                 print(api.get(UserPreferences));
                 print(api.post(UserPreferencesDelete, new JSONObject().put("MY_TEST_KEY", "").put("API_KEY", "")));
                 print(api.get(UserPreferences));*/
-                allocationTest(api);
+                //allocationTest(api);
                 //directAllocationTest(api);
 
                 //costOrdersTest(api);
