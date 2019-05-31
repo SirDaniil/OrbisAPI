@@ -131,7 +131,7 @@ public class AdvisoryApiTest
                 order.setQuantity(ordeQty);
                 order.setTransaction(Transaction.SELL);
 
-                ModelEquityOrder request = new ModelEquityOrder();
+                AdvisoryEquityOrder request = new AdvisoryEquityOrder();
                 request.setModel(new PortfolioModel().setId(modelId));
                 request.setOrder(order);
 

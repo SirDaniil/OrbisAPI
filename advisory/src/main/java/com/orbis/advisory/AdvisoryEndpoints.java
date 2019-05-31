@@ -30,6 +30,21 @@ public class AdvisoryEndpoints
                     }
             };
 
+        public static final Endpoint BranchInventories = new Endpoint()
+            {
+                @Override
+                public String getPath()
+                    {
+                        return "/v1/branch/inventory";
+                    }
+
+                @Override
+                public Class getDatatype()
+                    {
+                        return JSONArray.class;
+                    }
+            };
+
         public static final Endpoint PositionSearch = new Endpoint()
             {
                 @Override
@@ -184,6 +199,10 @@ public class AdvisoryEndpoints
         public static final Endpoint AdvisoryModelAllocate = () -> "/v2/advisory/model/orders/allocate";
 
         public static final Endpoint AdvisoryModelPlaceEquity = () -> "/orders/v2/advisory/equity/place";
+
+        public static final Endpoint AdvisoryModelPreviewEquity = () -> "/orders/v2/advisory/equity/preview";
+
+        public static final Endpoint OrderCancel = () -> "/orders/v2/cancel";
 
         public static final Endpoint AdvisoryModelPortfolios = () -> "/v2/advisory/model/portfolios/{modelId}";
 
