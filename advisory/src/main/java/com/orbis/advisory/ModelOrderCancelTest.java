@@ -5,8 +5,7 @@ import java.util.*;
 import com.github.*;
 import com.github.sd.*;
 import org.json.*;
-import static com.orbis.advisory.AdvisoryEndpoints.AdvisoryModelPlaceEquity;
-import static com.orbis.advisory.AdvisoryEndpoints.OrderCancel;
+import static com.orbis.advisory.AdvisoryEndpoints.*;
 
 /**
  * User: Daniil Sosonkin
@@ -31,14 +30,7 @@ public class ModelOrderCancelTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
-                JSONObject order = new JSONObject();
-                order.put("orderRef", "CC20005004");
-
-                JSONObject request = new JSONObject();
-                request.put("order", order);
-                System.out.println(api.post(OrderCancel, request).toString());
-
-                /*EquityOrder order = new EquityOrder();
+                EquityOrder order = new EquityOrder();
                 order.setQuote(new Quote("IBM"));
                 order.setOrderType(OrderType.LIMIT);
                 order.setQuantity(2_000);
@@ -50,7 +42,29 @@ public class ModelOrderCancelTest
                 request.setOrder(order);
 
                 JSONObject resp = api.post(AdvisoryModelPlaceEquity, new JSONObject(request));
-                String orderRef = resp.getString("OrderRef");
-                System.out.println("Order placed as: " + orderRef);*/
+                order.setOrderRef(resp.getString("OrderRef"));
+                System.out.println("Order placed as: " + order.getOrderRef());
+
+                waitForAccept(api, order.getOrderRef());
+
+                JSONObject jo = new JSONObject();
+                jo.put("orderRef", order.getOrderRef());
+
+                JSONObject cancel = new JSONObject();
+                cancel.put("order", jo);
+                System.out.println(api.post(OrderCancel, cancel).toString());
+
+            }
+
+        private static void waitForAccept(OrbisAPI api, String orderRef) throws IOException, InterruptedException
+            {
+                String status;
+                do
+                    {
+                        Thread.sleep(1000);
+                        JSONObject result = api.get(OrdersStatus, "{orderRef}", orderRef);
+                        status = result.getString("translatedStatus");
+
+                    } while (!"W".equals(status));
             }
     }
