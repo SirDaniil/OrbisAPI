@@ -204,6 +204,8 @@ public class AdvisoryEndpoints
 
         public static final Endpoint OrderCancel = () -> "/orders/v2/cancel";
 
+        public static final Endpoint OrderReplace = () -> "/orders/v2/replace";
+
         public static final Endpoint AdvisoryModelPortfolios = () -> "/v2/advisory/model/portfolios/{modelId}";
 
         public static final Endpoint AdvisoryModelPerformance = new Endpoint() {
