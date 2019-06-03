@@ -1,10 +1,6 @@
 import java.io.*;
-import java.text.*;
 import java.util.*;
-import java.util.concurrent.atomic.*;
 import com.github.sd.*;
-import org.json.*;
-import static com.github.sd.Endpoints.*;
 
 /**
  * User: Daniil Sosonkin
@@ -25,21 +21,21 @@ public class ApiTest
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyTokenCredentials(props));
 
+                /*api.getQuotes("amzn");
                 api.getQuotes("amzn");
                 api.getQuotes("amzn");
                 api.getQuotes("amzn");
                 api.getQuotes("amzn");
                 api.getQuotes("amzn");
-                api.getQuotes("amzn");
-                api.getQuotes("amzn");
+                api.getQuotes("amzn");*/
                 //System.out.println((Object)api.get(() -> "/quotes/equity/shortability/{symbol}", "{symbol}", "MSFT"));
                 //System.out.println(api.getQuotes("amzn").toString(2));
                 //System.out.println(((JSONArray)api.get(ResearchMarketDates)).toString(2));
                 //System.out.println(((JSONObject)api.get(ResearchMarketDateLastOpen)).toString(2));
                 //System.out.println(((JSONObject)api.get(ResearchMarketDateCheck)).toString(2));
                 //System.out.println(((JSONObject)api.get(OrbisAPI.Endpoint.Research, "{symbol}", "baba")).toString(2));
-                /*System.out.println(api.getCorporateActionTypes());
-                System.out.println(api.corporateActionSearch(CorporateActionSearch.Builder().type("Dividend")).toString(2));*/
+                System.out.println(api.getCorporateActionTypes());
+                System.out.println(api.corporateActionSearch(CorporateActionSearch.Builder().type("Dividend")).toString());
                 //System.out.println(api.news(NewsFilter.Builder().filter( new FilterKey(FilterKey.Provider).add(Providers.Sec).add(Providers.TenkWiz) )).toString(2));
                 //System.out.println(api.getChartHistorical("AAPL", "1y").toString(2));
                 //System.out.println(api.news("AAPL"));
