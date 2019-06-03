@@ -49,7 +49,7 @@ public class ModelOrderReplaceTest
                 waitForAccept(api, order.getOrderRef());
 
                 // Replace the order
-                order.setLimitPrice(2);
+                order.setLimitPrice(1.01);
 
                 JSONObject replace = new JSONObject();
                 replace.put("order", new JSONObject(order));
