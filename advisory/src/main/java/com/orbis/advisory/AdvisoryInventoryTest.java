@@ -45,7 +45,7 @@ public class AdvisoryInventoryTest
                         request.setInventory(true);
                         request.setOrder(order);
 
-                        JSONObject resp = api.post(AdvisoryModelPlaceEquity, new JSONObject(request));
+                        JSONObject resp = api.post(AdvisoryEquityPlace, new JSONObject(request));
                         String orderRef = resp.getString("OrderRef");
                         System.out.println("Order placed as: " + orderRef);
                         order.setOrderRef(orderRef);

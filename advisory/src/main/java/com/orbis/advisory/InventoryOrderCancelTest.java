@@ -11,7 +11,7 @@ import static com.orbis.advisory.AdvisoryEndpoints.*;
  * User: Daniil Sosonkin
  * Date: 5/29/2019 12:46 PM
  */
-public class ModelOrderCancelTest
+public class InventoryOrderCancelTest
     {
         public static void main(String[] args) throws Exception
             {
@@ -38,7 +38,7 @@ public class ModelOrderCancelTest
                 order.setTransaction(Transaction.BUY);
 
                 AdvisoryEquityOrder request = new AdvisoryEquityOrder();
-                request.setModel(new PortfolioModel().setId(1));
+                request.setInventory(true);
                 request.setOrder(order);
 
                 JSONObject resp = api.post(AdvisoryEquityPlace, new JSONObject(request));

@@ -198,9 +198,9 @@ public class AdvisoryEndpoints
 
         public static final Endpoint AdvisoryModelAllocate = () -> "/v2/advisory/model/orders/allocate";
 
-        public static final Endpoint AdvisoryModelPlaceEquity = () -> "/orders/v2/advisory/equity/place";
+        public static final Endpoint AdvisoryEquityPlace = () -> "/orders/v2/advisory/equity/place";
 
-        public static final Endpoint AdvisoryModelPreviewEquity = () -> "/orders/v2/advisory/equity/preview";
+        public static final Endpoint AdvisoryEquityPreview = () -> "/orders/v2/advisory/equity/preview";
 
         public static final Endpoint OrderCancel = () -> "/orders/v2/cancel";
 
