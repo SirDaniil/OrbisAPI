@@ -11,24 +11,11 @@ import static com.orbis.advisory.AdvisoryEndpoints.*;
  * User: Daniil Sosonkin
  * Date: 5/29/2019 12:46 PM
  */
-public class ModelOrderReplaceTest
+public class ModelOrderReplaceTest extends Advisory
     {
         public static void main(String[] args) throws Exception
             {
-                Properties props = new Properties();
-                try (InputStream in = new FileInputStream("advisory.conf"))
-                    {
-                        props.load(in);
-                    }
-
-                String domain = props.getProperty("domain");
-                String platformId = props.getProperty("platform.id");
-                String username = props.getProperty("username");
-                String password = props.getProperty("password");
-
-                OrbisAPI api = new OrbisAPI();
-                api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
-                api.setHostname(domain);
+                OrbisAPI api = createAPI();
 
                 EquityOrder order = new EquityOrder();
                 order.setQuote(new Quote("IBM"));

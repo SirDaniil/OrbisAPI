@@ -251,7 +251,6 @@ public class OrbisAPI
                     }
 
                 String targetUrl = scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : "");
-                System.out.println(targetUrl);
                 URL url = new URL(targetUrl);
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
@@ -313,7 +312,6 @@ public class OrbisAPI
                     }
 
                 String targetUrl = scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : "");
-                System.out.println(targetUrl);
                 URL url = new URL(targetUrl);
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
@@ -386,8 +384,6 @@ public class OrbisAPI
 
                 String data = obj.toJSON();
                 URL url = new URL(scheme + "://" + hostname + api + path);
-                System.out.println(url);
-                System.out.println(pathParams);
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setRequestProperty("Content-Length", String.valueOf(data.length()));
@@ -402,10 +398,6 @@ public class OrbisAPI
 
                 if (credentials.getReferer() != null)
                     con.setRequestProperty("Referer", credentials.getReferer());
-
-                System.out.println("------------- POST ---------------");
-                System.out.println(data);
-                System.out.println("//----------- POST ---------------");
 
                 try (Writer out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), StandardCharsets.UTF_8)))
                     {
