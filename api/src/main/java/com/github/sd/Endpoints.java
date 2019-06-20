@@ -210,4 +210,6 @@ public class Endpoints
                     return JSONArray.class;
                 }
         };
+
+        public static final Endpoint UserInfo = () -> "/user/info";
     }

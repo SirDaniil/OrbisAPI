@@ -94,6 +94,11 @@ public class OrbisAPI
                 return ws;
             }
 
+        public JSONObject getUserInfo() throws IOException
+            {
+                return get(Endpoints.UserInfo);
+            }
+
         public JSONArray getChartIntraday(String symbol) throws IOException
             {
                 return get(Endpoints.ChartsIntraday, "symbol", symbol);
