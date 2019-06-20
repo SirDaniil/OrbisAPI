@@ -28,7 +28,19 @@ public class CorporateActionSearch extends HashMap<String, Object>
                 return this;
             }
 
+        public CorporateActionSearch dateFrom(String date)
+            {
+                put("dateFrom", date);
+                return this;
+            }
+
         public CorporateActionSearch dateTo(Date date)
+            {
+                put("dateTo", date);
+                return this;
+            }
+
+        public CorporateActionSearch dateTo(String date)
             {
                 put("dateTo", date);
                 return this;

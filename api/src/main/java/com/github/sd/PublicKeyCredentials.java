@@ -46,10 +46,8 @@ public class PublicKeyCredentials implements Credentials
                                 .build();
                         EncryptedJWT jwt = new EncryptedJWT(header, claimSet);
 
-                        long start = System.currentTimeMillis();
                         RSAEncrypter encrypter = new RSAEncrypter(publicRsaKey);
                         jwt.encrypt(encrypter);
-                        System.out.println("(-) Encrypted in: " + (System.currentTimeMillis() - start) / 1000.0);
 
                         return jwt.serialize();
                     }

@@ -1,7 +1,6 @@
 package com.github.sd;
 
 import java.io.*;
-import java.lang.reflect.*;
 import java.net.*;
 import java.nio.*;
 import java.nio.charset.*;
@@ -197,65 +196,54 @@ public class OrbisAPI
 
         public <T> T get(Endpoint endpoint, Map<String, Object> params) throws IOException
             {
-                long start = System.currentTimeMillis();
-                try
+                StringBuilder args = new StringBuilder();
+                String path = endpoint.getPath();
+
+                for (Map.Entry<String, Object> entry : params.entrySet())
                     {
-                        StringBuilder args = new StringBuilder();
-                        String path = endpoint.getPath();
+                        String key = entry.getKey();
+                        Object value = entry.getValue();
 
-                        for (Map.Entry<String, Object> entry : params.entrySet())
+                        if (key == null)
+                            key = "";
+
+                        if (value == null)
+                            value = "";
+
+                        if (key.startsWith("{") && key.endsWith("}"))
+                            path = path.replace(key, value.toString());
+                        else if (value instanceof Collection)
                             {
-                                String key = entry.getKey();
-                                Object value = entry.getValue();
-
-                                if (key == null)
-                                    key = "";
-
-                                if (value == null)
-                                    value = "";
-
-                                if (key.startsWith("{") && key.endsWith("}"))
-                                    path = path.replace(key, value.toString());
-                                else if (value instanceof Collection)
-                                    {
-                                        Collection col = (Collection) value;
-                                        for (Object item : col)
-                                            {
-                                                args.append(encode(key));
-                                                args.append('=');
-                                                args.append(encode(item));
-                                                args.append('&');
-                                            }
-                                    }
-                                else
+                                Collection col = (Collection) value;
+                                for (Object item : col)
                                     {
                                         args.append(encode(key));
                                         args.append('=');
-                                        args.append(encode(value));
+                                        args.append(encode(item));
                                         args.append('&');
                                     }
                             }
-
-                        long begin = System.currentTimeMillis();
-                        String auth_scheme = credentials.getScheme();
-                        String auth_token = credentials.getToken();
-                        System.out.println("(#) " + (System.currentTimeMillis() - begin) / 1000.0 + "s.");
-
-                        URL url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
-                        HttpURLConnection con = (HttpURLConnection)url.openConnection();
-                        con.setRequestProperty("Authorization", auth_scheme + " " + Base64.encodeBytes(auth_token.getBytes()));
-                        con.setRequestProperty("Accept-Encoding", "gzip");
-                        con.setUseCaches(false);
-                        con.setConnectTimeout(1000 * 30);
-                        con.setReadTimeout(1000 * 30);
-                        System.out.println("(s) " + endpoint.getPath() + ": [" + (System.currentTimeMillis() - start) / 1000.0 + "]");
-
-                        return read(endpoint, con);
+                        else
+                            {
+                                args.append(encode(key));
+                                args.append('=');
+                                args.append(encode(value));
+                                args.append('&');
+                            }
                     }
-                finally
-                    {
-                        System.out.println("(t) " + endpoint.getPath() + ": [" + (System.currentTimeMillis() - start) / 1000.0 + "]");
-                    }
+
+                String auth_scheme = credentials.getScheme();
+                String auth_token = credentials.getToken();
+
+                URL url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
+                HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                con.setRequestProperty("Authorization", auth_scheme + " " + Base64.encodeBytes(auth_token.getBytes()));
+                con.setRequestProperty("Accept-Encoding", "gzip");
+                con.setUseCaches(false);
+                con.setConnectTimeout(1000 * 30);
+                con.setReadTimeout(1000 * 30);
+
+                return read(con);
             }
 
         public <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
@@ -280,7 +268,7 @@ public class OrbisAPI
                         out.flush();
                     }
 
-                return read(endpoint, con);
+                return read(con);
             }
 
         private String encode(Object o)
@@ -288,9 +276,9 @@ public class OrbisAPI
                 return URLEncoder.encode(o.toString(), StandardCharsets.ISO_8859_1);
             }
 
-        private <T> T read(Endpoint endpoint, HttpURLConnection con) throws IOException
+        private <T> T read(HttpURLConnection con) throws IOException
             {
-                T response;
+                T response = null;
                 int code = con.getResponseCode();
                 String content = con.getContentEncoding();
 
@@ -301,18 +289,17 @@ public class OrbisAPI
                     {
                         BufferedReader in = new BufferedReader(new InputStreamReader("gzip".equals(content) ? new GZIPInputStream(stream) : stream));
                         JSONTokener tokener = new JSONTokener(in);
-                        try
-                            {
-                                response = (T)(oks.contains(code) ? endpoint.getDatatype().getConstructor(JSONTokener.class).newInstance(tokener) : new JSONObject(tokener));
-                            }
-                        catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
-                            {
-                                throw new IOException(e);
-                            }
+                        char ch = tokener.nextClean();
+                        tokener.back();
+
+                        if (ch == '[')
+                            response = (T)new JSONArray(tokener);
+                        else if (ch == '{')
+                            response = (T)new JSONObject(tokener);
                     }
 
                 if (!oks.contains(code))
-                    throw new IOException(response.toString());
+                    throw new IOException(response == null ? "Bad request." : response.toString());
 
                 return response;
             }

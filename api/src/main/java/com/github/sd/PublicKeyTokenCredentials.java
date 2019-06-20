@@ -66,26 +66,20 @@ public class PublicKeyTokenCredentials implements Credentials
                                 .build();
                         EncryptedJWT jwt = new EncryptedJWT(header, claimSet);
 
-                        long start = System.currentTimeMillis();
                         RSAEncrypter encrypter = new RSAEncrypter(publicRsaKey);
                         jwt.encrypt(encrypter);
-                        System.out.println("(-) Encrypted in: " + (System.currentTimeMillis() - start) / 1000.0);
 
                         String requestToken = jwt.serialize();
-                        System.out.println("(*) Token: " + requestToken);
                         URL url = new URL(hostname + "/api/auth/v1/token");
-                        System.out.println("(*) URL: " + url);
                         HttpURLConnection con = (HttpURLConnection)url.openConnection();
                         con.setRequestProperty("Authorization", "Key " + Base64.encodeBytes(requestToken.getBytes()));
                         con.setRequestProperty("Accept-Encoding", "gzip");
                         con.setUseCaches(false);
                         con.setConnectTimeout(1000 * 30);
                         con.setReadTimeout(1000 * 30);
-                        System.out.println("(s) /auth/v1/token: [" + (System.currentTimeMillis() - start) / 1000.0 + "]");
 
                         int code = con.getResponseCode();
                         String content = con.getContentEncoding();
-                        System.out.println("(*) Code: " + code);
 
                         JSONObject response;
                         try (InputStream stream = (code == 200 ? con.getInputStream() : con.getErrorStream()))
@@ -98,7 +92,6 @@ public class PublicKeyTokenCredentials implements Credentials
                         if (code != 200)
                             throw new IOException(response.toString());
 
-                        System.out.println("(*) Response: " + response.toString(2));
                         return response.getString("payload");
                     }
                 catch (Exception e)
