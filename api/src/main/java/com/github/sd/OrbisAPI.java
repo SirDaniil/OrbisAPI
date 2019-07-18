@@ -56,7 +56,7 @@ public class OrbisAPI
 
         public WebSocketClient openWebSocket(OrbisApiClient client) throws Exception
             {
-                WebSocketClient ws = new WebSocketClient(new URI((scheme.equals("http") ? "ws" : "wss") + "://" + hostname + "/stream?auth=" + URLEncoder.encode(credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()), StandardCharsets.ISO_8859_1)))
+                WebSocketClient ws = new WebSocketClient(new URI((scheme.equals("http") ? "ws" : "wss") + "://" + hostname + "/" + client.getEndpoint() + "?auth=" + URLEncoder.encode(credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()), StandardCharsets.ISO_8859_1)))
                     {
                         @Override
                         public void onOpen(ServerHandshake handshakedata)

@@ -19,4 +19,9 @@ public interface OrbisApiClient
 
         default void onMessage(ByteBuffer bytes)
             { }
+
+        default String getEndpoint()
+            {
+                return "/stream";
+            }
     }
