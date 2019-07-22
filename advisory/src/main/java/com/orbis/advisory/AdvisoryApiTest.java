@@ -260,10 +260,10 @@ public class AdvisoryApiTest
                 request.setAdjustment(new ModelAdjustment().setId(adj.getLong("id")));
                 request.setAllocation(new Allocation().setTargets(targets).setTransaction(Transaction.fromCode(targets.get(0).getTransType())));
 
-                JSONObject rsp = api.post(AdvisoryModelAdjustmentSchedule, new JSONObject(request));
+                JSONObject rsp = api.post(AllocationPreallocate, new JSONObject(request));
                 System.out.println("Allocation scheduled: " + rsp);
 
-                rsp = api.post(AdvisoryModelAdjustmentTrigger, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));
+                rsp = api.post(AllocationTrigger, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));
                 System.out.println("Triggered: " + rsp);
 
                 /*List<Order> targets = new ArrayList<>();
@@ -277,17 +277,17 @@ public class AdvisoryApiTest
                 request.setAdjustment(new ModelAdjustment().setId(adj.getLong("id")));
                 request.setAllocation(new Allocation().setTargets(targets).setTransaction(Transaction.BUY));
 
-                JSONObject rsp = api.post(AdvisoryModelAdjustmentSchedule, new JSONObject(request));
+                JSONObject rsp = api.post(AllocationPreallocate, new JSONObject(request));
                 System.out.println("Allocation scheduled: " + rsp.getString("allocationRef"));
 
                 *//*System.out.println("Cancelling...");
-                rsp = api.post(AdvisoryModelAllocationCancel, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));*//*
+                rsp = api.post(AllocationCancel, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));*//*
 
 
 
                 System.out.println("Triggering...");
 
-                rsp = api.post(AdvisoryModelAdjustmentTrigger, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));
+                rsp = api.post(AllocationTrigger, new JSONObject(new Allocation().setAllocationRef(rsp.getString("allocationRef"))));
                 System.out.println("Triggered: " + rsp.getString("allocationRef"));
                 print(rsp);*/
             }

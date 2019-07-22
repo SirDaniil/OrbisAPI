@@ -190,12 +190,13 @@ public class AdvisoryEndpoints
                     }
             };
 
-        public static final Endpoint AdvisoryModelAdjustmentSchedule = () -> "/v2/advisory/model/adjustments/preallocate";
+        // General allocations
+        public static final Endpoint AllocationPreallocate = () -> "/v2/allocations/preallocate";
+        public static final Endpoint AllocationTrigger = () -> "/v2/allocations/trigger";
+        public static final Endpoint AllocationValidate = () -> "/v2/allocations/validate";
+        public static final Endpoint AllocationCancel = () -> "/v2/allocations/cancel";
 
-        public static final Endpoint AdvisoryModelAdjustmentTrigger = () -> "/v2/advisory/model/adjustments/allocation/trigger";
-
-        public static final Endpoint AdvisoryModelAllocationCancel = () -> "/v2/advisory/model/adjustments/allocation/cancel";
-
+        // Order allocations
         public static final Endpoint AdvisoryModelAllocate = () -> "/v2/advisory/model/orders/allocate";
 
         public static final Endpoint AdvisoryEquityPlace = () -> "/orders/v2/advisory/equity/place";
