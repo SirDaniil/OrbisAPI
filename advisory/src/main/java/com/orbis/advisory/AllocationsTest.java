@@ -19,15 +19,15 @@ public class AllocationsTest extends Advisory
                 // schedule the allocation
                 JSONObject trclient1 = new JSONObject();
                 trclient1.put("account", new JSONObject().put("accountNumber", "TRCLIENT1"));
-                trclient1.put("quantity", 100);
+                trclient1.put("quantity", 500);
 
                 JSONObject trclient2 = new JSONObject();
                 trclient2.put("account", new JSONObject().put("accountNumber", "TRCLIENT2"));
-                trclient2.put("quantity", 100);
+                trclient2.put("quantity", 500);
 
                 JSONObject allocation = new JSONObject();
                 allocation.put("quote", new JSONObject().put("symbol", "F"));
-                allocation.put("transaction", Transaction.BUY);
+                allocation.put("transaction", Transaction.SELL);
                 allocation.put("targets", new JSONArray().put(trclient1).put(trclient2));
 
                 var request = new JSONObject().put("allocation", allocation);
