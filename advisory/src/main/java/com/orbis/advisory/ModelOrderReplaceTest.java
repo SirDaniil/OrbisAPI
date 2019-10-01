@@ -1,7 +1,6 @@
 package com.orbis.advisory;
 
 import java.io.*;
-import java.util.*;
 import com.github.*;
 import com.github.sd.*;
 import org.json.*;
@@ -25,7 +24,7 @@ public class ModelOrderReplaceTest extends Advisory
                 order.setTransaction(Transaction.BUY);
 
                 // Submit the order
-                AdvisoryEquityOrder request = new AdvisoryEquityOrder();
+                var request = new AdvisoryOrder<EquityOrder>();
                 request.setModel(new PortfolioModel().setId(1));
                 request.setOrder(order);
 

@@ -11,7 +11,7 @@ import static com.orbis.advisory.AdvisoryEndpoints.*;
  * User: Daniil Sosonkin
  * Date: 5/29/2019 12:46 PM
  */
-public class ModelOrderCancelTest
+public class MutualFundTest
     {
         public static void main(String[] args) throws Exception
             {
@@ -30,41 +30,25 @@ public class ModelOrderCancelTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
-                EquityOrder order = new EquityOrder();
-                order.setQuote(new Quote("IBM"));
-                order.setOrderType(OrderType.LIMIT);
-                order.setQuantity(2_000);
-                order.setLimitPrice(1);
+                var order = new MutualFundOrder();
+                order.setQuote(new Quote("FCPEX"));
+                order.setValue(1000);
                 order.setTransaction(Transaction.BUY);
 
-                var request = new AdvisoryOrder<EquityOrder>();
-                request.setModel(new PortfolioModel().setId(1));
+                var request = new AccountOrder<MutualFundOrder>();
+                request.setAccount(new UserAccount().setAccountNumber("TRCLIENT1"));
                 request.setOrder(order);
 
-                JSONObject resp = api.post(AdvisoryEquityPlace, new JSONObject(request));
-                order.setOrderRef(resp.getString("OrderRef"));
-                System.out.println("Order placed as: " + order.getOrderRef());
-
-                waitForAccept(api, order.getOrderRef());
+                JSONObject resp = api.post(MutualFundsPlace, new JSONObject(request));
+                String orderRef = resp.getString("OrderRef");
+                System.out.println("Order placed as: " + orderRef);
+                order.setOrderRef(orderRef);
 
                 JSONObject jo = new JSONObject();
                 jo.put("orderRef", order.getOrderRef());
 
                 JSONObject cancel = new JSONObject();
                 cancel.put("order", jo);
-                System.out.println(api.post(OrderCancel, cancel).toString());
-
-            }
-
-        private static void waitForAccept(OrbisAPI api, String orderRef) throws IOException, InterruptedException
-            {
-                String status;
-                do
-                    {
-                        Thread.sleep(1000);
-                        JSONObject result = api.get(OrdersStatus, "{orderRef}", orderRef);
-                        status = result.getString("translatedStatus");
-
-                    } while (!"W".equals(status));
+                System.out.println("Order cancellation: " + api.post(OrderCancel, cancel).toString());
             }
     }

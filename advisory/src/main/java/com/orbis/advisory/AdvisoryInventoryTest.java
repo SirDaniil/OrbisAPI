@@ -41,7 +41,7 @@ public class AdvisoryInventoryTest
                         order.setQuantity(500 + i);
                         order.setTransaction(Transaction.BUY);
 
-                        AdvisoryEquityOrder request = new AdvisoryEquityOrder();
+                        var request = new AdvisoryOrder<EquityOrder>();
                         request.setInventory(true);
                         request.setOrder(order);
 

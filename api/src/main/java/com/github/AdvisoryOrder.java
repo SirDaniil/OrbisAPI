@@ -4,11 +4,11 @@ package com.github;
  * User: Daniil Sosonkin
  * Date: 1/16/2018 9:56 AM
  */
-public class AdvisoryEquityOrder
+public class AdvisoryOrder<T extends ASingleOrder>
     {
         private Boolean inventory;
         private PortfolioModel model;
-        private EquityOrder order;
+        private T order;
 
         public PortfolioModel getModel()
             {
@@ -21,12 +21,12 @@ public class AdvisoryEquityOrder
                 this.inventory = null;
             }
 
-        public EquityOrder getOrder()
+        public T getOrder()
             {
                 return order;
             }
 
-        public void setOrder(EquityOrder order)
+        public void setOrder(T order)
             {
                 this.order = order;
             }

@@ -196,6 +196,10 @@ public class AdvisoryEndpoints
         public static final Endpoint AllocationValidate = () -> "/v2/allocations/validate";
         public static final Endpoint AllocationCancel = () -> "/v2/allocations/cancel";
 
+        // Mutual funds
+        public static final Endpoint MutualFundsPreview = () -> "/orders/v2/mf/preview";
+        public static final Endpoint MutualFundsPlace = () -> "/orders/v2/mf/place";
+
         // Order allocations
         public static final Endpoint AdvisoryModelAllocate = () -> "/v2/advisory/model/orders/allocate";
 

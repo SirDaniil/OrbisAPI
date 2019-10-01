@@ -37,7 +37,7 @@ public class InventoryOrderReplaceTest
                 order.setLimitPrice(1);
                 order.setTransaction(Transaction.BUY);
 
-                AdvisoryEquityOrder request = new AdvisoryEquityOrder();
+                var request = new AdvisoryOrder<EquityOrder>();
                 request.setInventory(true);
                 request.setOrder(order);
 
