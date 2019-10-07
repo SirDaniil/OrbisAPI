@@ -6,6 +6,8 @@ package com.github;
  */
 public class MutualFundOrder extends ASingleOrder
     {
+        private MutualFundOrder substitution;
+        private boolean full;
         private double value;
         private double shares;
 
@@ -27,5 +29,25 @@ public class MutualFundOrder extends ASingleOrder
         public void setShares(double shares)
             {
                 this.shares = shares;
+            }
+
+        public boolean isFull()
+            {
+                return full;
+            }
+
+        public void setFull(boolean full)
+            {
+                this.full = full;
+            }
+
+        public MutualFundOrder getSubstitution()
+            {
+                return substitution;
+            }
+
+        public void setSubstitution(MutualFundOrder substitution)
+            {
+                this.substitution = substitution;
             }
     }

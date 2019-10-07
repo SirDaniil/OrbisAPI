@@ -30,6 +30,7 @@ public class MutualFundTest
                 api.setCredentials(new AvisoryCredentials(domain, platformId, username, password));
                 api.setHostname(domain);
 
+                // Simple buy
                 var order = new MutualFundOrder();
                 order.setQuote(new Quote("FCPEX"));
                 order.setValue(1000);
@@ -47,8 +48,8 @@ public class MutualFundTest
                 JSONObject jo = new JSONObject();
                 jo.put("orderRef", order.getOrderRef());
 
-                JSONObject cancel = new JSONObject();
+                /*JSONObject cancel = new JSONObject();
                 cancel.put("order", jo);
-                System.out.println("Order cancellation: " + api.post(OrderCancel, cancel).toString());
+                System.out.println("Order cancellation: " + api.post(OrderCancel, cancel).toString());*/
             }
     }
