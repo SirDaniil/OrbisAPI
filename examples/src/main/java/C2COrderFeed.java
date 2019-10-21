@@ -45,6 +45,7 @@ public class C2COrderFeed implements OrbisApiClient
         public void onOpen(ServerHandshake handshakedata)
             {
                 System.out.println("(*) Connection established");
+                ws.send("{action: 'replay', from: '10/21/2019 00:00:00 EST', to: '10/22/2019 00:00:00 EST'}");
             }
 
         @Override
