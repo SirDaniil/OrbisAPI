@@ -21,6 +21,7 @@ import org.json.*;
  */
 public class AvisoryCredentials implements Credentials
     {
+        private boolean https = true;
         private String domain;
         private String token;
         private String username;
@@ -30,8 +31,10 @@ public class AvisoryCredentials implements Credentials
         AvisoryCredentials(String domain, String token, String username, String password)
             {
                 int pos = domain.indexOf("//");
-                if (pos != -1)
+                if (pos != -1) {
+                    https = domain.startsWith("https://");
                     domain = domain.substring(pos + 2);
+                }
 
                 this.username = username;
                 this.password = password;
@@ -142,7 +145,7 @@ public class AvisoryCredentials implements Credentials
         private JSONObject post(JSONObject request) throws IOException
             {
                 String data = request.toString();
-                URL url = new URL("http://" + domain + "/api/auth/v1/login");
+                URL url = new URL((https ? "https" : "http") + "://" + domain + "/api/auth/v1/login");
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Content-Length", String.valueOf(data.length()));
                 con.setRequestProperty("Content-Type", "application/json");
@@ -155,6 +158,7 @@ public class AvisoryCredentials implements Credentials
                 con.setDoOutput(true);
                 con.setDoInput(true);
 
+                System.out.println("Posting: " + data);
                 try (Writer out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), StandardCharsets.UTF_8)))
                     {
                         out.write(data);
@@ -174,7 +178,7 @@ public class AvisoryCredentials implements Credentials
                                 if (code == 401)
                                     throw new IOException("Not authorized");
 
-                                throw new IOException("No content available");
+                                throw new IOException("No content available. Code=" + code);
                             }
 
                         BufferedReader in = new BufferedReader(new InputStreamReader("gzip".equals(content) ? new GZIPInputStream(stream) : stream));
