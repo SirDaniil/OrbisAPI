@@ -28,7 +28,7 @@ namespace OrbisAPI
             var accessKey = Filename.Substring(0, pos);
             var payload = new Dictionary<string, object>()
                 {
-                    { "iss" , "SinoPac_client" },
+                    { "iss" , "MyClient" },
                     { "exp", DateTimeOffset.Now.ToUnixTimeSeconds() + 30 },
                     { "iat" , DateTimeOffset.Now.ToUnixTimeSeconds() },
                     { "jti" , Guid.NewGuid().ToString() }
