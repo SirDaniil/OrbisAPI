@@ -64,8 +64,13 @@ public class AvisoryCredentials implements Credentials
                                         .issueTime(new Date())
                                         .build();
 
+                                var filename = domain;
+                                var pos = filename.indexOf('/');
+                                if (pos != -1)
+                                    filename = filename.substring(0, pos);
+
                                 SignedJWT jwt = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.ES512).keyID(UUID.randomUUID().toString()).build(), claimSet);
-                                PrivateKey privateKey = readPEM(domain + ".pem");
+                                PrivateKey privateKey = readPEM(filename + ".pem");
                                 jwt.sign(new ECDSASigner((ECPrivateKey) privateKey));
                                 String signature = jwt.serialize();
 

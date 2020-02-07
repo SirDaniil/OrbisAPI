@@ -312,6 +312,7 @@ public class OrbisAPI
                     }
 
                 String targetUrl = scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : "");
+                System.out.println(targetUrl);
                 URL url = new URL(targetUrl);
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
@@ -422,17 +423,36 @@ public class OrbisAPI
                 if (code == 204)
                     return null;
 
-                try (InputStream stream = (oks.contains(code) ? con.getInputStream() : con.getErrorStream()))
+                try (InputStream tmp = (oks.contains(code) ? con.getInputStream() : con.getErrorStream()))
                     {
-                        BufferedReader in = new BufferedReader(new InputStreamReader("gzip".equals(content) ? new GZIPInputStream(stream) : stream));
-                        JSONTokener tokener = new JSONTokener(in);
-                        try
+                        InputStream stream = tmp;
+
+                        if ("gzip".equals(content))
+                            stream = new GZIPInputStream(stream);
+
+                        if (endpoint.isJson())
                             {
-                                response = (T)(oks.contains(code) ? endpoint.getDatatype().getConstructor(JSONTokener.class).newInstance(tokener) : new JSONObject(tokener));
+                                BufferedReader in = new BufferedReader(new InputStreamReader(stream));
+                                JSONTokener tokener = new JSONTokener(in);
+                                try
+                                    {
+                                        response = (T) (oks.contains(code) ? endpoint.getDatatype().getConstructor(JSONTokener.class).newInstance(tokener) : new JSONObject(tokener));
+                                    }
+                                catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
+                                    {
+                                        throw new IOException(e);
+                                    }
                             }
-                        catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
+                        else
                             {
-                                throw new IOException(e);
+                                var blr = new StringBuilder();
+                                var buf = new byte[1024 * 65];
+                                int size;
+
+                                while ((size = stream.read(buf)) > 0)
+                                    blr.append(new String(buf, 0, size));
+
+                                response = (T)blr.toString();
                             }
                     }
 

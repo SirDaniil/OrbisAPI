@@ -10,7 +10,11 @@ public interface Endpoint
     {
         String getPath();
 
-        default Class getDatatype() {
+        default Class<?> getDatatype() {
             return JSONObject.class;
+        }
+
+        default boolean isJson() {
+            return true;
         }
     }

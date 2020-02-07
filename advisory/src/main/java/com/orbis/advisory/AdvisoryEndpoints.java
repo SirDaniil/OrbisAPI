@@ -12,6 +12,36 @@ public class AdvisoryEndpoints
         private AdvisoryEndpoints()
             { }
 
+        public static final Endpoint UserAgreementsUnsigned = new Endpoint()
+            {
+                @Override
+                public String getPath()
+                    {
+                        return "/user/agreements/unsigned";
+                    }
+
+                @Override
+                public Class getDatatype()
+                    {
+                        return JSONArray.class;
+                    }
+            };
+        public static final Endpoint UserAgreementsAvailable = () -> "/user/agreements/all/active";
+        public static final Endpoint UserAgreement = new Endpoint()
+            {
+                @Override
+                public String getPath()
+                    {
+                        return "/user/agreements/contents/{version}/{code}/body.html";
+                    }
+
+                @Override
+                public boolean isJson()
+                    {
+                        return false;
+                    }
+            };
+
         public static final Endpoint BranchPortfolio = () -> "/v1/branch/portfolio";
         public static final Endpoint BranchRtb = () -> "/v1/branch/rtb";
         public static final Endpoint BranchRtbsTotal = () -> "/v1/branch/rtbs/total";
