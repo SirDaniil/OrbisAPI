@@ -7,6 +7,7 @@ import org.json.*;
  * User: Daniil Sosonkin
  * Date: 12/7/2018 4:06 PM
  */
+@SuppressWarnings("unused")
 public class AdvisoryEndpoints
     {
         private AdvisoryEndpoints()
@@ -21,7 +22,7 @@ public class AdvisoryEndpoints
                     }
 
                 @Override
-                public Class getDatatype()
+                public Class<?> getDatatype()
                     {
                         return JSONArray.class;
                     }
@@ -54,7 +55,7 @@ public class AdvisoryEndpoints
                     }
 
                 @Override
-                public Class getDatatype()
+                public Class<?> getDatatype()
                     {
                         return JSONArray.class;
                     }
@@ -69,7 +70,7 @@ public class AdvisoryEndpoints
                     }
 
                 @Override
-                public Class getDatatype()
+                public Class<?> getDatatype()
                     {
                         return JSONArray.class;
                     }
@@ -84,7 +85,7 @@ public class AdvisoryEndpoints
                     }
 
                 @Override
-                public Class getDatatype()
+                public Class<?> getDatatype()
                     {
                         return JSONArray.class;
                     }
@@ -99,7 +100,7 @@ public class AdvisoryEndpoints
                     }
 
                 @Override
-                public Class getDatatype()
+                public Class<?> getDatatype()
                     {
                         return JSONArray.class;
                     }
@@ -119,7 +120,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -133,7 +134,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -147,7 +148,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -165,7 +166,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -183,7 +184,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -197,7 +198,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -214,7 +215,7 @@ public class AdvisoryEndpoints
                     }
 
                 @Override
-                public Class getDatatype()
+                public Class<?> getDatatype()
                     {
                         return JSONArray.class;
                     }
@@ -251,7 +252,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -267,7 +268,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -281,7 +282,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -295,7 +296,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -311,7 +312,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -325,7 +326,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -339,7 +340,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -353,7 +354,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -371,7 +372,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
@@ -393,7 +394,7 @@ public class AdvisoryEndpoints
                 }
 
             @Override
-            public Class getDatatype()
+            public Class<?> getDatatype()
                 {
                     return JSONArray.class;
                 }
