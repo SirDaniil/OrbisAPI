@@ -258,6 +258,20 @@ public class AdvisoryEndpoints
                 }
         };
 
+        public static final Endpoint AdvisoryModelDrift = new Endpoint() {
+            @Override
+            public String getPath()
+                {
+                    return "/v2/advisory/analytics/model/drift/{modelId}";
+                }
+
+            @Override
+            public Class<?> getDatatype()
+                {
+                    return JSONArray.class;
+                }
+        };
+
         public static final Endpoint AdvisoryModelBalance = () -> "/v2/advisory/model/rtb/{modelId}";
 
         public static final Endpoint AdvisoryModelBalanceHistory = new Endpoint() {
