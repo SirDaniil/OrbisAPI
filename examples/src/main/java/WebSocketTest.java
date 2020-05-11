@@ -16,11 +16,13 @@ import org.json.*;
  */
 public class WebSocketTest implements OrbisApiClient
     {
-        private BasicBSONDecoder decoder = new BasicBSONDecoder();
-        private String[] symbols;
-        private DateFormat hhmmssS = new SimpleDateFormat("HH:mm:ss.SSS");
-        private Map<String, UI> uis = new HashMap<>();
+        private final BasicBSONDecoder decoder = new BasicBSONDecoder();
+        private final DateFormat hhmmssS = new SimpleDateFormat("HH:mm:ss.SSS");
+        private final Map<String, UI> uis = new HashMap<>();
+        private final LinkedList<LagEntry> lags = new LinkedList<>();
+        private final LinkedList<BytesEntry> bytes = new LinkedList<>();
         private boolean ui;
+        private String[] symbols;
         protected WebSocketClient ws;
 
         public static void main(String[] args) throws Exception
@@ -35,7 +37,6 @@ public class WebSocketTest implements OrbisApiClient
                         settings = arg;
 
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
 
                 Properties props = new Properties();
                 try (InputStream in = new FileInputStream(settings))
@@ -86,11 +87,16 @@ public class WebSocketTest implements OrbisApiClient
         @Override
         public void onMessage(ByteBuffer bytes)
             {
+                var now = System.currentTimeMillis();
                 var array = bytes.array();
                 var object = decoder.readObject(array);
                 var timestamp = (Date) object.get("ts");
-                long lag = (System.currentTimeMillis() - timestamp.getTime());
-                System.out.println(String.format("(lag=%s; bytes=%s) %s", lag, array.length, object));
+                long lag = (now - timestamp.getTime());
+
+                addLastLag(new LagEntry(now, lag));
+                addLastBytes(new BytesEntry(now, array.length));
+
+                System.out.println(String.format("(lag=%s (min=%s, max=%s); bytes=%s %sBps) %s", lag, longestLag(), shortestLag(), array.length, speed(), object));
 
                 if (!ui)
                     return;
@@ -133,6 +139,77 @@ public class WebSocketTest implements OrbisApiClient
 
                                 ui.lbNowTimestamp.setText(hhmmssS.format(new Date()));
                             }
+                    }
+            }
+
+        private double speed()
+            {
+                double total = 0;
+                for (var entry : bytes)
+                    total += entry.bytes;
+
+                return (total / 1000.0);
+            }
+
+        private void addLastBytes(BytesEntry entry)
+            {
+                bytes.addLast(entry);
+
+                BytesEntry first;
+                while ((first = bytes.peek()) != null && entry.timestamp - first.timestamp > 1000)
+                    bytes.removeFirst();
+            }
+
+        private void addLastLag(LagEntry entry)
+            {
+                lags.addLast(entry);
+
+                LagEntry first;
+                while ((first = lags.peek()) != null && entry.timestamp - first.timestamp > 10 * 1000)
+                    lags.removeFirst();
+            }
+
+        private long longestLag()
+            {
+                var lag = 0L;
+                for (var entry : lags)
+                    if (entry.lag > lag)
+                        lag = entry.lag;
+
+                return lag;
+            }
+
+        private long shortestLag()
+            {
+                var lag = Long.MAX_VALUE;
+                for (var entry : lags)
+                    if (entry.lag < lag)
+                        lag = entry.lag;
+
+                return lag;
+            }
+
+        static class BytesEntry
+            {
+                long timestamp;
+                int bytes;
+
+                public BytesEntry(long timestamp, int bytes)
+                    {
+                        this.timestamp = timestamp;
+                        this.bytes = bytes;
+                    }
+            }
+
+        static class LagEntry
+            {
+                long timestamp;
+                long lag;
+
+                public LagEntry(long timestamp, long lag)
+                    {
+                        this.timestamp = timestamp;
+                        this.lag = lag;
                     }
             }
 
