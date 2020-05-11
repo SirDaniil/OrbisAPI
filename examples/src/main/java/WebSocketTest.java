@@ -96,7 +96,7 @@ public class WebSocketTest implements OrbisApiClient
                 addLastLag(new LagEntry(now, lag));
                 addLastBytes(new BytesEntry(now, array.length));
 
-                System.out.println(String.format("(lag=%s (min=%s, max=%s); bytes=%s %sBps) %s", lag, longestLag(), shortestLag(), array.length, speed(), object));
+                System.out.println(String.format("(lag=%s (min=%s, max=%s); bytes=%s %s; messages=%s) %s", lag, longestLag(), shortestLag(), array.length, speed(), messages(), object));
 
                 if (!ui)
                     return;
@@ -142,13 +142,18 @@ public class WebSocketTest implements OrbisApiClient
                     }
             }
 
-        private double speed()
+        private Object messages()
+            {
+                return bytes.size() + "/s";
+            }
+
+        private Object speed()
             {
                 double total = 0;
                 for (var entry : bytes)
                     total += entry.bytes;
 
-                return (total / 1000.0);
+                return (total / 1024.0) + " KB/s";
             }
 
         private void addLastBytes(BytesEntry entry)
