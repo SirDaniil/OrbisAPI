@@ -18,10 +18,10 @@ public class WebSocketTest implements OrbisApiClient
     {
         private BasicBSONDecoder decoder = new BasicBSONDecoder();
         private String[] symbols;
-        private WebSocketClient ws;
         private DateFormat hhmmssS = new SimpleDateFormat("HH:mm:ss.SSS");
         private Map<String, UI> uis = new HashMap<>();
         private boolean ui;
+        protected WebSocketClient ws;
 
         public static void main(String[] args) throws Exception
             {
