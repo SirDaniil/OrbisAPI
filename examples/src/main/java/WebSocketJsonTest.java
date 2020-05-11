@@ -1,5 +1,4 @@
 import java.io.*;
-import java.nio.*;
 import java.util.*;
 import com.github.sd.*;
 import org.java_websocket.handshake.*;
@@ -29,30 +28,31 @@ public class WebSocketJsonTest extends WebSocketTest
             {
                 System.out.println("(+) Connection opened");
 
-                JSONObject mode = new JSONObject();
-                mode.put("action", "mode");
-                mode.put("mode", "json");
-                System.out.println("(+) Switching to JSON: " + mode);
-
                 JSONObject sub = new JSONObject();
                 sub.put("action", "sub");
-                sub.put("mic", "XNGS");
+                sub.put("symbols", new JSONArray(Arrays.asList("MSFT", "AAPL", "GOOG")));
                 System.out.println("(+) Subscribing: " + sub);
 
-                ws.send(mode.toString());
                 ws.send(sub.toString());
             }
 
         @Override
-        public void onMessage(ByteBuffer bytes)
+        public void onMessage(String msg)
             {
-                var msg = new String(bytes.array());
+                System.out.println(msg);
                 var obj = new JSONObject(msg);
                 var timestamp = new Date(obj.getLong("ts"));
-                var receivedOn = new Date(obj.getLong("rts"));
+                //var receivedOn = new Date(obj.getjson.getLong("rts"));
                 long lag = (System.currentTimeMillis() - timestamp.getTime());
-                long quoteLag = (System.currentTimeMillis() - receivedOn.getTime());
+                //long quoteLag = (System.currentTimeMillis() - receivedOn.getTime());
 
-                System.out.printf("(lag=%s, quote lag=%s) %s", lag, quoteLag, msg);
+                //System.out.printf("(lag=%s, quote lag=%s) %s", lag, quoteLag, msg);
+                System.out.println(String.format("(lag=%s) %s", lag, msg));
+            }
+
+        @Override
+        public String getEndpoint()
+            {
+                return "/stream/json";
             }
     }
