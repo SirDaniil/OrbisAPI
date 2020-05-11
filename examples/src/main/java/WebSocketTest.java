@@ -60,8 +60,8 @@ public class WebSocketTest implements OrbisApiClient
 
                 JSONObject sub = new JSONObject();
                 sub.put("action", "sub");
-                //sub.put("symbols", new JSONArray(Arrays.asList(symbols)));
-                sub.put("mic", "XNGS");
+                sub.put("symbols", new JSONArray(Arrays.asList(symbols)));
+                //sub.put("mic", "XNGS");
                 System.out.println("(+) Subscribing: " + sub);
 
                 ws.send(sub.toString());
@@ -86,10 +86,11 @@ public class WebSocketTest implements OrbisApiClient
         @Override
         public void onMessage(ByteBuffer bytes)
             {
-                BSONObject object = decoder.readObject(bytes.array());
-                Date timestamp = (Date) object.get("ts");
+                var array = bytes.array();
+                var object = decoder.readObject(array);
+                var timestamp = (Date) object.get("ts");
                 long lag = (System.currentTimeMillis() - timestamp.getTime());
-                System.out.println("(" + lag + ") " + object);
+                System.out.println(String.format("(lag=%s; bytes=%s) %s", lag, array.length, object));
 
                 if (!ui)
                     return;
