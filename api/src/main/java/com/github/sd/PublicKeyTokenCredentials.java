@@ -29,6 +29,21 @@ public class PublicKeyTokenCredentials implements Credentials
                 this.hostname = props.getProperty("hostname");
             }
 
+        public PublicKeyTokenCredentials()
+            { }
+
+        public PublicKeyTokenCredentials setHostname(String hostname)
+            {
+                this.hostname = hostname;
+                return this;
+            }
+
+        public PublicKeyTokenCredentials setFilename(String filename)
+            {
+                this.filename = filename;
+                return this;
+            }
+
         @Override
         public String getToken()
             {
