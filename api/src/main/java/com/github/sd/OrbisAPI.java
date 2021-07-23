@@ -99,9 +99,9 @@ public class OrbisAPI
                 return get(Endpoints.UserInfo);
             }
 
-        public JSONArray getChartIntraday(String symbol) throws IOException
+        public JSONArray getChartIntraday(IntradayRequest request) throws IOException
             {
-                return get(Endpoints.ChartsIntraday, "symbol", symbol);
+                return get(Endpoints.ChartsIntraday, request);
             }
 
         public JSONArray getCorporateActionTypes() throws IOException
