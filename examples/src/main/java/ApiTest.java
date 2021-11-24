@@ -20,11 +20,17 @@ public class ApiTest
                 OrbisAPI api = new OrbisAPI();
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyTokenCredentials(props));
-                var data = api.getChartIntraday( IntradayRequest.Create().symbol("NVDA").from("06/21/2021").to("07/21/2021") );
-                for (int i = 0; i < data.length(); i++) {
+                var start = System.currentTimeMillis();
+                var data = api.getChartIntraday( IntradayRequest.Create().symbol("MSFT").from("8/14/2021").to("11/24/2021") );
+                var end = System.currentTimeMillis();
+
+                /*for (int i = 0; i < data.length(); i++) {
                     var point = data.getJSONObject(i);
                     System.out.printf("%s - price: %,.2f%n", point.getString("date"), point.getDouble("price"));
-                }
+                }*/
+
+                System.out.println("Data points: " + data.length());
+                System.out.println("Time: " + (end - start) / 1000.0);
 
                 /*api.getQuotes("amzn");
                 api.getQuotes("amzn");

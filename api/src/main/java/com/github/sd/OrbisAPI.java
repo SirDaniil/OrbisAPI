@@ -284,8 +284,10 @@ public class OrbisAPI
         private <T> T read(HttpURLConnection con) throws IOException
             {
                 T response = null;
+                var start = System.currentTimeMillis();
                 int code = con.getResponseCode();
                 String content = con.getContentEncoding();
+                System.out.println("Responded in: " + (System.currentTimeMillis() - start) / 1000.0);
 
                 if (code == 204)
                     return null;
