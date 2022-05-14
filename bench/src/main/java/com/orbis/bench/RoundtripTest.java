@@ -19,6 +19,11 @@ public class RoundtripTest
                     {
                         props.load(in);
                     }
+                catch (IOException e)
+                    {
+                        System.out.println(new File(settings).getAbsolutePath());
+                        throw e;
+                    }
 
                 OrbisAPI api = new OrbisAPI();
                 api.setHostname(props.getProperty("hostname"));
