@@ -247,6 +247,7 @@ public class OrbisAPI
                 String auth_scheme = credentials.getScheme();
                 String auth_token = credentials.getToken();
 
+                var start = System.currentTimeMillis();
                 URL url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", auth_scheme + " " + Base64.encodeBytes(auth_token.getBytes()));
@@ -254,6 +255,7 @@ public class OrbisAPI
                 con.setUseCaches(false);
                 con.setConnectTimeout(1000 * 30);
                 con.setReadTimeout(1000 * 30);
+                listener.sent(System.currentTimeMillis() - start);
 
                 return read(con);
             }
@@ -261,6 +263,8 @@ public class OrbisAPI
         public <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
             {
                 String data = obj.toJSON();
+
+                var start = System.currentTimeMillis();
                 URL url = new URL(scheme + "://" + hostname + api + endpoint.getPath());
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
@@ -274,7 +278,6 @@ public class OrbisAPI
                 con.setDoOutput(true);
                 con.setDoInput(true);
 
-                var start = System.currentTimeMillis();
                 try (Writer out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), StandardCharsets.UTF_8)))
                     {
                         out.write(data);
