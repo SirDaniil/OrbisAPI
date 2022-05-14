@@ -21,10 +21,17 @@ public class OrbisAPI
             add(200);
             add(201);
         }};
+        private LogListener listener = LogListener.Blank;
         private Credentials credentials;
         private String hostname;
         private String api = "/api";
         private String scheme = "https";
+
+        public OrbisAPI setListner(LogListener listener)
+            {
+                this.listener = listener;
+                return this;
+            }
 
         public OrbisAPI setCredentials(Credentials credentials)
             {
@@ -287,11 +294,12 @@ public class OrbisAPI
                 var start = System.currentTimeMillis();
                 int code = con.getResponseCode();
                 String content = con.getContentEncoding();
-                System.out.println("Responded in: " + (System.currentTimeMillis() - start) / 1000.0);
+                listener.serverResponded(System.currentTimeMillis() - start);
 
                 if (code == 204)
                     return null;
 
+                start = System.currentTimeMillis();
                 try (InputStream stream = (oks.contains(code) ? con.getInputStream() : con.getErrorStream()))
                     {
                         BufferedReader in = new BufferedReader(new InputStreamReader("gzip".equals(content) ? new GZIPInputStream(stream) : stream));
@@ -303,6 +311,10 @@ public class OrbisAPI
                             response = (T)new JSONArray(tokener);
                         else if (ch == '{')
                             response = (T)new JSONObject(tokener);
+                    }
+                finally
+                    {
+                        listener.contentRead(System.currentTimeMillis() - start);
                     }
 
                 if (!oks.contains(code))
