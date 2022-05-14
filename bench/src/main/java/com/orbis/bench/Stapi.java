@@ -57,5 +57,13 @@ public class Stapi extends Thread
                         out.write(str);
                         out.flush();
                     }
+
+                try (var in = con.getInputStream())
+                    {
+                        byte[] buf = new byte[1024 * 65];
+                        int size;
+
+                        while ((size = in.read(buf)) > 0);
+                    }
             }
     }
