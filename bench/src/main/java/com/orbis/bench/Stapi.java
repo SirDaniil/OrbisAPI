@@ -13,6 +13,7 @@ public class Stapi extends Thread
         public Stapi(String token)
             {
                 this.token = token;
+                start();
             }
 
         public void add(StapiData data)
@@ -56,7 +57,5 @@ public class Stapi extends Thread
                         out.write(str);
                         out.flush();
                     }
-
-                System.out.println(con.getResponseCode());
             }
     }
