@@ -224,9 +224,8 @@ public class OrbisAPI
 
                         if (key.startsWith("{") && key.endsWith("}"))
                             path = path.replace(key, value.toString());
-                        else if (value instanceof Collection)
+                        else if (value instanceof Collection<?> col)
                             {
-                                Collection col = (Collection) value;
                                 for (Object item : col)
                                     {
                                         args.append(encode(key));
@@ -248,8 +247,8 @@ public class OrbisAPI
                 String auth_token = credentials.getToken();
 
                 var start = System.currentTimeMillis();
-                URL url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
-                HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                var url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
+                var con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", auth_scheme + " " + Base64.encodeBytes(auth_token.getBytes()));
                 con.setRequestProperty("Accept-Encoding", "deflate, gzip");
                 con.setUseCaches(false);
@@ -265,8 +264,8 @@ public class OrbisAPI
                 String data = obj.toJSON();
 
                 var start = System.currentTimeMillis();
-                URL url = new URL(scheme + "://" + hostname + api + endpoint.getPath());
-                HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                var url = new URL(scheme + "://" + hostname + api + endpoint.getPath());
+                var con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setRequestProperty("Content-Length", String.valueOf(data.length()));
                 con.setRequestProperty("Content-Type", "application/json");
@@ -296,6 +295,7 @@ public class OrbisAPI
                 return URLEncoder.encode(o.toString(), StandardCharsets.ISO_8859_1);
             }
 
+        @SuppressWarnings("unchecked")
         private <T> T read(HttpURLConnection con) throws IOException
             {
                 T response = null;
@@ -315,7 +315,7 @@ public class OrbisAPI
 
                 start = System.currentTimeMillis();
                 int read = 0;
-                try (CountingInputStream stream = new CountingInputStream(oks.contains(code) ? con.getInputStream() : con.getErrorStream()))
+                try (var stream = new CountingInputStream(oks.contains(code) ? con.getInputStream() : con.getErrorStream()))
                     {
                         InputStream in = stream;
 
