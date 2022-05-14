@@ -9,4 +9,7 @@ public interface LogListener
 
         default void contentRead(boolean compressed, long delta, int read, String encoding)
             { }
+
+        default void sent(long delta)
+            { }
     }

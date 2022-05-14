@@ -63,6 +63,10 @@ public class PublicKeyCredentials implements Credentials
                 return "Key";
             }
 
+        @Override
+        public void expired()
+            { }
+
         private static PublicKey getPublicKey(String filename) throws Exception
             {
                 if (filename.toLowerCase().endsWith(".pem"))

@@ -59,6 +59,12 @@ public class PublicKeyTokenCredentials implements Credentials
                 return "KeyToken";
             }
 
+        @Override
+        public void expired()
+            {
+                this.token = null;
+            }
+
         private String obtainToken()
             {
                 try

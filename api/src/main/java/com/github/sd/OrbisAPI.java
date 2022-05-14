@@ -274,10 +274,15 @@ public class OrbisAPI
                 con.setDoOutput(true);
                 con.setDoInput(true);
 
+                var start = System.currentTimeMillis();
                 try (Writer out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream(), StandardCharsets.UTF_8)))
                     {
                         out.write(data);
                         out.flush();
+                    }
+                finally
+                    {
+                        listener.sent(System.currentTimeMillis() - start);
                     }
 
                 return read(con);
@@ -299,6 +304,11 @@ public class OrbisAPI
 
                 if (code == 204)
                     return null;
+
+                if (code == 401) {
+                    credentials.expired();
+                    return null;
+                }
 
                 start = System.currentTimeMillis();
                 int read = 0;

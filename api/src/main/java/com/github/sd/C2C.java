@@ -61,6 +61,12 @@ public class C2C implements Credentials
                 return "C2C";
             }
 
+        @Override
+        public void expired()
+            {
+                this.token = null;
+            }
+
         private void obtainToken() throws JOSEException, IOException
             {
                 JSONObject obj = new JSONObject();

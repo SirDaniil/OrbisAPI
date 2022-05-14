@@ -8,4 +8,5 @@ public interface Credentials
     {
         String getToken();
         String getScheme();
+        void expired();
     }
