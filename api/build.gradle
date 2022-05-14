@@ -1,8 +1,7 @@
 apply plugin: 'java'
-apply plugin: 'maven'
 
-sourceCompatibility = 1.10
-targetCompatibility = 1.10
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
 group 'com.orbis.api'
 version '1.0.0'
 
@@ -11,32 +10,9 @@ configurations {
 }
 
 dependencies {
-    deployerJars "org.apache.maven.wagon:wagon-webdav:1.0-beta-2"
-    compile group: 'org.mongodb', name: 'mongodb-driver', version: '3.8.0'
-    compile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '5.13'
-    compile group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.3.8'
-    compile group: 'org.json', name: 'json', version: '20180130'
-    compile group: 'net.iharder', name: 'base64', version: '2.3.9'
-}
-
-uploadArchives {
-    def props = new Properties()
-    def file = file("${project.rootDir}/deployment/config.ini")
-
-    // Deployment config
-    if (file.exists()) {
-        file.withInputStream {
-            props.load(it)
-        }
-    }
-    def username = props.getProperty("deploy.username")
-    def password = props.getProperty("deploy.password")
-    def url = props.getProperty("deploy.url")
-
-    repositories.mavenDeployer {
-        configuration = configurations.deployerJars
-        repository(url: url) {
-            authentication(userName: username, password: password)
-        }
-    }
+    implementation group: 'org.mongodb', name: 'mongodb-driver', version: '3.8.0'
+    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '5.13'
+    implementation group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.3.8'
+    implementation group: 'org.json', name: 'json', version: '20180130'
+    implementation group: 'net.iharder', name: 'base64', version: '2.3.9'
 }

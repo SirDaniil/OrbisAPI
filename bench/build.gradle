@@ -1,10 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'application'
-mainClassName = 'com.orbis.bench.RoundtripBench'
+mainClassName = 'com.orbis.bench.RoundtripTest'
 
-sourceCompatibility = 1.10
-targetCompatibility = 1.10
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
 
 dependencies {
-    compile project(':api')
+    implementation project(':api')
 }
