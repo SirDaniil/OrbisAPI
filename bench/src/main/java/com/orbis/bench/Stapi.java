@@ -56,5 +56,7 @@ public class Stapi extends Thread
                         out.write(str);
                         out.flush();
                     }
+
+                System.out.println(con.getResponseCode());
             }
     }
