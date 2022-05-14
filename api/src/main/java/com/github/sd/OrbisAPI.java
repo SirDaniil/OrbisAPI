@@ -250,7 +250,7 @@ public class OrbisAPI
                 URL url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", auth_scheme + " " + Base64.encodeBytes(auth_token.getBytes()));
-                con.setRequestProperty("Accept-Encoding", "gzip");
+                con.setRequestProperty("Accept-Encoding", "deflate, gzip");
                 con.setUseCaches(false);
                 con.setConnectTimeout(1000 * 30);
                 con.setReadTimeout(1000 * 30);
@@ -266,7 +266,7 @@ public class OrbisAPI
                 con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
                 con.setRequestProperty("Content-Length", String.valueOf(data.length()));
                 con.setRequestProperty("Content-Type", "application/json");
-                con.setRequestProperty("Accept-Encoding", "gzip");
+                con.setRequestProperty("Accept-Encoding", "deflate, gzip");
                 con.setRequestMethod("POST");
                 con.setConnectTimeout(1000 * 30);
                 con.setReadTimeout(1000 * 30);
@@ -294,8 +294,7 @@ public class OrbisAPI
                 var start = System.currentTimeMillis();
                 int code = con.getResponseCode();
                 var encoding = con.getContentEncoding();
-                var gzip = "gzip".equals(encoding);
-                System.out.println(con.getHeaderFields());
+                var compressed = false;
                 listener.serverResponded(code, System.currentTimeMillis() - start);
 
                 if (code == 204)
@@ -303,10 +302,22 @@ public class OrbisAPI
 
                 start = System.currentTimeMillis();
                 int read = 0;
-                try (var stream = new CountingInputStream(oks.contains(code) ? con.getInputStream() : con.getErrorStream()))
+                try (CountingInputStream stream = new CountingInputStream(oks.contains(code) ? con.getInputStream() : con.getErrorStream()))
                     {
-                        BufferedReader in = new BufferedReader(new InputStreamReader(gzip ? new GZIPInputStream(stream) : stream));
-                        JSONTokener tokener = new JSONTokener(in);
+                        InputStream in = stream;
+
+                        if ("gzip".equals(encoding)) {
+                            compressed = true;
+                            in = new GZIPInputStream(in);
+                        }
+
+                        if ("deflate".equals(encoding)) {
+                            compressed = true;
+                            in = new DeflaterInputStream(in);
+                        }
+
+                        var reader = new BufferedReader(new InputStreamReader(in));
+                        var tokener = new JSONTokener(reader);
                         char ch = tokener.nextClean();
                         tokener.back();
 
@@ -319,7 +330,7 @@ public class OrbisAPI
                     }
                 finally
                     {
-                        listener.contentRead(gzip, System.currentTimeMillis() - start, read, encoding);
+                        listener.contentRead(compressed, System.currentTimeMillis() - start, read, encoding);
                     }
 
                 if (!oks.contains(code))

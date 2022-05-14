@@ -45,8 +45,8 @@ public class RoundtripTest implements LogListener
             }
 
         @Override
-        public void contentRead(boolean gzip, long delta, int read, String encoding)
+        public void contentRead(boolean compressed, long delta, int read, String encoding)
             {
-                System.out.printf("[%s] Server response: %.3f; content read in: %.3f (gzip: %s; read: %.2fkb)%n", responseCode, responseDelta / 1000.0, delta / 1000.0, encoding, read / 1024.0);
+                System.out.printf("[%s] Server response: %.3f; content read in: %.3f (compression: %s; read: %.2fkb)%n", responseCode, responseDelta / 1000.0, delta / 1000.0, encoding, read / 1024.0);
             }
     }
