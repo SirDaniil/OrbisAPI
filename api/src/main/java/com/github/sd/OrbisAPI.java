@@ -295,6 +295,7 @@ public class OrbisAPI
                 int code = con.getResponseCode();
                 var encoding = con.getContentEncoding();
                 var gzip = "gzip".equals(encoding);
+                System.out.println(con.getHeaderFields());
                 listener.serverResponded(code, System.currentTimeMillis() - start);
 
                 if (code == 204)
