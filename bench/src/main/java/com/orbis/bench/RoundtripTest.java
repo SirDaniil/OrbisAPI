@@ -63,7 +63,7 @@ public class RoundtripTest implements LogListener
         public void contentRead(boolean compressed, long delta, int read, String encoding)
             {
                 if (stapi != null)
-                    stapi.add(new StapiData(delta / 1000.0));
+                    stapi.add(new StapiData((responseDelta + delta) / 1000.0));
 
                 System.out.printf("[%.3f -> %s] Server response: %.3f; content read in: %.3f (compression: %s; read: %.2fkb)%n", sendDelta / 1000.0,  responseCode, responseDelta / 1000.0, delta / 1000.0, compressed, read / 1024.0);
             }
