@@ -7,6 +7,6 @@ public interface LogListener
         default void serverResponded(int code, long delta)
             { }
 
-        default void contentRead(boolean gzip, long delta, int read)
+        default void contentRead(boolean gzip, long delta, int read, String encoding)
             { }
     }

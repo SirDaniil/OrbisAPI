@@ -318,7 +318,7 @@ public class OrbisAPI
                     }
                 finally
                     {
-                        listener.contentRead(gzip, System.currentTimeMillis() - start, read);
+                        listener.contentRead(gzip, System.currentTimeMillis() - start, read, encoding);
                     }
 
                 if (!oks.contains(code))
