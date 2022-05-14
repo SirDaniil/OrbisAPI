@@ -4,9 +4,9 @@ public interface LogListener
     {
         LogListener Blank = new LogListener() { };
 
-        default void serverResponded(long delta)
+        default void serverResponded(int code, long delta)
             { }
 
-        default void contentRead(long delta)
+        default void contentRead(boolean gzip, long delta)
             { }
     }

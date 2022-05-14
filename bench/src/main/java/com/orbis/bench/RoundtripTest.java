@@ -7,6 +7,7 @@ import com.github.sd.*;
 public class RoundtripTest implements LogListener
     {
         private long responseDelta;
+        private int responseCode;
 
         public static void main(String[] args) throws Exception
             {
@@ -37,14 +38,15 @@ public class RoundtripTest implements LogListener
             }
 
         @Override
-        public void serverResponded(long delta)
+        public void serverResponded(int code, long delta)
             {
+                this.responseCode = code;
                 this.responseDelta = delta;
             }
 
         @Override
-        public void contentRead(long delta)
+        public void contentRead(boolean gzip, long delta)
             {
-                System.out.printf("Server response: %.3f; content read in: %.3f%n", responseDelta / 1000.0, delta / 1000.0);
+                System.out.printf("[%s] Server response: %.3f; content read in: %.3f (gzip: %s)%n", responseCode, responseDelta / 1000.0, delta / 1000.0, gzip);
             }
     }

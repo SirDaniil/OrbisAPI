@@ -293,8 +293,9 @@ public class OrbisAPI
                 T response = null;
                 var start = System.currentTimeMillis();
                 int code = con.getResponseCode();
-                String content = con.getContentEncoding();
-                listener.serverResponded(System.currentTimeMillis() - start);
+                var encoding = con.getContentEncoding();
+                var gzip = "gzip".equals(encoding);
+                listener.serverResponded(code, System.currentTimeMillis() - start);
 
                 if (code == 204)
                     return null;
@@ -302,7 +303,7 @@ public class OrbisAPI
                 start = System.currentTimeMillis();
                 try (InputStream stream = (oks.contains(code) ? con.getInputStream() : con.getErrorStream()))
                     {
-                        BufferedReader in = new BufferedReader(new InputStreamReader("gzip".equals(content) ? new GZIPInputStream(stream) : stream));
+                        BufferedReader in = new BufferedReader(new InputStreamReader(gzip ? new GZIPInputStream(stream) : stream));
                         JSONTokener tokener = new JSONTokener(in);
                         char ch = tokener.nextClean();
                         tokener.back();
@@ -314,7 +315,7 @@ public class OrbisAPI
                     }
                 finally
                     {
-                        listener.contentRead(System.currentTimeMillis() - start);
+                        listener.contentRead(gzip, System.currentTimeMillis() - start);
                     }
 
                 if (!oks.contains(code))
