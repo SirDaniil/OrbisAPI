@@ -29,8 +29,11 @@ public class RoundtripTest
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
 
-                var start = System.currentTimeMillis();
-                api.getQuotes("MSFT", "F", "AAPL", "GOOG");
-                System.out.printf("Got quotes in %.3fs%n", (System.currentTimeMillis() - start) / 1000.0);
+                while (true)
+                    {
+                        var start = System.currentTimeMillis();
+                        api.getQuotes("MSFT", "F", "AAPL", "GOOG");
+                        System.out.printf("Got quotes in %.3fs%n", (System.currentTimeMillis() - start) / 1000.0);
+                    }
             }
     }
