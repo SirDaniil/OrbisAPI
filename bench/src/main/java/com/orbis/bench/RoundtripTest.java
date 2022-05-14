@@ -6,6 +6,7 @@ import com.github.sd.*;
 
 public class RoundtripTest implements LogListener
     {
+        private Stapi stapi;
         private long responseDelta;
         private long sendDelta;
         private int responseCode;
@@ -32,10 +33,17 @@ public class RoundtripTest implements LogListener
                 OrbisAPI api = new OrbisAPI();
                 api.setHostname(props.getProperty("hostname"));
                 api.setCredentials(new PublicKeyCredentials(props.getProperty("key.file")));
-                api.setListner(new RoundtripTest());
+                api.setListner(new RoundtripTest(props));
 
                 while (true)
                     api.getQuotes("MSFT", "F", "AAPL", "GOOG");
+            }
+
+        public RoundtripTest(Properties props)
+            {
+                var stitoken = props.getProperty("stapi");
+                if (stitoken != null)
+                    stapi = new Stapi(stitoken);
             }
 
         @Override
@@ -54,6 +62,9 @@ public class RoundtripTest implements LogListener
         @Override
         public void contentRead(boolean compressed, long delta, int read, String encoding)
             {
+                if (stapi != null)
+                    stapi.add(new StapiData(delta / 1000.0));
+
                 System.out.printf("[%.3f -> %s] Server response: %.3f; content read in: %.3f (compression: %s; read: %.2fkb)%n", sendDelta / 1000.0,  responseCode, responseDelta / 1000.0, delta / 1000.0, compressed, read / 1024.0);
             }
     }
