@@ -262,11 +262,13 @@ public class OrbisAPI
         public <T> T post(Endpoint endpoint, JsonConvertable obj) throws IOException
             {
                 String data = obj.toJSON();
+                String auth_scheme = credentials.getScheme();
+                String auth_token = credentials.getToken();
 
                 var start = System.currentTimeMillis();
                 var url = new URL(scheme + "://" + hostname + api + endpoint.getPath());
                 var con = (HttpURLConnection)url.openConnection();
-                con.setRequestProperty("Authorization", credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()));
+                con.setRequestProperty("Authorization", auth_scheme + " " + Base64.encodeBytes(auth_token.getBytes()));
                 con.setRequestProperty("Content-Length", String.valueOf(data.length()));
                 con.setRequestProperty("Content-Type", "application/json");
                 con.setRequestProperty("Accept-Encoding", "deflate, gzip");
