@@ -36,7 +36,14 @@ public class RoundtripTest implements LogListener
                 api.setListner(new RoundtripTest(props));
 
                 while (true)
-                    api.getQuotes("MSFT", "F", "AAPL", "GOOG");
+                    {
+                        var start = System.currentTimeMillis();
+                        api.getQuotes("MSFT", "F", "AAPL", "GOOG");
+                        var delta = System.currentTimeMillis() - start;
+
+                        if (delta < 250)
+                            Thread.sleep(250 - delta);
+                    }
             }
 
         public RoundtripTest(Properties props)
