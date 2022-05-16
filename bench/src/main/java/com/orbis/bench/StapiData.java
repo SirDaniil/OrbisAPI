@@ -12,12 +12,12 @@ public class StapiData
                 this.seconds = seconds;
             }
 
-        public String toJSON()
+        public String toJSON(String region)
             {
                 var obj = new JSONObject();
                 obj.put("seconds", seconds);
                 obj.put("tag", "audit-quotes");
-                obj.put("group", "audit-MUMBAY");
+                obj.put("group", "audit-" + region);
                 obj.put("name", "ping");
                 obj.put("timestamp", createdOn);
 

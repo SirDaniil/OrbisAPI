@@ -42,8 +42,14 @@ public class RoundtripTest implements LogListener
         public RoundtripTest(Properties props)
             {
                 var stitoken = props.getProperty("stapi");
-                if (stitoken != null)
-                    stapi = new Stapi(stitoken);
+                var region = props.getProperty("region");
+                if (stitoken == null)
+                    return;
+
+                if (region == null)
+                    region = "MUMBAY";
+
+                stapi = new Stapi(stitoken, region);
             }
 
         @Override

@@ -8,11 +8,14 @@ import java.util.concurrent.*;
 public class Stapi extends Thread
     {
         private final BlockingQueue<StapiData> queue = new LinkedBlockingQueue<>();
+        private String region;
         private String token;
 
-        public Stapi(String token)
+        public Stapi(String token, String region)
             {
                 this.token = token;
+                this.region = region;
+
                 start();
             }
 
@@ -38,7 +41,7 @@ public class Stapi extends Thread
 
         private void store(StapiData data) throws IOException
             {
-                var str = data.toJSON();
+                var str = data.toJSON(region);
                 var url = new URL("https://bo.orbisfn.com/stapi/v2/tracking/add");
                 var con = (HttpURLConnection)url.openConnection();
                 con.setRequestProperty("Authorization", "Bearer " + token);
