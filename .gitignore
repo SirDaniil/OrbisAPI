@@ -3,6 +3,8 @@
 # Compiled class file
 *.class
 
+c2c.properties
+
 # Log file
 *.log
 
