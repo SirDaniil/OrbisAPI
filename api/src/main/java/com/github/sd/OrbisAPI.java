@@ -246,10 +246,16 @@ public class OrbisAPI
                 String auth_scheme = credentials.getScheme();
                 String auth_token = credentials.getToken();
 
+                if (credentials.base64())
+                    auth_token = Base64.encodeBytes(auth_token.getBytes());
+
                 var start = System.currentTimeMillis();
-                var url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
+                var url = credentials.provideUrl(path + (args.length() > 0 ? "?" + args : ""));
+                if (url == null)
+                    url = new URL(scheme + "://" + hostname + api + path + (args.length() > 0 ? "?" + args : ""));
+
                 var con = (HttpURLConnection)url.openConnection();
-                con.setRequestProperty("Authorization", auth_scheme + " " + Base64.encodeBytes(auth_token.getBytes()));
+                con.setRequestProperty("Authorization", auth_scheme + " " + auth_token);
                 con.setRequestProperty("Accept-Encoding", "deflate, gzip");
                 con.setUseCaches(false);
                 con.setConnectTimeout(1000 * 30);
@@ -265,10 +271,16 @@ public class OrbisAPI
                 String auth_scheme = credentials.getScheme();
                 String auth_token = credentials.getToken();
 
+                if (credentials.base64())
+                    auth_token = Base64.encodeBytes(auth_token.getBytes());
+
                 var start = System.currentTimeMillis();
-                var url = new URL(scheme + "://" + hostname + api + endpoint.getPath());
+                var url = credentials.provideUrl(endpoint.getPath());
+                if (url == null)
+                    url = new URL(scheme + "://" + hostname + api + endpoint.getPath());
+
                 var con = (HttpURLConnection)url.openConnection();
-                con.setRequestProperty("Authorization", auth_scheme + " " + Base64.encodeBytes(auth_token.getBytes()));
+                con.setRequestProperty("Authorization", auth_scheme + " " + auth_token);
                 con.setRequestProperty("Content-Length", String.valueOf(data.length()));
                 con.setRequestProperty("Content-Type", "application/json");
                 con.setRequestProperty("Accept-Encoding", "deflate, gzip");
