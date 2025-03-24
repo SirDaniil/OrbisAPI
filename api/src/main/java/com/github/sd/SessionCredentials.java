@@ -20,6 +20,10 @@ public class SessionCredentials implements Credentials
         @Override
         public URL provideUrl(String path) throws MalformedURLException
             {
+                var hostname = this.hostname;
+                if (path.startsWith("/stream") && hostname.endsWith("/api"))
+                    hostname = hostname.replace("/api", "/");
+
                 return new URL(hostname + path);
             }
 

@@ -28,6 +28,25 @@ public class WebSocketTest implements OrbisApiClient
         public static void main(String[] args) throws Exception
             {
                 boolean ui = false;
+
+                for (String arg : args)
+                    if ("-ui".equalsIgnoreCase(arg))
+                        ui = true;
+
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+                OrbisAPI api = new OrbisAPI();
+                api.setCredentials(new SessionCredentials());
+
+                WebSocketTest test = new WebSocketTest();
+                test.ui = ui;
+                test.symbols = new String[] {"MSFT", "AAPL"};
+                test.ws = api.openWebSocket(test);
+            }
+
+        public static void main1(String[] args) throws Exception
+            {
+                boolean ui = false;
                 String settings = "settings.conf";
 
                 for (String arg : args)
@@ -96,7 +115,7 @@ public class WebSocketTest implements OrbisApiClient
                 addLastLag(new LagEntry(now, lag));
                 addLastBytes(new BytesEntry(now, array.length));
 
-                System.out.println(String.format("(lag=%s (min=%s, max=%s); bytes=%s %s; messages=%s) %s", lag, longestLag(), shortestLag(), array.length, speed(), messages(), object));
+                System.out.printf("(lag=%s (min=%s, max=%s); bytes=%s %s; messages=%s) %s%n", lag, longestLag(), shortestLag(), array.length, speed(), messages(), object);
 
                 if (!ui)
                     return;
@@ -218,7 +237,7 @@ public class WebSocketTest implements OrbisApiClient
                     }
             }
 
-        class UI extends JFrame
+        static class UI extends JFrame
             {
                 private JLabel lbBid = new JLabel();
                 private JLabel lbBidSize = new JLabel();

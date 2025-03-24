@@ -1,15 +1,18 @@
 package com.github.sd;
 
+import net.iharder.*;
+import net.iharder.Base64;
+import org.java_websocket.*;
+import org.java_websocket.client.*;
+import org.java_websocket.handshake.*;
+import org.json.*;
+
 import java.io.*;
 import java.net.*;
 import java.nio.*;
 import java.nio.charset.*;
 import java.util.*;
 import java.util.zip.*;
-import net.iharder.Base64;
-import org.java_websocket.client.*;
-import org.java_websocket.handshake.*;
-import org.json.*;
 
 /**
  * User: Daniil Sosonkin
@@ -63,38 +66,67 @@ public class OrbisAPI
 
         public WebSocketClient openWebSocket(OrbisApiClient client) throws Exception
             {
-                WebSocketClient ws = new WebSocketClient(new URI((scheme.equals("http") ? "ws" : "wss") + "://" + hostname + "/" + client.getEndpoint() + "?auth=" + URLEncoder.encode(credentials.getScheme() + " " + Base64.encodeBytes(credentials.getToken().getBytes()), StandardCharsets.ISO_8859_1)))
-                    {
-                        @Override
-                        public void onOpen(ServerHandshake handshakedata)
-                            {
-                                client.onOpen(handshakedata);
-                            }
+                var auth_scheme = credentials.getScheme();
+                var auth_token = credentials.getToken();
 
-                        @Override
-                        public void onMessage(String message)
-                            {
-                                client.onMessage(message);
-                            }
+                if (credentials.base64())
+                    auth_token = Base64.encodeBytes(auth_token.getBytes(StandardCharsets.ISO_8859_1));
 
-                        @Override
-                        public void onClose(int code, String reason, boolean remote)
-                            {
-                                client.onClose(code, reason, remote);
-                            }
+                var path = client.getEndpoint() + "?auth=" + URLEncoder.encode(auth_scheme + " " + auth_token, StandardCharsets.ISO_8859_1);
+                var url = credentials.provideUrl(path);
+                if (url == null)
+                    url = new URL(scheme + "://" + hostname + api);
 
-                        @Override
-                        public void onError(Exception ex)
-                            {
-                                client.onError(ex);
-                            }
+                var surl = url.toString();
+                surl = surl.replace("http://", "ws://");
+                surl = surl.replace("https://", "wss://");
 
-                        @Override
-                        public void onMessage(ByteBuffer bytes)
-                            {
-                                client.onMessage(bytes);
-                            }
-                    };
+                var uri = new URI(surl);
+                System.out.println("Connecting to : " + uri);
+                System.out.println("Connecting to host : " + uri.getHost());
+                System.out.println("Connecting to port : " + uri.getPort());
+                System.out.println("Raw path : " + uri.getRawPath());
+                System.out.println("Raw query : " + uri.getRawQuery());
+                System.out.println(".............................................");
+
+                WebSocketClient ws = new WebSocketClient(uri) {
+                    @Override
+                    public void onWebsocketHandshakeSentAsClient(WebSocket conn, ClientHandshake request)
+                        {
+                            System.out.println("(*) Sending handshake: " + request.getResourceDescriptor());
+                        }
+
+                    @Override
+                    public void onOpen(ServerHandshake handshakedata)
+                        {
+                            System.out.println("Connected to " + uri);
+                            client.onOpen(handshakedata);
+                        }
+
+                    @Override
+                    public void onMessage(String message)
+                        {
+                            client.onMessage(message);
+                        }
+
+                    @Override
+                    public void onClose(int code, String reason, boolean remote)
+                        {
+                            client.onClose(code, reason, remote);
+                        }
+
+                    @Override
+                    public void onError(Exception ex)
+                        {
+                            client.onError(ex);
+                        }
+
+                    @Override
+                    public void onMessage(ByteBuffer bytes)
+                        {
+                            client.onMessage(bytes);
+                        }
+                };
                 ws.setTcpNoDelay(true);
                 ws.connect();
 
